@@ -1,0 +1,96 @@
+@import '../../../shared/sc2-confirm/sc2-confirm.components.scss';
+
+.buttonTC {
+    position: absolute;
+    top: 158px;
+    left: 1018px;
+}
+
+.label1 {
+    position: absolute;
+    top: 203px;
+    left: 291px;
+    font-size: 35px;
+    color: #333333;
+}
+
+.main-image {
+    position: absolute;
+    top: 305px;
+    left: 291px;
+    bottom: 195px;
+}
+
+.exitButton {
+    // position: absolute;
+    // top: 873px;
+    // left: 291px;
+    // bottom: 69px;
+
+    position: absolute;
+    top: 873px;
+    left: 291px;
+    width: 122px;
+    height: 52px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #A8A8A8;
+    border-radius: 5px;
+}
+
+.footer {
+    position: absolute;
+    font-size: 18px;
+    color:#BDBDBD;
+    top: 997px;
+    left:291px;
+}
+
+.timer {
+    position: absolute;
+    left: 760px;
+}
+
+.chbtn{
+    // position: absolute;
+    // margin-left: 1020px;
+    // margin-top: 27px;
+
+    position: absolute;
+    top: 27px;
+    left: 1018px;
+    width: 202px;
+    height: 66px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #6B6B6B;
+    border-radius: 5px;
+}
+
+.sideimg{
+    position: absolute;
+    left: 0px;
+}
+
+.steps-div {
+    position: absolute;
+    margin-left: 260px;
+    margin-top: 20px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 42px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #A891BC;
+    // width: 230px;
+    // height: 78px;
+}
+

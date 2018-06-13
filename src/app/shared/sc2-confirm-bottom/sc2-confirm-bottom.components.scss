@@ -1,0 +1,68 @@
+.sc2-confirm-bottom {
+    .modal-dialog {
+        margin: 770px 300px;
+    }
+
+    .modal-content {
+        height: 250px;
+        width: 910px;
+    }
+
+    .modal-header {
+        height: 50px;
+        background: #7349A5 ;
+        border-radius: 0px;
+    }
+
+    .modal-body{
+        position: relative;
+        height: 200px;
+    }
+
+    .modal-message {
+        color: #333333 100%;
+        font-size: 33px;
+        font-family: Arial, Helvetica, sans-serif;
+        opacity: 100%;
+        text-align: center;
+    }
+
+    .buttonDiv {
+        position: absolute;
+        height: 70px;
+        width: 680px;
+        bottom: 10px;
+        left: 0px;
+    }
+
+    .btnModal {
+        width: 180px;
+        height:70px;
+    }
+
+    .btnModal span {
+        font-size: 20px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .confirm {
+        background-color: #a8a8a8;
+        position: absolute;
+        left: 42px;
+    }
+
+    .cancel {
+        background-color: #3baba5;
+        position: absolute;
+        right: 42px;
+    }
+
+    .modal-backdrop.in {
+        opacity: 0.9;
+    }
+
+    .modal {
+        background: rgba(0, 0, 0, 0.6);
+    }
+}

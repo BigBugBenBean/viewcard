@@ -1,0 +1,169 @@
+// Header
+
+$header-background:#2196F3;
+.header-container{
+    background: #{$header-background};
+    margin:auto;
+    width: auto;
+    > div{
+        width: 1024px;
+        margin:auto;
+        &.ui-lg-12{
+            padding-top:0 !important;
+            padding-bottom:0 !important;
+        }
+        
+        .logo-container, .buttons-container{
+            padding-top:0;
+            padding-bottom:0;
+        }
+    }
+    
+    .logo-container{
+        display:block;
+    }
+    .hamburger {
+        width:40px;
+        display: none;
+    }
+    .hamburger .mat-button{
+        padding: 0;
+        margin: 0;
+        min-width: 40px;
+        height: 40px;
+        color: #fff;
+        font-size: 24px;
+
+    }
+    .logo{
+        font-size: 30px;
+        color: #FFCC66;
+        font-weight: bold;
+        font-family: 'Times New Roman', Times, serif !important;
+        vertical-align: middle;
+        display: inline-block;
+    }
+    .buttons-container button{
+        float: right;
+        margin-left: 10px; 
+        color: #fff;
+        .material-icons, md-icon{
+            padding: 0 5px;
+            font-size: 24px;
+        }
+    }
+    .navmenu-container{
+        padding-top: 0 !important;
+        padding-bottom: 8px;
+    }
+    .navmenu{ 
+        display: block;
+        ul {
+            margin: 0; 
+            padding: 0; 
+            list-style-type: none; 
+            list-style-image: none; 
+        }
+        li {
+            display: inline; 
+            padding: 5px 20px 5px 20px
+        }
+        a {
+            text-decoration:none; 
+            color: #FFF; 
+            border-bottom: 2px solid #2196F3;
+            &.selected {
+                border-bottom-color: #FFCC66; 
+            }
+            &:hover {
+                cursor: pointer;
+                border-bottom-color: #fff; 
+            }
+            font-size: 14px;
+        }
+    }
+
+    // Responsive
+    @media screen and (max-width: 1023px) {
+        &{
+            width: auto;
+        }
+        .logo-container{
+            display:absolute;
+            top:0;
+            left:0;
+        }
+        .hamburger {
+            display: inline-block;
+        }
+        .buttons-container{
+            .mat-button{
+                padding: 0;
+                margin: 0;
+                min-width: 40px;
+                height: 40px;
+            }
+            .button-text{
+                display: none;
+            }
+        }
+        .navmenu-container{
+            display: none;
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #1976D2;
+            overflow-x: hidden;
+
+            transition: all 0.5s; 
+            -moz-transition: all 0.5s; 
+            -webkit-transition: all 0.5s;
+            padding-top: 60px;
+            
+            box-shadow: -10px 0px 10px 1px rgba(0, 0, 0, 0.42);
+            // box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+            &.open{
+                // display: block;
+                width: 200px !important;
+            }
+            &.close{
+                // display: none;
+                width: 0px !important;
+                padding:0;
+                margin: 0;
+            }
+            .navmenu{ 
+                ul {
+                    margin: 0; 
+                    padding: 0; 
+                    list-style-type: none; 
+                    list-style-image: none; 
+                }
+                li {
+                    display: block; 
+                    padding: 5px 20px 5px 20px
+                }
+                a {
+                    font-size: 16px;
+                    text-decoration:none; 
+                    color: rgba(#fff, 0.6); 
+                    border-bottom: none; //2px solid #2196F3;
+                    &.selected {
+                        border-bottom: 2px solid #FFCC66; 
+                        color: #fff; 
+                    }
+                    &:hover {
+                        cursor: pointer;
+                        border-bottom-color: #fff; 
+                    }
+                }
+            }
+        }
+        
+    }
+
+
+}

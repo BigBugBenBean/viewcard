@@ -1,0 +1,10 @@
+<div class="row">&nbsp;</div>
+<div class="col-md-12">
+    <span class="col-md-2" style="font-weight: bold;">Camera Status:</span>
+    <span class="col-md-4">{{camerastatus}}</span>
+    <button type="button" class="btn btn-primary"  *ngIf="online" (click)="sendRequest()">Send Request</button>
+</div>
+<hr/>
+<div class="col-md-12">
+    <img #imgholder>
+</div>

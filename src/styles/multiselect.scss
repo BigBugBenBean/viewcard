@@ -1,0 +1,7 @@
+// multiselect no search bar
+p-multiselect.no-search{
+    .ui-widget-header{
+        visibility: hidden;
+        position: absolute !important;
+    }
+}

@@ -1,0 +1,68 @@
+.modal-dialog {
+    margin: 332px 300px;
+}
+
+.modal-content {
+    height: 380px;
+    width: 680px;
+}
+
+.modal-header {
+    height: 74px;
+    background: #7349A5 ;
+    border-radius: 0px;
+}
+
+.modal-body{
+    position: relative;
+    height: 306px;
+}
+
+.modal-message {
+    color: #333333 100%;
+    font-size: 33px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 38px;
+    opacity: 100%;
+    padding-top: 67px;
+    text-align: center;
+}
+
+.buttonDiv {
+    position: absolute;
+    height: 70px;
+    width: 680px;
+    bottom: 39px;
+    left: 0px;
+}
+
+.btnModal {
+    width: 180px;
+    height:70px;
+}
+
+.btnModal span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.confirm {
+    background-color: #a8a8a8;
+    position: absolute;
+    left: 42px;
+}
+
+.cancel {
+    background-color: #3baba5;
+    position: absolute;
+    right: 42px;
+}
+
+.modal-backdrop.in {
+	opacity: 0.9;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.6);
+}

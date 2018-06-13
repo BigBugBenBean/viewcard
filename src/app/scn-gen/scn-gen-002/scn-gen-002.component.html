@@ -1,0 +1,19 @@
+<div class="mainPanel">
+    <input class="chbtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+        <sc2-timer class="timer"></sc2-timer>
+    <!-- <img class="mainBG" src="../../../assets/images/bg_1160x640.png"/> -->
+    <div class="mainBG"></div>
+    <label class="mainLabel">{{'SCN-SRK-002-1.SELECT_SERVICE_CATEGORY' | translate}}</label>
+    <span>
+        <sc2-menu-button *ngFor="let mi of menuitems"
+            index="{{mi.index}}" chiname="{{mi.chiname}}" engname="{{mi.engname}}"
+            menukey="{{mi.menukey}}" iconpathen="{{mi.iconpathen}}" iconpathchi="{{mi.iconpathchi}}"
+            [app]="mi.app" service="{{mi.service}}"
+            haschild="{{mi.haschild}}"></sc2-menu-button>
+
+    </span>
+
+    <input class="backButton" type="button" value="{{'SCN-SRK-002-1.BACK'|translate}}" (click) = "previousRoute()">
+    <label class="footerFirst">SCN-GEN-002-1</label>
+
+</div>

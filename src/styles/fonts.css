@@ -1,0 +1,43 @@
+/* noto-sans-regular - latin */
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/noto-sans-v6-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Noto Sans'), local('NotoSans'),
+       url('../assets/fonts/noto-sans-v6-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../assets/fonts/noto-sans-v6-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../assets/fonts/noto-sans-v6-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('../assets/fonts/noto-sans-v6-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../assets/fonts/noto-sans-v6-latin-regular.svg#NotoSans') format('svg'); /* Legacy iOS */
+}
+
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/roboto-v16-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('../assets/fonts/roboto-v16-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../assets/fonts/roboto-v16-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../assets/fonts/roboto-v16-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('../assets/fonts/roboto-v16-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('../assets/fonts/roboto-v16-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
+}
+
+
+@font-face {
+  font-family: 'Arial';
+  font-weight: normal;
+  font-style: normal;
+
+  src: url('../assets/fonts/ArialMT.eot');
+  src: url('../assets/fonts/ArialMT.eot?#iefix') format('embedded-opentype'),
+      url('../assets/fonts/ArialMT.woff2') format('woff2'),
+      url('../assets/fonts/ArialMT.woff') format('woff'),
+      url('../assets/fonts/ArialMT.ttf') format('truetype'),
+      url('../assets/fonts/ArialMT.svg#ArialMT') format('svg');
+  
+}
+

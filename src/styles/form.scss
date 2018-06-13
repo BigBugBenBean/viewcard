@@ -1,0 +1,11 @@
+// Forms
+md-card.table-card{
+    .mat-tab-label.mat-ripple {
+        height: 30px;
+        line-height: 30px;
+    }  
+    label{
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+}

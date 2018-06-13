@@ -1,0 +1,48 @@
+msksgen:
+  lv1_timeout: 30
+  lv2_timeout: 30
+
+  mskapps:
+    - app_key: APPWGOOGLE
+      type: 1
+      path: https://www.google.com
+    - app_key: APPNNOTEPAD
+      type: 2
+      path: C:\Windows\system32\notepad.exe
+      cwd: C:\external
+
+  lv1_menus:
+    - lv1_menu_key: LV1ICAPPBOOKING
+      name_eng: IC Appointment Booking gwm
+      name_chi: IC Appointment Booking gwm
+#      icon_path_en: "${resource}\msksgen\icbooking.png"
+#      icon_path_chi: "${resource}\msksgen\icbooking.png"
+      lv2_menus:
+        - lv2_menu_key: LV2ICCHECK
+          name_eng: Check IC Booking
+          name_chi: Check IC Booking
+          app_key: APPWGOOGLE
+        - lv2_menu_key: LV2ICUPDATE
+          name_eng: Update IC Booking
+          name_chi: Update IC Booking
+          app_key: APPWGOOGLE
+
+    - lv1_menu_key: LV1HKIC
+      name_eng: HKIC Related Service
+      name_chi: HKIC Related Service
+      icon_path_en: "C:\external\hkic.png"
+      icon_path_chi: "C:\external\hkic.png"
+      use_lv2_menu_service: "Y"
+      lv2_menu_service_channel: RR_MENHKIC
+      lv2_menus:
+        - lv2_menu_key: LV2HKICCheck
+          name_eng: Check HKIC
+          name_chi: Check HKIC
+          app_key: APPWGOOGLE
+        - lv2_menu_key: LV2HKICBOOKINB
+          name_eng: HKIC Booking
+          name_chi: HKIC Booking
+          app_key: APPNNOTEPAD
+   - lv1_menu_key: LV1Equipment
+      name_eng: Equipment testing
+      name_chi: Equipment testing

@@ -1,0 +1,38 @@
+<div>
+  <!-- <sc2-timer (timerExpired)="backRoute()" class="timer"></sc2-timer> -->
+  <!-- <img src="../../assets/images/button_lan_tc.png" (click) ="langButton()" class="chbtn"> -->
+  <input class="chbtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+  <label class="head1">
+    {{'SCN-SRK-001-4.PRIV-POLICY-HEADER' | translate}}
+  </label>
+  <div class="policyBox" #policyBox (scroll)="onScroll($event)"  (panstart)="onPanStart()" (panup)="onPanUp($event.deltaY)" (pandown)="onPanDown($event.deltaY)">
+    <label class="firstWord">{{'SCN-SRK-001-4.PRIV-POLICY' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.PRIV-POLICY-PAR' | translate}}</p><br><br>
+    <label class="firstWord">{{'SCN-SRK-001-4.COLLECTION-INFO' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.COLLECTION-INFO-PAR' | translate}}</p><br>
+    <label class="firstWord-italic">{{'SCN-SRK-001-4.COOKIES' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.COOKIES-PAR' | translate}}</p><br>
+    <label class="firstWord-italic">{{'SCN-SRK-001-4.PAGE-TAGGING' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.PAGE-TAGGING-PAR' | translate}}</p><br>
+    <label class="firstWord">{{'SCN-SRK-001-4.PROVISION-PERSONAL-DATA' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.PROVISION-PERSONAL-DATA-PAR' | translate}}</p><br>
+    <label class="firstWord">{{'SCN-SRK-001-4.SEARCH-SERVICE' | translate}}</label><br><br>
+    <p class="long-text">{{'SCN-SRK-001-4.SEARCH-SERVICE-PAR' | translate}}</p><br>
+
+  </div>
+
+  <input type="image" *ngIf="showScrollUp"  class="scrollUp" src="../../../../assets/images/icon_arrow_up.png" (mousedown)="mouseDown(-30)"  (touchstart)="mouseDown(-30)" (mouseup)="stopHold()" (touchend)="stopHold()" />
+  <input type="image" *ngIf="showScrollDown" class="scrollDown" src="../../../../assets/images/icon_arrow_down.png" (mousedown)="mouseDown(30)"  (touchstart)="mouseDown(30)" (mouseup)="stopHold()"  (touchend)="stopHold()"/>
+
+  <div *ngIf="showCheckBox">
+    <input type="image" class="checkbox" [src]="imgChkbox" (click)="checked()" />
+    <label class="checkBoxLabel1">{{'SCN-SRK-001-4.PRIV-POLICY-AGREE' | translate}}</label>
+    <!-- <label class="checkBoxLabel1">{{lblHAVE_READ_EN}}</label> -->
+  </div>
+
+  <!-- <input *ngIf="enableButton" class="conBtn" type="image" src="../../assets/images/button_NotConfirm.png" (click)="nextRoute()" /> -->
+  <input class="exitButton" type="button" value="{{'SCN-SRK-001-1.EXIT'|translate}}" (click) = "exitRoute()">
+  <input *ngIf="enableButton" class="conBtn" type="button" value="{{'SCN-SRK-001-4.CONFIRM' | translate}}" (click) = "nextRoute()">
+  <label class="footer"> SCN-SCK-001-2 </label>
+
+<div>

@@ -1,0 +1,13 @@
+//Card
+
+
+
+/* Responsive */
+@media screen and (max-width: 1023px) {
+    md-card{
+        width:auto !important;
+        .header{
+            width:auto !important;
+        }
+    }
+}

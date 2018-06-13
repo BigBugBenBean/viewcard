@@ -1,0 +1,66 @@
+{
+  "core-js": {
+    "bundle": "polyfills",
+    "version": "2.4.1"
+  },
+  "zone.js": {
+    "bundle": "polyfills",
+    "version": "0.8.16"
+  },
+  "@angular/platform-browser": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/platform-browser-dynamic": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/core": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/common": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/forms": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/http": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angular/router": {
+    "bundle": "vendor",
+    "version": "4.3.4"
+  },
+  "@angularclass/hmr": {
+    "bundle": "vendor",
+    "version": "2.1.3"
+  },
+  "rxjs": {
+    "bundle": "vendor",
+    "version": "5.4.3"
+  },
+  "hammerjs": {
+    "bundle": "vendor",
+    "version": "2.0.8"
+  },
+  "jquery": {
+    "bundle": "vendor",
+    "version": "3.2.1"
+  },
+  "@angular/material": {
+    "bundle": "vendor",
+    "version": "2.0.0-beta.8"
+  },
+  "angular2-text-mask": {
+    "bundle": "vendor",
+    "version": "8.0.3"
+  },
+  "primeng": {
+    "bundle": "vendor",
+    "version": "4.1.3"
+  }
+}

@@ -1,0 +1,30 @@
+.timer {
+    margin-top: 27px;
+    margin-right: 60px;
+    position: relative;
+    float: right;
+    
+    .timer-box {
+        border: 6px solid #7349A5;
+        border-radius: 2px;
+        text-align: center;
+
+        .time {
+            padding: 21x 21px 27px 27px;
+            color: #7349A5 !important;
+            line-height: 50px (1.2);
+            font: 44px Arial-BoldMT;
+        }
+    }
+
+    .timer-label {
+        margin-top: 21px;
+
+        .label {
+            color: #7349A5 !important;
+            line-height: 31px (1.2);
+            font: 26px ArialMT;
+        }
+    }
+}
+

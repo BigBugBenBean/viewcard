@@ -1,0 +1,323 @@
+{
+    "SCN-SRK-001-1": {
+        "GROUP": "團體",
+        "START-EN": "Start",
+        "START-HK": "開始",
+        "TIMMER": "剩餘時間",
+        "EXIT": "退出"
+    },
+    "SCN-SRK-001-2": {
+        "INDIVIDUAL": "個人",
+        "TAG-NUM-SERVED": "將為以下籌號服務",
+        "START-EN": "Start",
+        "START-HK": "開始",
+        "TIMMER": "剩餘時間"
+    },
+    "SCN-SRK-001-3": {
+        "GROUP-TAG-MSG": "籌號包括下列申請者及其申請次序。如申請者未能如期前來，請將其名字旁的剔號撇除。",
+        "TAG-NUM-SERVED": "將為以下籌號服務",
+        "GROUP": "團體",
+        "PRESENT": "在場",
+        "SEQUENCE": "申請次序",
+        "HKID": "身份證號碼",
+        "CONFIRM": "確認",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English"
+    },
+    "SCN-SRK-001-4": {
+        "PRIV-POLICY-HEADER": "請向下移並閱讀私隱政策。於方格上打剔並按下”確認”按鈕以繼續程序。",
+        "PRIV-POLICY": "私隱政策",
+        "PRIV-POLICY-PAR": "香港特別行政區政府（下稱「政府」）會確保所有透過「自助登記站」遞交的個人資料，均嚴格遵守《個人資料（私隱）條例》的有關條文處理。",
+        "COLLECTION-INFO": "收集資料",
+        "COLLECTION-INFO-PAR": "政府會使用小型文字檔案（cookies）及網站信標（page tagging）記錄「自助登記站」的瀏覽情況，但不會收集任何足以辨識使用者身分的資料。",
+        "COOKIES": "小型文字檔案（Cookies）",
+        "COOKIES-PAR": "當使用者用電腦瀏覽一個網站時，小型文字檔案會建立於電腦內，這種檔案通常包含匿名而獨有的識別符，用以辨識個別電腦，但不能用以收集任何個人資料，即是說，不具備辨識網站個別使用者的功能。\n\n 政府使用小型文字檔案收集的「自助登記站」統計資料包括瀏覽人次、使用者對網站及「自助登記站」提供的網上服務的喜好。\n\n你可選擇接受或拒絕貯存小型文字檔案。如你拒絕貯存小型文字檔案，將不能使用「自助登記站」的某些功能，例如貯存你使用「自助登記站」瀏覽喜好及登入「自助登記站」的某些網上服務。",
+        "PAGE-TAGGING": "網站信標（Page tagging）",
+        "PAGE-TAGGING-PAR": "政府使用JavaScript 及 像素標籤 （pixel tags） 收集客戶的「自助登記站」使用模式和「自助登記站」政府網上服務的使用模式等統計資料，以及追蹤政府網上廣告的成效。像素標籤是放在特定網頁上的透明圖檔，用以收集瀏覽數據。收集得來的數據經整合及分析後，會用作量度成效，用以改善「自助登記站」的易用性及「自的易用性及「自助登記站」提供的服務／網上廣告，但不會用以收集個人資料或足以辨識個別使用者的資料。\n\n你可關閉電腦上的JavaScript，關閉JavaScript不會影響你登入「自助登記站」，但你將不能使用「自助登記站」某些功能，例如改變文字大小和透過「自助登記站」登入政府的網上服務。",
+        "PROVISION-PERSONAL-DATA": "提供個人資料",
+        "PROVISION-PERSONAL-DATA-PAR": "政府可能會於不同期間及為個別原因，邀請你自願提供個人資料。此等資料可能包括姓名、電話號碼、郵寄地址或電郵地址。政府邀請你提供資料時，會列明收集資料的目的和用途，並會告知你如何要求查閱或改正所提供的個人資料。\n\n 除非法律許可或有所規定，政府不會在未得到你的同意下透露你的個人資料予第三者。\n\n「自助登記站」使用保密插口層（SSL）通訊協定傳送網上登記的資料，以確保你的個人資料得到保護。政府會將你於「自助登記站」提供的個人資料保密，只有獲得授權的人士才可查閱。",
+        "SEARCH-SERVICE": "搜尋服務",
+        "SEARCH-SERVICE-PAR": "「自助登記站」的搜尋服務是由一個政府的獨立承辦商提供。該獨立承辦商通知我們該公司於「自助登記站」提供搜尋結果時，不會收集可識別個人身分的資料。但該獨立承辦商會將你一些經由使用搜尋服務所得的匿名資料交予政府，作政府網站流量分析之用。政府不會從任何上述搜尋活動收集到的數據，跟任何 可能由政府持有的個人身分資料配對。",
+        "PRIV-POLICY-AGREE": "我已閱讀並同意以上的私隱政策。",
+        "CONFIRM": "確認",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English"
+    },
+    "SCN-SRK-002-1": {
+        "CURR_APPLICANT": "現時申請人",
+        "SKIP": "跳過",
+        "INSERT-HKID": "請插入你的香港身份證。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟",
+        "BACK": "上一頁",
+        "SELECT_SERVICE_CATEGORY": "請選擇服務類別."
+    },
+    "SCN-SRK-002-2": {
+        "INSERT-HKID": "請插入你的香港身份證。",
+        "ABORT": "退出",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-003-1": {
+        "COLLECT-HKID": "請取回你的香港身份證。",
+        "ABORT": "退出",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-004-1": {
+        "HKID-NOT-RECOGNIZED": "未能識別你的身份證。",
+        "PLACE-HKID-OCS": "請將香港身份證放於讀卡器上。",
+        "ABORT": "退出",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-005-1": {
+        "COLLECT-HKID": "請從讀卡器取回你的香港身份證。",
+        "ABORT": "退出",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-006-1": {
+        "PROCESSING": "處理中，請稍候。",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-007-1": {
+        "PLACE-RIGHT-FP": "請將你已登記的右手指紋放\n於掃描器上。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟",
+        "ABORT_CONFIRM": "你確定要中止？",
+        "YES": "是",
+        "NO": "否"
+    },
+    "SCN-SRK-008-1": {
+        "PLACE-LEFT-FP": "請將你已登記的左手指紋放於\n掃描器上。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟",
+        "NOT-CONFIRM": "Not Confirm",
+        "INFO-INCORRECT": "Are you sure the information is incorrect?",
+        "YES": "Yes",
+        "NO": "No",
+        "NOT-CONFIRM-MSG": "Please collect your Acknowledgement form/ID card, and go to collection counter.",
+        "NAME-IN-CHINESE": "Name in Chinese",
+        "NAME-IN-ENGLISH": "Name in English",
+        "NAME-IN-CCC": "Name in C.C.C.",
+        "DATE-OF-BIRTH": "Date of Birth",
+        "SYMBOLS": "Symbols",
+        "DATE-OF-ISSUE": "Date of Issue",
+        "OTHER-APPLICATIONS": "Other Applications",
+        "SEX": "Sex",
+        "MONTH-YEAR-REGISTRATION": "Month-Year of 1st Registration",
+        "ID-CARD-NO": "ID Card No.",
+        "COND-STAY": "Condition of Stay",
+        "LENGTH-STAY": "Length of Stay",
+        "CONFIRM-INFO": "Please confirm the information below:"
+    },
+    "SCN-SRK-009-1": {
+        "STATEMENT-PURP-HEADER": "請向下移並閱讀有關收集個人資料的目的。於方格上打剔並按下”確認”按鈕以繼續程序。",
+        "STATEMENT-PURP": "有關收集個人資料的目的",
+        "STATEMENT-PURP-AGREE": "我已閱讀並同意以上的有關收集個人資料的目的。",
+        "CONFIRM": "確認",
+        "TIMMER": "剩餘時間",
+        "PURPOSE-OF-COLLECTION": "收集資料的目的",
+        "PURP-ITEM-1": "1.\t你在是項申請所提供的個人資料，香港特別行政區政府入境事務處會用作下列一項或多項的用途：─",
+        "PURP-ITEM-1-A": "\t\t(a)\t根據《人事登記條例》(第 177 章) 及其附屬規例，辦理你申請登記及申請身份證事宜；",
+        "PURP-ITEM-1-B": "\t\t(b)\t根據《陪審團條例》(第 3 章) 使高等法院司法常務官得以制定陪審員的臨時名單；",
+        "PURP-ITEM-1-C": "\t\t(c)\t使選舉事務處得以修訂選民登記冊；",
+        "PURP-ITEM-1-D": "\t\t(d)\t根據《人事登記條例》(第 177 章) 及其附屬規例，行使權力和執行職務，包括按政務司司長根據《人事登記條例》第 11 條所作的書面批准披露資料；",
+        "PURP-ITEM-1-E": "\t\t(e)\t實施╱執行《入境條例》(第 115 章) 及《入境事務隊條例》(第 331 章) 的有關條文規定，以及履行入境管制職務，藉此協助其他政府決策局和部門執行其他法例和規例；",
+        "PURP-ITEM-1-F": "\t\t(f)\t供作統計及研究用途，但所得的統計數字或研究成果不會以識辨各有關的資料當事人或其中任何人的身份的形式提供；以及",
+        "PURP-ITEM-1-G": "\t\t(g)\t供作法例規定、授權或准許的其他合法用途。",
+        "PURP-ITEM-1-PAR": "根據《人事登記規例》(第 177A 章)，登記人士必須提供其個人資料。若你無合理辯解而沒有遵從有關法例規定，即會觸犯法例。此外，如果你未能提供充分個人資料，本處亦無法辦理你的申請。",
+        "CLASS-OF-TRANSFEREES": "資料轉交的類別",
+        "CLASS-OF-TRANSFEREES-ITEM": "2.\t為了上文第 1 段所述的目的，你在本表格內所提供的個人資料或會向其他政府決策局、部門或機構披露。",
+        "ACCESS-PERSONAL-DATA": "查閱個人資料",
+        "ACCESS-PERSONAL-DATA-ITEM-1": "3.\t根據《個人資料 (私隱) 條例》(第 486 章) 第 18 及 22 條以及附表 1 第 6 項原則，你有權查閱及改正你的個人資料。你的查閱權利包括在繳交有關費用後，索取你在本表格內所提供的個人資料的副本。",
+        "ACCESS-PERSONAL-DATA-ITEM-2": "4.\t如就本表格所收集的個人資料有任何查詢，包括查閱或改正有關資料，可向下列人員提出：─ ",
+        "ACCESS-PERSONAL-ADDR": "\t\t\t香港灣仔告士打道七號 \n\t\t\t入境事務大樓十二樓 \n\t\t\t行政主任 (人事登記) 支援電話：2829 3429",
+        "ENQUIRIES": "查詢",
+        "ENQUIRIES-ITEM-S1": "5.\t如有任何查詢，請瀏覽入境事務處網頁",
+        "ENQUIRIES-ITEM-S2": "。你亦可致電查詢熱線 (2824 6111)，或以圖文傳真 (2877 7711) 或電郵 (",
+        "ENQUIRIES-ITEM-S3": ") 向入境事務處查詢及聯絡組提出。"
+    },
+    "SCN-SRK-009-2": {
+        "FORM-CONFIRM-TEXT": "為確認申請，請拉動表格到底部並點擊\"確認及列印\"按鈕。",
+        "FORM-SUBMIT-TEXT": "為提交申請，請拉動表格到底部並點擊\"提交\"按鈕。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-010-1": {
+        "FORM-CONFIRM-TEXT": "為確認申請，請拉動表格到底部並點擊\"確認\"按鈕。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-SRK-011-1": {
+        "PROCEED-PHOTO-DESK": "請領取你的表格並前往等候區。",
+        "PROCEED-PHOTO-DESK2": "請前往等候區等候照相。",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟"
+    },
+    "SCN-GEN-007": {
+        "EQUIPMENT-SERVICE":"請選擇設備服務",
+        "EQUIPMENT-SERVICE-SLIPPRINT": "打印服務",
+        "EQUIPMENT-SERVICE-FINGERPRINT": "指紋掃描服務",
+        "EQUIPMENT-SERVICE-CARDREADER": "IC讀卡服務"
+    },
+    "SCN-GEN-SLIPPRINT": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "PRINT-SERVICE": "選擇打印服務",
+        "PRINT-TEXT": "打印文本",
+        "PRINT-BARCODE": "打印一維碼",
+        "PRINT-BMP": "打印二維碼",
+        "PRINT-VSPACE": "垂直走紙",
+        "PRINT-CUTPAPER": "打印切紙",
+        "PRINT-DEMO": "Demo打印"
+    },
+    "SCN-GEN-SLIPPRINT-TXT": {
+        "PRINT-BTN": "打印",
+        "PRINT-PIXELS": "像素",
+        "PRINT-EXT-FOMAT": "打印文本格式",
+        "PRINT-CONTENT": "打印內容",
+        "PRINT-HIGHT": "打印高度",
+        "PRINT-LEFT-MARGIN": "左邊距",
+        "PRINT-PROPER-SET": "屬性設置",
+        "PRINT-FONT-NORMAL": "正常打印",
+        "PRINT-FONT-SMALL-SIZE": "打印字體為小字號",
+        "PRINT-FONT-BOLD": "字體加粗",
+        "PRINT-FONT-DOUBLE-HIGHT": "字體加倍高",
+        "PRINT-FONT-DOUBLE-WIDTH": "字體加倍寬",
+        "PRINT-FONT-UNDERLINED": "字體加下劃線",
+        "PRINT-FONT-ANTI-WHITE-MODE": "反白模式"
+    },
+    "SCN-GEN-SLIPPRINT-BARCODE": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "PRINT-BTN": "打印",
+        "PRINT-PIXELS": "像素",
+        "PRINT-BARCODE": "打印一維碼",
+        "PRINT-HIGHT": "打印高度",
+        "PRINT-LEFT-MARGIN": "左邊距",
+        "BARCODE-TYPE": "條碼類型",
+        "BARCODE-DATA": "一維碼數據",
+        "TEXT-CONTENT-LOCATION": "文字內容位置",
+        "FONT-SIZE": "字體大小",
+        "FONT-SIZE-SMALL": "小字體",
+        "FONT-SIZE-NORMAL": "正常字體",
+        "DO-NOT-PRINT-CORRESPONDING-TEXT": "不打印對應文字",
+        "TEXT-BELOW-BARCODE": "文字位于條碼下方",
+        "TEXT-ABOVE-BARCODE": "文字位于條碼上方"
+
+
+
+    },
+    "SCN-GEN-SLIPPRINT-BMP": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "PRINT-BTN": "打印",
+        "QR-CODE-PRINT": "二維碼打印",
+        "PRINT-PIXELS": "像素",
+        "PRINT-CONTENT": "打印內容",
+        "PRINT-LEFT-MARGIN": "左邊距"
+    },
+    "SCN-GEN-SLIPPRINT-VSPACE": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "PRINT-BTN": "走紙",
+        "FEED-PAPER-VERTICALLY": "垂直方向走纸",
+        "PIXELS-FOR-PAPER-FEED-VERTICAL-DIRECTION": "垂直方向走纸的像素点数",
+        "PRINT-PIXELS": "像素"
+    },
+    "SCN-GEN-SLIPPRINT-CUTPAPER": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "PRINT-CUT-PAPER": "打印切紙",
+        "CUT-PAPER": "切紙",
+        "PAPER-CUTTING-OPTIONS": "切紙選項",
+        "OPTION-FULL-CUT-MODE": "全切模式",
+        "OPTION-HALF-CUT-MODE": "半切模式",
+        "OPTION-CUT-ALONG-BLACK-MARK": "切纸沿着黑标"
+    },
+    "SCN-GEN-FINGERPRINT-SCAN": {
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "FINGERPRINT-SCAN-SERVICE": "指紋掃描服務",
+        "START-FINGERPRINT-SCAN": "開始指紋掃描",
+        "STOP-FINGERPRINT-SCAN": "停止指紋掃描"
+    },
+    "SCN-GEN-CARDREADER": {
+        "EQUIPMENT-SERVICE":"請選擇設備服務",
+        "LANGUAGE": "English",
+        "RETURN": "返回",
+        "SCAN-ID-CARD": "掃描身份證",
+        "READ-ID-CHIP": "讀取芯片信息"
+    },
+    "SCN-GEN-STEPS": {
+        "INSERT-HKID": "請插入你現有的香港身份證。",
+        "PLACE-RIGHT-FP": "請將你已登記的右手指紋放\n於掃描器上。",
+        "PLACE-LEFT-FP": "請將你已登記的左手指紋放於\n掃描器上。",
+        "ABORT": "退出",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟",
+        "UPDATE-CONDITION-STAY": "更新芯片中的逗留條件入逗留限制",
+        "TYPE-OF-HKID-CARD": "請注明您持有的香港身份的證類型",
+        "COLLECT-HKID-CARD": "請取回你的香港身份證卡.",
+        "UPDATE-STAY-CONDITION-INFO": "更新逗留條件和逗留限制信息如下：",
+        "CONDITION-OF-STAY": "逗留條件：",
+        "LIMIT-OF-STAY": "逗留限制(DD-MM-YYYY)：",
+        "PROCESSING-READ": "正在讀卡，請稍等...",
+        "ABORT_CONFIRM": "你確定要中止？",
+        "YES": "是",
+        "NO": "否",
+        "PROCESSING": "處理中，請稍候。",
+        "OLD-HKID-CARD-LABLE": "選擇舊卡",
+        "NEW-HKID-CARD-LABLE": "選擇新卡"
+
+
+    },
+    "SCN-GEN-VIEWCARD": {
+        "LANGUAGE": "English",
+        "ABORT": "退出",
+        "ABORT_CONFIRM": "你確定要中止？",
+        "NAVIGATION": "查看芯片中的個人數據",
+        "INDICATE-CARD-TYPE": "請指出您持有的香港身份證的類型:",
+        "INSERT-HKID": "請插入您的香港身份證.",
+        "YES": "是",
+        "NO": "否",
+        "PROCESSING": "處理中，請稍候。",
+
+        "NOT-CONFIRM": "不確認",
+        "INFO-INCORRECT": "你確定這些資料是不正確？",
+        "YES": "是",
+        "NO": "否",
+        "NEXT": "下一步",
+        "NOT-CONFIRM-MSG": "請取回你的申請表格/現有身份證，並前往取卡處查詢。",
+        "NAME-IN-CHINESE": "中文姓名",
+        "NAME-IN-ENGLISH": "英文姓名",
+        "NAME-IN-CCC": "中文姓名電碼",
+        "DATE-OF-BIRTH": "出生日期",
+        "SYMBOLS": "符號標記",
+        "DATE-OF-ISSUE": "簽發日期",
+        "OTHER-APPLICATIONS": "其他申請",
+        "SEX": "性別",
+        "MONTH-YEAR-REGISTRATION": "首次登記日期",
+        "ID-CARD-NO": "身份證號碼",
+        "COND-STAY": "逗留條件",
+        "LENGTH-STAY": "逗留期限",
+        "TIMMER": "剩餘時間",
+        "LANGUAGE": "English",
+        "NAVIGATION": "步驟",
+        "CONFIRM-INFO": "你的芯片卡上的信息如下：",
+        "CONFIRM": "確認"
+    }
+}

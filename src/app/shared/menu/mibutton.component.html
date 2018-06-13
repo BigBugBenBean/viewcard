@@ -1,0 +1,15 @@
+<span [ngSwitch]="type">
+    <ng-template ngSwitchCase="image">
+        <input type="image" [ngClass]="getBtnClasses()" [src]="imgsrc"
+               (click)="onClick(this.menukey)"/>
+    </ng-template>
+    <ng-template ngSwitchCase="text">
+        <span (click)="onClick($event)" class="">
+            <input type="image" [ngClass]="getBtnClasses()" src="../../../assets/images/button_6.png"
+            />
+            <div [ngClass]="getLblClasses()">
+                <label class="label1">{{label}}</label>
+            </div>
+        </span>
+    </ng-template>
+</span>
