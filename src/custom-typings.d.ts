@@ -61,9 +61,10 @@ declare var ENV: string;
 declare var HMR: boolean;
 declare var System: SystemJS;
 declare var API_ROOT: string;
-declare var SYSCFG: string;
-declare var WEBAPP_PATH: string;
 declare var API_TERMINAL: string;
+declare var MODE: string;
+declare var CFGDIR: string;
+declare var REOSURCE_PATH: string;
 
 interface SystemJS {
   import: (path?: string) => Promise<any>;

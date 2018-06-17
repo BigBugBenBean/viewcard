@@ -181,12 +181,6 @@ module.exports = function (options) {
          * See: http://webpack.github.io/docs/configuration.html#plugins
          */
         plugins: [
-            new AssetsPlugin({
-                path: path.join(helpers.root('dist'), options.entry),
-                filename: 'webpack-assets.json',
-                prettyPrint: true
-            }),
-
             /**
              * Plugin: ForkCheckerPlugin
              * Description: Do type checking in a separate process, so webpack don't need to wait.
@@ -194,22 +188,6 @@ module.exports = function (options) {
              * See: https://github.com/s-panferov/awesome-typescript-loader#forkchecker-boolean-defaultfalse
              */
             new CheckerPlugin(),
-
-            /**
-             * Plugin LoaderOptionsPlugin (experimental)
-             *
-             * See: https://gist.github.com/sokra/27b24881210b56bbaff7
-             */
-            new LoaderOptionsPlugin({}),
-
-            new ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery'
-            }),
-            new CopyWebpackPlugin([{
-                from: 'src/assets',
-                to: 'assets'
-            }]),
         ],
     };
 

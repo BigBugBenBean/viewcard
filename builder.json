@@ -1,0 +1,46 @@
+{
+    "appId": "com.pccw.sc2.kgen.viewcard",
+    "productName": "Smartics2 MSKS GEN View Card",
+    "icon": "dist-main/favicon.ico",
+    "compression": "normal",
+    "artifactName": "${productName} ${version}.${ext}",
+    "extraMetadata": {
+        "name": "Smartics2 MSKS GEN View Card",
+        "description": "Smartics2 MSKS GEN View Card"
+    },
+    "files": [
+        "dist/*.js",
+        "dist-main/*.js"
+    ],
+    "directories": {
+        "output": "builds"
+    },
+    "nsis": {
+        "perMachine": true,
+        "oneClick": true,
+        "runAfterFinish": true,
+        "installerIcon": "dist-main/favicon.ico",
+        "uninstallerIcon": "dist-main/favicon.ico",
+        "installerHeaderIcon": "dist-main/favicon.ico"
+    },
+    "extraResources": [
+        {
+            "from": "dist/webapp",
+            "to": "webapp"
+        },
+        {
+            "from": "dist-main/config",
+            "to": "conf"
+        },
+    ],
+    "win": {
+        "target": [
+            {
+                "target": "nsis",
+                "arch": [
+                    "x64"
+                ]
+            }
+        ]
+    }
+}

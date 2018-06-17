@@ -1,0 +1,1 @@
+import * as Placeholder from 'placeholders';

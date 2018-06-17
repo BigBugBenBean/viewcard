@@ -5,6 +5,7 @@ const webpackMerge = require('webpack-merge'); // used to merge webpack configs
 const webpackMergeDll = webpackMerge.strategy({ plugins: 'replace' });
 const commonConfig = require('./webpack.common.js');
 
+const AssetsPlugin = require('assets-webpack-plugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
@@ -13,6 +14,8 @@ const HtmlElementsPlugin = require('./html-elements-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 
 const packagejson = require('../package.json');
 
@@ -21,7 +24,7 @@ const packagejson = require('../package.json');
  */
 const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const HMR = helpers.hasProcessFlag('hot');
 const AOT = process.env.BUILD_AOT || helpers.hasNpmFlag('aot');
 
@@ -62,7 +65,7 @@ module.exports = function (options) {
              *
              * See: http://webpack.github.io/docs/configuration.html#output-path
              */
-            path: path.join(helpers.root('dist'), APP_ENTRY),
+            path: path.join(helpers.root('dist'), 'webapp'),
             filename: '[name].js'
         },
 
@@ -93,6 +96,29 @@ module.exports = function (options) {
         },
 
         plugins: [
+
+            new AssetsPlugin({
+                path: helpers.root('dist'),
+                filename: 'webpack-assets.json',
+                prettyPrint: true
+            }),
+
+            /**
+             * Plugin LoaderOptionsPlugin (experimental)
+             *
+             * See: https://gist.github.com/sokra/27b24881210b56bbaff7
+             */
+            new LoaderOptionsPlugin({}),
+
+            new ProvidePlugin({
+                $: 'jquery',
+                jQuery: 'jquery'
+            }),
+            new CopyWebpackPlugin([{
+                from: 'src/assets',
+                to: 'assets'
+            }]),
+
             /**
              * Plugin LoaderOptionsPlugin (experimental)
              *
