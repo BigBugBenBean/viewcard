@@ -34,6 +34,28 @@ function resourcePath(oripath, resource){
   return rs;
 }
 
+function getElectronConfigPath(){
+  let rs;
+  if(process.env.mode === 'EXE'){
+    rs = path.join('.', 'resources', 'conf');
+  } else {
+    rs = path.resolve(path.join(process.cwd(), 'src-main', 'config'));
+  }
+  console.log('ElectronConfigPath: ', rs);
+  return rs;
+}
+
+function getElectronWebAppPath(){
+  let rs;
+  if(process.env.mode === 'EXE'){
+    rs = path.join('.', 'resources');
+  } else {
+    rs = path.resolve(path.join(process.cwd(), 'dist'));
+  }
+  console.log('getElectronResourcePath: ', rs);
+  return rs;
+}
+
 function getAppEntry(){
   // return isWebpackDevServer()? '': 'devbox';
   return isWebpackDevServer()? '': 'webapp';
@@ -54,3 +76,5 @@ exports.root = root;
 exports.resourcePath = resourcePath;
 exports.getAppEntry = getAppEntry;
 exports.getBaseUrl = getBaseUrl;
+exports.getElectronConfigPath = getElectronConfigPath;
+exports.getElectronWebAppPath = getElectronWebAppPath;

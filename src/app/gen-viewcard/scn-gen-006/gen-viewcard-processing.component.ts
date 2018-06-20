@@ -9,6 +9,10 @@ import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
     styleUrls: ['./gen-viewcard-processing.component.scss']
 })
 export class ViewcardProcessingComponent implements OnInit {
+
+    public messageRetry: string;
+    public messageFail: string;
+
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     constructor(private router: Router,
                 private route: ActivatedRoute,
