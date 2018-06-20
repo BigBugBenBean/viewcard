@@ -1,0 +1,43 @@
+<div class="scn-srk-009">
+    <div class="mainPanel">
+        <img class="imgMenu" src='../../../assets/images/menubar_4.png'>
+        <sc2-confirm #modalFail>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{messageFail}}
+                </div>
+            </div>
+        </sc2-confirm>
+        <!-- <sc2-timer class="timer" (timerExpired)="timerExpire()" class="timer"></sc2-timer> -->
+        <!-- <input type="image" src="../../../../assets/images/button_lan_tc.png" (click)="langButton()" class="buttonTC" /> -->
+        <input class="buttonTC" type="button" value="{{'SCN-GEN-VIEWCARD.LANGUAGE' | translate}}" (click) = "langButton()">
+        <sc2-confirm-bottom #modal1 class="confirmExitModal">
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.INFO-INCORRECT' | translate}}
+                </div>
+                <!-- <div class="buttonDiv" *ngIf="buttonNum == 1">
+                    <button type="button" class="btnModal btn-primary" (click)="confirm()">Ok</button>
+                </div> -->
+            </div>
+        </sc2-confirm-bottom>
+        <label class="confirmInfo">{{'SCN-GEN-VIEWCARD.COLLECT-HKID' | translate}}</label>
+        <img class="main-image" src="../../../assets/videos/collect-card.gif" />
+        <audio *ngIf="isEN"  autoplay>
+            <source src="../../../assets/audio/confirminfo_EN.mp3" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>
+        <audio *ngIf="!isEN"  autoplay>
+            <source src="../../../assets/audio/confirminfo_HK.mp3" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>
+        <!-- <input type="image" class="exitButton" src="../../../assets/images/button_Not_Confirm.png" (click)="modal1.show()">
+        <input type="image" class="confirmButton" src="../../../assets/images/button_NotConfirm.png" (click)="nextRoute()"> -->
+        <!-- <input type="button" class="exitButton" value="{{'SCN-GEN-VIEWCARD.NOT-CONFIRM' | translate}}"> -->
+        <!-- (click)="modal1.show()" -->
+        <!-- <input type="button" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()"> -->
+        <span class="pageName">SCN-GEN-VIEWCARD</span>
+    </div>
+</div>
+    
+    

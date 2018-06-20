@@ -1,0 +1,108 @@
+<div class="scn-srk-009">
+    <div class="mainPanel">
+        <img class="imgMenu" src='../../../assets/images/menubar_4.png'>
+        <sc2-confirm #modalFail>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{messageFail}}
+                </div>
+            </div>
+        </sc2-confirm>
+        <!-- <sc2-timer class="timer" (timerExpired)="timerExpire()" class="timer"></sc2-timer> -->
+        <!-- <input type="image" src="../../../assets/images/button_lan_tc.png" (click)="langButton()" class="buttonTC" /> -->
+        <input class="buttonTC" type="button" value="{{'SCN-GEN-VIEWCARD.LANGUAGE' | translate}}" (click) = "langButton()">
+        <sc2-confirm-bottom #modal1 class="confirmExitModal">
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.INFO-INCORRECT' | translate}}
+                </div>
+                <div class="buttonDiv" *ngIf="buttonNum > 1">
+                    <button type="button" class="btnModal confirm" (click)="confirmIncorrect()"><span>{{'SCN-GEN-VIEWCARD.YES' | translate}}</span></button>
+                    <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-VIEWCARD.NO' | translate}}</span></button>
+                </div>
+                <!-- <div class="buttonDiv" *ngIf="buttonNum == 1">
+                    <button type="button" class="btnModal btn-primary" (click)="confirm()">Ok</button>
+                </div> -->
+            </div>
+        </sc2-confirm-bottom>
+        <sc2-process-comp [hidden]="showdata"></sc2-process-comp>
+        <label class="confirmInfo" [hidden]="!showdata">{{'SCN-GEN-VIEWCARD.CONFIRM-INFO' | translate}}</label>
+        <div class="information" [hidden]="!showdata">
+            <div class="row1 col1">
+                <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CHINESE' | translate}}</label>
+                <p>{{carddata.name_chinese}}</p>
+            </div>
+            <div class="row1 col2">
+                
+            </div>
+            <div class="row1 col3">
+            </div>
+            <div class="row2 col1">
+                <label>{{'SCN-GEN-VIEWCARD.NAME-IN-ENGLISH' | translate}}</label>
+                <p>{{carddata.name_english}}</p>
+            </div>
+            <div class="row2 col2">
+                <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CCC' | translate}}</label>
+                <p>{{carddata.name_ccc}}</p>
+            </div>
+            <div class="row2 col3">
+                
+            </div>
+            <div class="row3 col1">
+                <label></label>
+                <p></p>
+            </div>
+            <div class="row3 col2">
+                <label>{{'SCN-GEN-VIEWCARD.DATE-OF-BIRTH' | translate}}</label>
+                <p>{{carddata.date_of_birth}}</p>
+                <!-- <label>{{'SCN-GEN-VIEWCARD.SEX' | translate}}</label>
+                <p>{{carddata.gender}}</p> -->
+            </div>
+            <div class="row3 col3">
+                <label>{{'SCN-GEN-VIEWCARD.SEX' | translate}}</label>
+                <p>{{carddata.gender}}</p>
+            </div>
+            <div class="image">
+                <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
+                <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
+                <img src='../../../assets/images/img_sample1.png' class="photo-image">
+            </div>
+            <div class="row4 col2">
+                <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
+                <p>{{carddata.indicators}}</p>
+            </div>
+            <div class="row4 col3"> <!--registration-->
+                <label>{{'SCN-GEN-VIEWCARD.MONTH-YEAR-REGISTRATION' | translate}}</label>
+                <p>{{carddata.date_of_ic_registration}}</p>
+                <!-- <label>{{'SCN-GEN-VIEWCARD.COND-STAY' | translate}}</label>
+                <p>{{carddata.card_type}}</p> -->
+            </div>
+            <div class="row5 col2">
+                <label>{{'SCN-GEN-VIEWCARD.DATE-OF-ISSUE' | translate}}</label>
+                <p>{{carddata.date_of_first_registration}}</p>
+            </div>
+            <div class="row5 col3">
+                <!-- <label>{{'SCN-GEN-VIEWCARD.LENGTH-STAY' | translate}}</label>
+                <p>{{carddata.residential_status}}</p> -->
+                <label>{{'SCN-GEN-VIEWCARD.ID-CARD-NO' | translate}}</label>
+                <p>{{carddata.hkic_number}}</p>
+            </div>
+        </div>
+        <audio *ngIf="isEN"  autoplay>
+            <source src="../../../assets/audio/confirminfo_EN.mp3" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>
+        <audio *ngIf="!isEN"  autoplay>
+            <source src="../../../assets/audio/confirminfo_HK.mp3" type="audio/mp3">
+            Your browser does not support the audio tag.
+        </audio>
+        <!-- <input type="image" class="exitButton" src="../../../assets/images/button_Not_Confirm.png" (click)="modal1.show()">
+        <input type="image" class="confirmButton" src="../../../assets/images/button_NotConfirm.png" (click)="nextRoute()"> -->
+        <!-- <input type="button" class="exitButton" value="{{'SCN-GEN-VIEWCARD.NOT-CONFIRM' | translate}}"> -->
+        <!-- (click)="modal1.show()" -->
+        <input type="button" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()">
+        <span class="pageName">SCN-GEN-VIEWCARD</span>
+    </div>
+</div>
+    
+    

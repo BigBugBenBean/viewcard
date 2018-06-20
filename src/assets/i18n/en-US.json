@@ -291,8 +291,6 @@
         "NAVIGATION": "View personal data in chip",
         "INDICATE-CARD-TYPE": "Please indicate the type of HKID card you are holding:",
         "INSERT-HKID": "Please insert your HKID card.",
-        "YES": "Yes",
-        "NO": "No",
         "PROCESSING": "Processing, please wait.",
         "NOT-CONFIRM": "Not Confirm",
         "INFO-INCORRECT": "Are you sure the information is incorrect?",
@@ -316,6 +314,7 @@
         "LANGUAGE": "中文",
         "NAVIGATION": "Step",
         "CONFIRM-INFO": "Below are the details inside your new HKID card:",
-        "CONFIRM": "Confirm"
+        "CONFIRM": "Confirm",
+        "COLLECT-HKID": "Please collect your HKID card."
     }
 }

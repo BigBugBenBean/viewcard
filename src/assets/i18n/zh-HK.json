@@ -292,10 +292,7 @@
         "NAVIGATION": "查看芯片中的個人數據",
         "INDICATE-CARD-TYPE": "請指出您持有的香港身份證的類型:",
         "INSERT-HKID": "請插入您的香港身份證.",
-        "YES": "是",
-        "NO": "否",
         "PROCESSING": "處理中，請稍候。",
-
         "NOT-CONFIRM": "不確認",
         "INFO-INCORRECT": "你確定這些資料是不正確？",
         "YES": "是",
@@ -318,6 +315,7 @@
         "LANGUAGE": "English",
         "NAVIGATION": "步驟",
         "CONFIRM-INFO": "你的芯片卡上的信息如下：",
-        "CONFIRM": "確認"
+        "CONFIRM": "確認",
+        "COLLECT-HKID": "請取回你的香港身份證。"
     }
 }
