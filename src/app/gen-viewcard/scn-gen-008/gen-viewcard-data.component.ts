@@ -101,17 +101,17 @@ export class ViewcardDataComponent implements OnInit {
                 console.log(resp1);
                 this.carddata = {...resp1};
                 this.showdata = true;
-                //this.doCloseCard();
+                // this.doCloseCard();
             });
         });
     }
 
     processOldCard() {
         this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard').subscribe((resp) => {
-            this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
+            this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp1) => {
                 this.carddata = {...resp1};
                 this.showdata = true;
-                //this.doCloseCard();
+                // this.doCloseCard();
             });
         });
     }

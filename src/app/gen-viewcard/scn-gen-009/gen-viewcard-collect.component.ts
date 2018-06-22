@@ -5,7 +5,7 @@ import { ConfirmComponent } from '../../shared';
 import { TranslateService } from '@ngx-translate/core';
 import { MsksService } from '../../shared/msks';
 import { Request, Response } from '@angular/http';
-import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
+import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY, CHANNEL_ID_RR_NOTICELIGHT,
          ABORT_YES_I18N_KEY, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_CARDREADER } from '../../shared/var-setting';
 
 @Component({
@@ -49,9 +49,15 @@ export class CollectCardComponent implements OnInit {
     }
 
     doCollectCard() {
-        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            this.msksService.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
-        });
+        this.route.paramMap.map((params) => params.get('cardType')).subscribe((cardType) => {
+          if ('v2' === cardType) {
+            this.doFlashLight('08');
+            this.processNewCollectCard();
+          }else if ('v1' === cardType) {
+            this.doFlashLight('07');
+            this.processOldCollectCard();
+          }
+      });
     }
 
     langButton() {
@@ -65,5 +71,32 @@ export class CollectCardComponent implements OnInit {
           this.translate.use('zh-HK');
           this.isEN = false;
         }
+    }
+
+    processNewCollectCard() {
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            this.msksService.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+                this.doOffLight('08');
+            });
+        });
+    }
+
+    processOldCollectCard() {
+        // this.doFlashLight('07');
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            this.msksService.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+                // this.doOffLight('07');
+            });
+        });
+    }
+
+    doFlashLight(deviceCode: string) {
+        this.msksService.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'flash', {'device': deviceCode}).subscribe((resp) => {
+        });
+    }
+
+    doOffLight(deviceCode: string) {
+        this.msksService.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'lightoff', {'device': deviceCode}).subscribe((resp) => {
+        });
     }
 }
