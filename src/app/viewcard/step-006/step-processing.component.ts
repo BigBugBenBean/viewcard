@@ -5,8 +5,8 @@ import { MsksService } from '../../shared/msks';
 import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
          ABORT_YES_I18N_KEY, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_CARDREADER } from '../../../shared/var-setting';
 @Component({
-    templateUrl: './gen-viewcard-processing.component.html',
-    styleUrls: ['./gen-viewcard-processing.component.scss']
+    templateUrl: './step-processing.component.html',
+    styleUrls: ['./step-processing.component.scss']
 })
 export class ViewcardProcessingComponent implements OnInit {
 

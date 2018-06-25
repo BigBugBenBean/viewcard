@@ -9,8 +9,8 @@ import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
          ABORT_YES_I18N_KEY, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_CARDREADER } from '../../shared/var-setting';
 
 @Component({
-  templateUrl: './gen-viewcard-data.component.html',
-  styleUrls: ['./gen-viewcard-data.component.scss']
+  templateUrl: './step-data.component.html',
+  styleUrls: ['./step-data.component.scss']
 })
 
 export class ViewcardDataComponent implements OnInit {
@@ -56,6 +56,8 @@ export class ViewcardDataComponent implements OnInit {
 
     carddata: any = {};
 
+    cardType: string;
+
         // "hkic_number": "C668668(E)",
         // "date_of_ic_registration": "20170101",
         // "date_of_first_registration": "200701",
@@ -84,7 +86,8 @@ export class ViewcardDataComponent implements OnInit {
           this.isEN = true;
       }
 
-      this.route.paramMap.map((paramsMap: any) => paramsMap.params).subscribe((params) => {
+      this.route.queryParams.subscribe((params) => {
+          this.cardType = params.cardType;
           if ('v2' === params.cardType) {
               this.processNewCard(params.icno, params.dor);
           }else if ('v1' === params.cardType) {
@@ -107,7 +110,9 @@ export class ViewcardDataComponent implements OnInit {
     }
 
     processOldCard() {
-        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard').subscribe((resp) => {
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', {'contactless_password': {
+              'date_of_registration': null,
+              'hkic_no': null}}).subscribe((resp) => {
             this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp1) => {
                 this.carddata = {...resp1};
                 this.showdata = true;
@@ -143,7 +148,11 @@ export class ViewcardDataComponent implements OnInit {
     }
 
     nextRoute() {
-        this.router.navigate(['/scn-gen-viewcard/collect']);
+        this.router.navigate(['scn-gen-viewcard/collect'],{
+            queryParams: {
+                cardType: this.cardType
+            }
+        });
     }
 
     timerExpire() {

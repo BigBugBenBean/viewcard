@@ -6,8 +6,8 @@ import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY, ABO
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-    templateUrl: './gen-viewcard-indicate.component.html',
-    styleUrls: ['./gen-viewcard-indicate.component.scss'],
+    templateUrl: './step-indicate.component.html',
+    styleUrls: ['./step-indicate.component.scss'],
 })
 
 export class IndicateComponent implements OnInit {
@@ -83,9 +83,9 @@ export class IndicateComponent implements OnInit {
     }
 
     nextOld() {
-        this.router.navigate(['/scn-gen-viewcard/insertcard', 'v1']);
+        this.router.navigate(['scn-gen-viewcard/insertcard'], { queryParams: {'cardType': 'v1'}});
     }
     nextNew() {
-        this.router.navigate(['/scn-gen-viewcard/insertcard', 'v2']);
+        this.router.navigate(['scn-gen-viewcard/insertcard'], { queryParams: {'cardType': 'v2'}});
     }
 }

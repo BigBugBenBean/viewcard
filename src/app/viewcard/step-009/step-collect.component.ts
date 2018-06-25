@@ -9,8 +9,8 @@ import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY, CHA
          ABORT_YES_I18N_KEY, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_CARDREADER } from '../../shared/var-setting';
 
 @Component({
-  templateUrl: './gen-viewcard-collect.component.html',
-  styleUrls: ['./gen-viewcard-collect.component.scss']
+  templateUrl: './step-collect.component.html',
+  styleUrls: ['./step-collect.component.scss']
 })
 
 export class CollectCardComponent implements OnInit {
@@ -45,16 +45,16 @@ export class CollectCardComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-      setTimeout(this.doCollectCard(), 500);
+      this.doCollectCard();
     }
 
     doCollectCard() {
-        this.route.paramMap.map((params) => params.get('cardType')).subscribe((cardType) => {
-          if ('v2' === cardType) {
-            this.doFlashLight('08');
+        this.route.queryParams.subscribe((params) => {
+          if ('v2' === params.cardType) {
+            // this.doFlashLight('08');
             this.processNewCollectCard();
-          }else if ('v1' === cardType) {
-            this.doFlashLight('07');
+          }else if ('v1' === params.cardType) {
+            // this.doFlashLight('07');
             this.processOldCollectCard();
           }
       });

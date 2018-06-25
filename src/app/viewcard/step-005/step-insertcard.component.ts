@@ -9,8 +9,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toPromise';
 
 @Component({
-    templateUrl: './gen-viewcard-insertcard.component.html',
-    styleUrls: ['./gen-viewcard-insertcard.component.scss'],
+    templateUrl: './step-insertcard.component.html',
+    styleUrls: ['./step-insertcard.component.scss'],
 })
 
 export class InsertcardComponent implements OnInit {
@@ -41,10 +41,10 @@ export class InsertcardComponent implements OnInit {
         private translate: TranslateService) { }
 
     public ngOnInit() {
-
         // this.ReadHKID();
         // re activate when hardware is ready
-      this.route.paramMap.map((params) => params.get('cardType')).subscribe((cardType) => {
+      this.route.queryParams.subscribe((params) => {
+          const cardType = params.cardType;
           if ('v2' === cardType) {
               this.doFlashLight('08');
               this.processNewCard();
@@ -83,7 +83,15 @@ export class InsertcardComponent implements OnInit {
             this.doLightoff('08');
             if (resp.errorcode === '0') {
                 setTimeout(() => {
-                    this.router.navigate(['/scn-gen-viewcard/data', 'v2', resp.icno, resp.dor] );
+                    // this.router.navigate(['viewcard/data', 'v2', resp.icno, resp.dor] );
+                    this.router.navigate(['scn-gen-viewcard/data'],
+                        { queryParams: {'cardType': 'v2', 'dor': resp.dor, 'icno': resp.icno}});
+                    // this.router.navigate(['viewcard/left'],
+                    //     { queryParams: {
+                    //         'cardType': 'v2',
+                    //         'icno': resp.icno,
+                    //         'dor': resp.dor
+                    //     }});
                 }, 1000);
             }
         });
@@ -93,7 +101,13 @@ export class InsertcardComponent implements OnInit {
         this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', {'timeout': TIMEOUT_PAYLOAD })
         .subscribe((resp) => {
             this.doLightoff('07');
-            this.router.navigate(['/scn-gen-viewcard/data', 'v1'] );
+            // this.router.navigate(['viewcard/data', 'v1'] );
+            this.router.navigate(['scn-gen-viewcard/data'],
+            { queryParams: {'cardType': 'v1'}});
+            // this.router.navigate(['viewcard/left'],
+            //     { queryParams: {
+            //         'cardType': 'v1'
+            //     }});
         });
     }
 
@@ -193,12 +207,5 @@ export class InsertcardComponent implements OnInit {
             this.translate.use('zh-HK');
             this.isEN = false;
         }
-    }
-
-    nextOne() {
-        alert(1);
-    }
-    nextTwo() {
-        alert(2);
     }
 }

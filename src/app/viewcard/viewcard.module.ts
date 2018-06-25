@@ -8,21 +8,24 @@ import { TimerModule } from '../shared/sc2-timer';
 import { ConfirmBottomModule } from '../shared/sc2-confirm-bottom';
 import { MenuModule } from '../shared/menu';
 import { ConfirmModule } from '../shared/sc2-confirm';
-import { PrivacyComponent } from './scn-gen-003/gen-viewcard-privacy.component';
-import { IndicateComponent } from './scn-gen-004/gen-viewcard-indicate.component';
-import { InsertcardComponent } from './scn-gen-005/gen-viewcard-insertcard.component';
-import { ViewcardDataComponent } from './scn-gen-008/gen-viewcard-data.component';
-import { CollectCardComponent } from './scn-gen-009/gen-viewcard-collect.component';
+import { PrivacyComponent } from './step-003/step-privacy.component';
+import { IndicateComponent } from './step-004/step-indicate.component';
+import { InsertcardComponent } from './step-005/step-insertcard.component';
+import { ViewcardDataComponent } from './step-008/step-data.component';
+import { CollectCardComponent } from './step-009/step-collect.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ProcessingModule } from '../shared/processing-component';
+import { LocalStorageService } from '../shared/services/common-service/Local-storage.service';
+import { FingerprintLeftComponent, FingerprintRightComponent } from './step-006';
 
 export const routes: Routes = [
    { path: '', component: PrivacyComponent},
    { path: 'indicate', component: IndicateComponent},
-   { path: 'insertcard/:cardType', component: InsertcardComponent},
-   { path: 'data/:cardType', component: ViewcardDataComponent},
-   { path: 'data/:cardType/:icno/:dor', component: ViewcardDataComponent},
+   { path: 'insertcard', component: InsertcardComponent},
+   { path: 'left', component: FingerprintLeftComponent},
+   { path: 'right', component: FingerprintRightComponent},
+   { path: 'data', component: ViewcardDataComponent},
    { path: 'collect', component: CollectCardComponent}
   ];
 export function HttpLoaderFactory(http: HttpClient) {
@@ -34,7 +37,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         IndicateComponent,
         InsertcardComponent,
         ViewcardDataComponent,
-        CollectCardComponent
+        CollectCardComponent,
+        FingerprintLeftComponent,
+        FingerprintRightComponent
     ],
     imports: [
         CommonModule,
@@ -53,6 +58,9 @@ export function HttpLoaderFactory(http: HttpClient) {
             }
           }),
         RouterModule.forChild(routes)
+    ],
+    providers: [
+        LocalStorageService
     ],
     exports: [
         CommonModule

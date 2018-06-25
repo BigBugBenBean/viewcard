@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN } from '../../shared/var-setting';
 @Component({
-  styleUrls: ['./gen-viewcard-privacy.component.scss'],
-  templateUrl: './gen-viewcard-privacy.component.html'
+  styleUrls: ['./step-privacy.component.scss'],
+  templateUrl: './step-privacy.component.html'
 })
 export class PrivacyComponent implements OnInit {
 
@@ -29,6 +29,10 @@ export class PrivacyComponent implements OnInit {
     private translate: TranslateService) { }
 
   ngOnInit() {
+    this.translate.addLangs(['en-US', 'zh-CN', 'zh-HK']);
+    this.translate.setDefaultLang('en-US');
+    const browserLang: string = this.translate.getBrowserLang();
+    this.translate.use(browserLang.match(/en-US|zh-HK/) ? browserLang : 'en-US');
   }
 
   onPanStart() {
@@ -108,7 +112,7 @@ export class PrivacyComponent implements OnInit {
 
   nextRoute() {
     // this.router.navigate(['/main/sck002']);
-    this.router.navigate(['/scn-gen-viewcard/indicate']);
+    this.router.navigate(['scn-gen-viewcard/indicate']);
   }
 
   exitRoute() {
