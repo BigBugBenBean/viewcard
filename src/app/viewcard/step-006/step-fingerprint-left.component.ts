@@ -10,6 +10,7 @@ import {ProcessingComponent} from '../../shared/processing-component';
 import {tryCatch} from 'rxjs/util/tryCatch';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {} from 'electron';
 @Component({
     templateUrl: './step-fingerprint-left.component.html',
     styleUrls: ['./step-fingerprint-left.component.scss']
@@ -59,6 +60,8 @@ export class FingerprintLeftComponent implements OnInit {
     ngOnInit(): void {
         console.log('init fun');
         this.initParam();
+
+        
     }
 
     /**
@@ -135,7 +138,7 @@ export class FingerprintLeftComponent implements OnInit {
     }
 
     v1Route() {
-        this.router.navigate(['viewcard/right'],
+        this.router.navigate(['scn-gen-viewcard/right'],
             { queryParams: {'cardType': this.cardType}});
         return;
     }

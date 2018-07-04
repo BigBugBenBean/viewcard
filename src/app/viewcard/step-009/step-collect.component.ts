@@ -45,7 +45,8 @@ export class CollectCardComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-      this.doCollectCard();
+        this.doCollectCard();
+        
     }
 
     doCollectCard() {
@@ -57,6 +58,10 @@ export class CollectCardComponent implements OnInit {
             // this.doFlashLight('07');
             this.processOldCollectCard();
           }
+
+          setTimeout(() => {
+                         this.doCloseWindow();
+                     }, 3000);
       });
     }
 
@@ -98,5 +103,11 @@ export class CollectCardComponent implements OnInit {
     doOffLight(deviceCode: string) {
         this.msksService.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'lightoff', {'device': deviceCode}).subscribe((resp) => {
         });
+    }
+
+    doCloseWindow() {
+        const remote = require('electron').remote;
+        var window = remote.getCurrentWindow();
+        window.close();
     }
 }

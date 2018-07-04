@@ -116,7 +116,7 @@ export class PrivacyComponent implements OnInit {
   }
 
   exitRoute() {
-    this.router.navigate(['/']);
+    this.doCloseWindow();
   }
 
   backRoute() {
@@ -132,5 +132,11 @@ export class PrivacyComponent implements OnInit {
     } else {
       this.translate.use('zh-HK');
     }
+  }
+
+  doCloseWindow() {
+    const remote = require('electron').remote;
+    var window = remote.getCurrentWindow();
+    window.close();
   }
 }

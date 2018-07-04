@@ -116,13 +116,13 @@ export class FingerprintRightComponent implements OnInit {
     }
 
     v2Route() {
-        this.router.navigate(['viewcard/data'],
+        this.router.navigate(['scn-gen-viewcard/data'],
             { queryParams: {'cardType': this.cardType, 'dor': this.dor, 'icno': this.icno}});
         return;
     }
 
     v1Route() {
-        this.router.navigate(['viewcard/data'],
+        this.router.navigate(['scn-gen-viewcard/data'],
             { queryParams: {'cardType': this.cardType}});
         return;
     }

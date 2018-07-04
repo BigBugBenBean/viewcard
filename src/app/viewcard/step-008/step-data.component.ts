@@ -47,7 +47,7 @@ export class ViewcardDataComponent implements OnInit {
 
     lenStay = 'N/A';
 
-    showdata = true;
+    showdata = false;
 
     img = '../../../assets/images/photo1.jpg'; // set to '' if no image found or set to the Image path;
 
@@ -95,11 +95,12 @@ export class ViewcardDataComponent implements OnInit {
           }
       });
     }
-    // M002600(5) 20180419
+    // M004072(5) 20180619
     processNewCard(icno, dor) {
-        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', {'contactless_passwd': {
-              'date_of_registration': '20180419',
-              'hkic_no': 'M002600(5)'}}).subscribe((resp) => { // readhkicv2citizen
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', 
+            {'contactless_password': {
+              'date_of_registration': dor,
+              'hkic_no': icno}}).subscribe((resp) => { // readhkicv2citizen
             this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
                 console.log(resp1);
                 this.carddata = {...resp1};
@@ -148,7 +149,7 @@ export class ViewcardDataComponent implements OnInit {
     }
 
     nextRoute() {
-        this.router.navigate(['scn-gen-viewcard/collect'],{
+        this.router.navigate(['scn-gen-viewcard/collect'], {
             queryParams: {
                 cardType: this.cardType
             }

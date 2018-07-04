@@ -30,7 +30,8 @@
         <div class="information" [hidden]="!showdata">
             <div class="row1 col1">
                 <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CHINESE' | translate}}</label>
-                <p>{{carddata.chinese_name}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.name_chinese}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.chinese_name}}</p>
             </div>
             <div class="row1 col2">
                 
@@ -39,11 +40,13 @@
             </div>
             <div class="row2 col1">
                 <label>{{'SCN-GEN-VIEWCARD.NAME-IN-ENGLISH' | translate}}</label>
-                <p>{{carddata.english_name}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.name_english}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.english_name}}</p>
             </div>
             <div class="row2 col2">
                 <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CCC' | translate}}</label>
-                <p>{{carddata.ccc}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.name_ccc}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.ccc}}</p>
             </div>
             <div class="row2 col3">
                 
@@ -54,7 +57,8 @@
             </div>
             <div class="row3 col2">
                 <label>{{'SCN-GEN-VIEWCARD.DATE-OF-BIRTH' | translate}}</label>
-                <p>{{carddata.dob}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.date_of_birth}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.dob}}</p>
                 <!-- <label>{{'SCN-GEN-VIEWCARD.SEX' | translate}}</label>
                 <p>{{carddata.gender}}</p> -->
             </div>
@@ -66,7 +70,7 @@
                 <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
                 <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
                 <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
-                <img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABQAAAAQACAYAAAC+k/RDAAAAAXNSR0IArs4c6QAAQABJREFUeAHs3QWcHNX9APAXIAmaEEIITgju7hZciktxKW6F4lDcihZ3LdAWabHi7hKCayC4S0KQBIiR' />
+                <img src='data:image/png;base64,{{carddata.photo}}' />
             </div>
             <div class="row4 col2">
                 <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
@@ -74,7 +78,8 @@
             </div>
             <div class="row4 col3"> <!--registration-->
                 <label>{{'SCN-GEN-VIEWCARD.MONTH-YEAR-REGISTRATION' | translate}}</label>
-                <p>{{carddata.date_of_registration}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.date_of_ic_registration}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.date_of_registration}}</p>
                 <!-- <label>{{'SCN-GEN-VIEWCARD.COND-STAY' | translate}}</label>
                 <p>{{carddata.card_type}}</p> -->
             </div>
@@ -86,7 +91,8 @@
                 <!-- <label>{{'SCN-GEN-VIEWCARD.LENGTH-STAY' | translate}}</label>
                 <p>{{carddata.residential_status}}</p> -->
                 <label>{{'SCN-GEN-VIEWCARD.ID-CARD-NO' | translate}}</label>
-                <p>{{carddata.icno}}</p>
+                <p *ngIf="cardType === 'v2'">{{carddata.hkic_number}}</p>
+                <p *ngIf="cardType === 'v1'">{{carddata.icno}}</p>
             </div>
         </div>
         <audio *ngIf="isEN"  autoplay>

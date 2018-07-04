@@ -59,9 +59,10 @@ export class IndicateComponent implements OnInit {
 
     backRoute() {
         // Call the ROP.UpdateAppStatus(“SCK_ISS_SUP_<step>”)
-        setTimeout(() => {
-            window.close();
-        }, 3000);
+        // setTimeout(() => {
+        //     window.close();
+        // }, 3000);
+        this.doCloseWindow();
     }
 
     timeExpire() {
@@ -88,4 +89,10 @@ export class IndicateComponent implements OnInit {
     nextNew() {
         this.router.navigate(['scn-gen-viewcard/insertcard'], { queryParams: {'cardType': 'v2'}});
     }
+
+    doCloseWindow() {
+        const remote = require('electron').remote;
+        var window = remote.getCurrentWindow();
+        window.close();
+  }
 }

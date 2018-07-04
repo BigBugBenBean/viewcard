@@ -3,6 +3,7 @@ public class MyTest {
                           
 	private static String ERRORCODE_SUCCESS = "0";
 	private static String ERRORCODE_FAIL = "1";
+	private String aaab;
 
 	@Value("${file.defaultpath}")
 	private String fileDefaultPath;

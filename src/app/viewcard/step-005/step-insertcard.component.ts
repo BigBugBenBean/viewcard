@@ -79,21 +79,29 @@ export class InsertcardComponent implements OnInit {
     }
 
     processNewCard() {
-        this.service.sendRequest('RR_CIDOCR', 'scandata', {'timeout': TIMEOUT_PAYLOAD}).subscribe((resp) => {
+        // this.test();
+        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', {'ocr_reader_name': 'ARH ComboSmart'}).subscribe((resp) => {
             this.doLightoff('08');
-            if (resp.errorcode === '0') {
-                setTimeout(() => {
+                const datas: any[] = resp.ocr_data;
+                let dor,icno;
+                for (var i in datas) {
+                    if ('VizIssueDate' === datas[i].field_id) {
+                        let dor_temp = datas[i].field_value;
+                        const year = this.changeDor(dor_temp);
+                        dor = `${year}${dor_temp.substr(3,2)}${dor_temp.substr(0,2)}`;
+                    }else if ('VizDocumentNumber' === datas[i].field_id) {
+                        icno = datas[i].field_value;
+                    }
+                }
                     // this.router.navigate(['viewcard/data', 'v2', resp.icno, resp.dor] );
-                    this.router.navigate(['scn-gen-viewcard/data'],
-                        { queryParams: {'cardType': 'v2', 'dor': resp.dor, 'icno': resp.icno}});
-                    // this.router.navigate(['viewcard/left'],
+                this.router.navigate(['scn-gen-viewcard/data'],
+                    { queryParams: {'cardType': 'v2', 'dor': dor, 'icno': icno}});
+                    // this.router.navigate(['scn-gen-viewcard/left'],
                     //     { queryParams: {
                     //         'cardType': 'v2',
                     //         'icno': resp.icno,
                     //         'dor': resp.dor
                     //     }});
-                }, 1000);
-            }
         });
     }
 
@@ -101,13 +109,12 @@ export class InsertcardComponent implements OnInit {
         this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', {'timeout': TIMEOUT_PAYLOAD })
         .subscribe((resp) => {
             this.doLightoff('07');
-            // this.router.navigate(['viewcard/data', 'v1'] );
-            this.router.navigate(['scn-gen-viewcard/data'],
-            { queryParams: {'cardType': 'v1'}});
-            // this.router.navigate(['viewcard/left'],
-            //     { queryParams: {
-            //         'cardType': 'v1'
-            //     }});
+            // this.router.navigate(['scn-gen-viewcard/data'],
+            // { queryParams: {'cardType': 'v1'}});
+            this.router.navigate(['scn-gen-viewcard/left'],
+                { queryParams: {
+                    'cardType': 'v1'
+                }});
         });
     }
 
@@ -165,9 +172,10 @@ export class InsertcardComponent implements OnInit {
         this.messageAbort = ABORT_YES_I18N_KEY;
         this.isAbort = true;
         // Call the ROP.UpdateAppStatus(“SCK_ISS_SUP_<step>”)
-        setTimeout(() => {
-            this.router.navigate(['/scn-gen/gen001']);
-        }, 3000);
+        // setTimeout(() => {
+        //     this.router.navigate(['/scn-gen/gen001']);
+        // }, 3000);
+        this.doCloseWindow();
     }
 
     timeExpire() {
@@ -207,5 +215,40 @@ export class InsertcardComponent implements OnInit {
             this.translate.use('zh-HK');
             this.isEN = false;
         }
+    }
+
+    test() {
+        const datas: any[] = [
+            {field_id: 'cccc', field_value: 'tttt'},
+            {field_id: 'VIZ_ISSUE_DATE', field_value: '19-11-30'},
+            {field_id: 'aaaa', field_value: '3333'},
+            {field_id: 'VIZ_DOCUMENT_NUMBER', field_value: 'Z328353(5)'}
+        ];
+                let dor,icno;
+                for (var i in datas) {
+                    if ('VIZ_ISSUE_DATE' === datas[i].field_id) {
+                        let dor_temp = datas[i].field_value;
+                        const year = this.changeDor(dor_temp);
+                        dor = `${year}${dor_temp.substr(3,2)}${dor_temp.substr(0,2)}`;
+                    }else if ('VIZ_DOCUMENT_NUMBER' === datas[i].field_id) {
+                        icno = datas[i].field_value;
+                    }
+                }
+    }
+
+    changeDor(dor: string): string {
+        const temp = dor.substr(6,1);
+        const year = parseInt(temp);
+        if (year > 2) {
+            return `19${dor.substr(6,2)}`;
+        }else {
+            return `20${dor.substr(6,2)}`;
+        }
+    }
+
+    doCloseWindow() {
+        const remote = require('electron').remote;
+        var window = remote.getCurrentWindow();
+        window.close();
     }
 }
