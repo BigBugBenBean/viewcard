@@ -315,6 +315,7 @@
         "NAVIGATION": "Step",
         "CONFIRM-INFO": "Below are the details inside your new HKID card:",
         "CONFIRM": "Confirm",
-        "COLLECT-HKID": "Please collect your HKID card."
+        "COLLECT-HKID": "Please collect your HKID card.",
+        "EXIST-CARD": "The read card devic is not abvie.error code:001"
     }
 }

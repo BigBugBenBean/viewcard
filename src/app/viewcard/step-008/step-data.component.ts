@@ -115,9 +115,13 @@ export class ViewcardDataComponent implements OnInit {
               'date_of_registration': null,
               'hkic_no': null}}).subscribe((resp) => {
             this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp1) => {
-                this.carddata = {...resp1};
-                this.showdata = true;
-                // this.doCloseCard();
+                if (resp1.error_info.error_code === '0') {
+                    this.carddata = {...resp1};
+                    this.showdata = true;
+                    // this.doCloseCard();
+                } else {
+                    
+                }
             });
         });
     }
@@ -178,5 +182,9 @@ export class ViewcardDataComponent implements OnInit {
           this.translate.use('zh-HK');
           this.isEN = false;
         }
+    }
+
+    readDataFail() {
+        this.doCloseCard();
     }
 }

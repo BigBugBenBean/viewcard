@@ -68,7 +68,8 @@ export class IndicateComponent implements OnInit {
     timeExpire() {
         this.modalNoROP.show();
         setTimeout(() => {
-            this.router.navigate(['/sck001']);
+            // this.router.navigate(['/sck001']);
+            this.doCloseWindow();
         }, TIMEOUT_MILLIS);
     }
 

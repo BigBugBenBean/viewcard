@@ -70,7 +70,7 @@
                 <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
                 <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
                 <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
-                <img src='data:image/png;base64,{{carddata.photo}}' />
+                <img src='data:image/JPG;base64,{{carddata.photo}}' />
             </div>
             <div class="row4 col2">
                 <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
@@ -107,7 +107,7 @@
         <input type="image" class="confirmButton" src="../../../assets/images/button_NotConfirm.png" (click)="nextRoute()"> -->
         <!-- <input type="button" class="exitButton" value="{{'SCN-GEN-VIEWCARD.NOT-CONFIRM' | translate}}"> -->
         <!-- (click)="modal1.show()" -->
-        <input type="button" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()">
+        <!-- <input type="button" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()"> -->
         <span class="pageName">SCN-GEN-VIEWCARD</span>
     </div>
 </div>

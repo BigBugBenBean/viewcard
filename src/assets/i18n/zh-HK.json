@@ -316,6 +316,7 @@
         "NAVIGATION": "步驟",
         "CONFIRM-INFO": "你的芯片卡上的信息如下：",
         "CONFIRM": "確認",
-        "COLLECT-HKID": "請取回你的香港身份證。"
+        "COLLECT-HKID": "請取回你的香港身份證。",
+        "EXIST-CARD": "讀卡設備異常。錯誤代碼：001"
     }
 }
