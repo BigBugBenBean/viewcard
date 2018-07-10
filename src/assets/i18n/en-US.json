@@ -316,6 +316,8 @@
         "CONFIRM-INFO": "Below are the details inside your new HKID card:",
         "CONFIRM": "Confirm",
         "COLLECT-HKID": "Please collect your HKID card.",
-        "EXIST-CARD": "The read card devic is not abvie.error code:001"
+        "EXIST-CARD": "Card reader device is not available.error code:D0009.",
+        "CARD-EXCEPTION": "The card reading device is abnormal.Please contact the staff for help.",
+        "TIMEOUT-NO-RESPONSE":"No response received, the service is terminated."
     }
 }

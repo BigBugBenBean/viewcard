@@ -4,13 +4,13 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FingerprintService} from '../../shared/services/fingerprint-service/fingerprint.service';
 import {MsksService} from '../../shared/msks';
 import {ConfirmComponent} from '../../shared/sc2-confirm';
-import {CHANNEL_ID_RR_CARDREADER, INI_URL, READ_ROP140_RETRY, TIMEOUT_MILLIS} from '../../shared/var-setting';
+import {CHANNEL_ID_RR_CARDREADER, INI_URL, READ_ROP140_RETRY, TIMEOUT_MILLIS, CHANNEL_ID_RR_ICCOLLECT} from '../../shared/var-setting';
 import {LocalStorageService} from '../../shared/services/common-service/Local-storage.service';
 import {ProcessingComponent} from '../../shared/processing-component';
 import {tryCatch} from 'rxjs/util/tryCatch';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
-import {} from 'electron';
+import {CommonService} from '../../shared/services/common-service/common.service';
 @Component({
     templateUrl: './step-fingerprint-left.component.html',
     styleUrls: ['./step-fingerprint-left.component.scss']
@@ -29,8 +29,8 @@ export class FingerprintLeftComponent implements OnInit {
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
-    @ViewChild('processing')
-    public processing: ProcessingComponent;
+    // @ViewChild('processing')
+    // public processing: ProcessingComponent;
     messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
@@ -49,6 +49,7 @@ export class FingerprintLeftComponent implements OnInit {
     fptemp = '';
     finger_num = 5;
     constructor(private router: Router,
+                private commonService: CommonService,
                 private route: ActivatedRoute,
                 private service: MsksService,
                 private http: HttpClient,
@@ -60,15 +61,13 @@ export class FingerprintLeftComponent implements OnInit {
     ngOnInit(): void {
         console.log('init fun');
         this.initParam();
-
-        
     }
 
     /**
      * init param data.
      */
     initParam() {
-        this.processing.hide();
+        // this.processing.hide();
         this.route.queryParams.subscribe(params => {
             const lang = params['lang'];
             if ('EN' === lang) {
@@ -93,31 +92,32 @@ export class FingerprintLeftComponent implements OnInit {
         this.fp_tmpl1_in_base64 = this.localStorages.get('fp_tmpl1_in_base64');
         this.fp_tmpl2_in_base64 = this.localStorages.get('fp_tmpl2_in_base64');
         this.fptemp = this.fp_tmpl2_in_base64;
-        // this.getfingernum(this.fptemp );
+        this.getfingernum(this.fptemp );
     }
     initPage() {
         console.log('call initPage');
-        let imgeSrc = '../../../assets/images/image12.png';
-        switch (this.finger_num) {
-            case 0 :
-                imgeSrc = '../../../assets/images/image12.png';
-                break;
-            case 1 :
-                imgeSrc = '../../../assets/images/image12.png';
-                break;
-            case 2 :
-                imgeSrc = '../../../assets/images/image12.png';
-                break;
-            case 3 :
-                imgeSrc = '../../../assets/images/image12.png';
-                break;
-            case 4 :
-                imgeSrc = '../../../assets/images/image12.png';
-                break;
-        }
-        $('#fingerImage').attr('src', imgeSrc);
-        this.processing.hide();
+        const imgeSrc = '../../../../assets/images/image12.png';
+        // switch (this.finger_num) {
+        //     case 0 :
+        //         imgeSrc = '../../../../assets/images/image12.png';
+        //         break;
+        //     case 1 :
+        //         imgeSrc = '../../../../assets/images/image12.png';
+        //         break;
+        //     case 2 :
+        //         imgeSrc = '../../../../assets/images/image12.png';
+        //         break;
+        //     case 3 :
+        //         imgeSrc = '../../../../assets/images/image12.png';
+        //         break;
+        //     case 4 :
+        //         imgeSrc = '../../../../assets/images/image12.png';
+        //         break;
+        // }
+        // $('#fingerImage').attr('src', imgeSrc);
+        // this.processing.hide();
         this.startFingerprintScan();
+
     }
 
     /**
@@ -129,6 +129,7 @@ export class FingerprintLeftComponent implements OnInit {
         }else {
             this.v1Route();
         }
+        return;
     }
 
     v2Route() {
@@ -145,21 +146,14 @@ export class FingerprintLeftComponent implements OnInit {
 
     timeExpire() {
         setTimeout(() => {
-            this.goHome();
+            this.commonService.doCloseWindow();
         }, 500);
     }
     /**
      * backPage.
      */
     backRoute() {
-        this.goHome();
-    }
-
-    /**
-     *  quit home.
-     */
-    goHome() {
-        this.router.navigate(['/kgen-updcsls/privacy'], { queryParams: {'lang': this.translate.currentLang}});
+        this.commonService.doCloseWindow();
     }
 
     langButton() {
@@ -184,7 +178,7 @@ export class FingerprintLeftComponent implements OnInit {
         console.log('call : startFingerprintScanner fun.')
          this.service.sendRequest('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
         // this.service.sendRequest('RR_fptool', 'scanfp', {'arn': '', 'fp_img_format': 'bmp'}).subscribe((resp) => {
-            this.processing.show();
+            // this.processing.show();
             if (resp) {
                 if (resp.fpdata) {
                     // change  fingerprint data type
@@ -193,18 +187,18 @@ export class FingerprintLeftComponent implements OnInit {
                     if (resp.error_info) {
                         if (resp.error_info.error_code === '6') {
                             this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
-                            this.processing.hide();
+                            // this.processing.hide();
                             this.modalFail.show();
                         }
                     } else {
                         this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
-                        this.processing.hide();
+                        // this.processing.hide();
                         this.modalFail.show();
                     }
                 }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
-                this.processing.hide();
+                // this.processing.hide();
                 this.modalFail.show();
             }
         });
@@ -235,29 +229,36 @@ export class FingerprintLeftComponent implements OnInit {
             {'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_tmpl1_in_base64': fpdataLeftTemp, 'fp_tmpl2_in_base64': fpdataCurrentFpdata})
             .subscribe((resp) => {
             if (resp.match_score) {
-                console.log(resp);
-                if (resp.match_score > 5000) {
-                    console.log('compare scuess,pass');
+                if (this.cardType === 1) {
                     this.nextRoute();
                 } else {
-                    console.log('compare ');
-                    // once again.
-                    if (this.retryVal < 2) {
-                        this.processing.hide();
-                        this.modalRetry.show();
-                        this.retryVal += 1;
+                    console.log(resp);
+                    if (resp.match_score > 5000) {
+                        console.log('compare scuess,pass');
+                        this.nextRoute();
                     } else {
-                        this.processing.hide();
-                        this.modalFail.show();
+                        console.log('compare ');
+                        // once again.
+                        if (this.retryVal < 2) {
+                            // this.processing.hide();
+                            this.modalRetry.show();
+                            this.retryVal += 1;
+                        } else {
+                            // this.processing.hide();
+                            this.modalFail.show();
+                        }
                     }
                 }
             } else {
+                if (this.cardType === 1) {
+                    this.nextRoute();
+                }
                 if (this.retryVal < 2) {
-                    this.processing.hide();
+                    // this.processing.hide();
                     this.modalRetry.show();
                     this.retryVal += 1;
                 } else {
-                    this.processing.hide();
+                    // this.processing.hide();
                     this.modalFail.show();
                 }
             }
@@ -274,7 +275,13 @@ export class FingerprintLeftComponent implements OnInit {
 
     processFailQuit() {
         this.modalFail.hide();
+        if (this.cardType === 1) {
+            this.doReturnDoc();
+        }
         this.backRoute();
+    }
+    doReturnDoc() {
+        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     /**
@@ -306,13 +313,4 @@ export class FingerprintLeftComponent implements OnInit {
         });
 
     }
-
-  /*  checkException(url) {
-        return this.http.get(url)
-            .catch((e) => {
-                return Observable.throw(
-                    new Error(`${ e.status } ${ e.statusText }`)
-                );
-            });
-    }*/
 }

@@ -317,6 +317,8 @@
         "CONFIRM-INFO": "你的芯片卡上的信息如下：",
         "CONFIRM": "確認",
         "COLLECT-HKID": "請取回你的香港身份證。",
-        "EXIST-CARD": "讀卡設備異常。錯誤代碼：001"
+        "EXIST-CARD": "讀卡設備異常。錯誤代碼:D0009.",
+        "CARD-EXCEPTION": "讀卡設備不可用。請聯系工作人員尋求幫助。",
+        "TIMEOUT-NO-RESPONSE":"沒有收到響應，服務終止。"
     }
 }

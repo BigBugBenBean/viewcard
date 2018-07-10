@@ -26,6 +26,12 @@ export class InsertcardComponent implements OnInit {
     @ViewChild('imgNext')
     public nextPage: ElementRef;
 
+    @ViewChild('existCardError')
+    public existCardError: ConfirmComponent;
+
+    @ViewChild('exceptionCardError')
+    public exceptionCardError: ConfirmComponent;
+
     messageRetry: String = 'Please re-insert your ROP 140/ROP 140A form.';
     messageFail: String = 'The insert form is not be recognized, please contact the officer for completing your registration.';
     messageNoROP: String = 'No ROP 140/ROP 140A form is inserted.';
@@ -83,12 +89,12 @@ export class InsertcardComponent implements OnInit {
         this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', {'ocr_reader_name': 'ARH ComboSmart'}).subscribe((resp) => {
             this.doLightoff('08');
                 const datas: any[] = resp.ocr_data;
-                let dor,icno;
-                for (var i in datas) {
+                let dor, icno;
+                for (const i in datas) {
                     if ('VizIssueDate' === datas[i].field_id) {
-                        let dor_temp = datas[i].field_value;
+                        const dor_temp = datas[i].field_value;
                         const year = this.changeDor(dor_temp);
-                        dor = `${year}${dor_temp.substr(3,2)}${dor_temp.substr(0,2)}`;
+                        dor = `${year}${dor_temp.substr(3, 2)}${dor_temp.substr(0, 2)}`;
                     }else if ('VizDocumentNumber' === datas[i].field_id) {
                         icno = datas[i].field_value;
                     }
@@ -109,12 +115,19 @@ export class InsertcardComponent implements OnInit {
         this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', {'timeout': TIMEOUT_PAYLOAD })
         .subscribe((resp) => {
             this.doLightoff('07');
-            // this.router.navigate(['scn-gen-viewcard/data'],
-            // { queryParams: {'cardType': 'v1'}});
-            this.router.navigate(['scn-gen-viewcard/left'],
+            if (resp.errorcode === '0') {
+                this.router.navigate(['scn-gen-viewcard/left'],
                 { queryParams: {
                     'cardType': 'v1'
                 }});
+            } else if (resp.errorcode === 'D0009') {
+                this.existCardError.show();
+            } else {
+
+            // this.router.navigate(['scn-gen-viewcard/data'],
+            // { queryParams: {'cardType': 'v1'}});
+                this.existCardError.show();
+            }
         });
     }
 
@@ -175,13 +188,17 @@ export class InsertcardComponent implements OnInit {
         // setTimeout(() => {
         //     this.router.navigate(['/scn-gen/gen001']);
         // }, 3000);
+        this.doLightoff('07');
+        this.doLightoff('08');
+
         this.doCloseWindow();
     }
 
     timeExpire() {
         this.modalNoROP.show();
         setTimeout(() => {
-            this.router.navigate(['//scn-gen/gen001']);
+            // this.router.navigate(['//scn-gen/gen001']);
+            this.doCloseWindow();
         }, TIMEOUT_MILLIS);
     }
 
@@ -217,38 +234,31 @@ export class InsertcardComponent implements OnInit {
         }
     }
 
-    test() {
-        const datas: any[] = [
-            {field_id: 'cccc', field_value: 'tttt'},
-            {field_id: 'VIZ_ISSUE_DATE', field_value: '19-11-30'},
-            {field_id: 'aaaa', field_value: '3333'},
-            {field_id: 'VIZ_DOCUMENT_NUMBER', field_value: 'Z328353(5)'}
-        ];
-                let dor,icno;
-                for (var i in datas) {
-                    if ('VIZ_ISSUE_DATE' === datas[i].field_id) {
-                        let dor_temp = datas[i].field_value;
-                        const year = this.changeDor(dor_temp);
-                        dor = `${year}${dor_temp.substr(3,2)}${dor_temp.substr(0,2)}`;
-                    }else if ('VIZ_DOCUMENT_NUMBER' === datas[i].field_id) {
-                        icno = datas[i].field_value;
-                    }
-                }
-    }
-
     changeDor(dor: string): string {
-        const temp = dor.substr(6,1);
-        const year = parseInt(temp);
+        const temp = dor.substr(6, 1);
+        const year = parseInt(temp, 0);
         if (year > 2) {
-            return `19${dor.substr(6,2)}`;
+            return `19${dor.substr(6, 2)}`;
         }else {
-            return `20${dor.substr(6,2)}`;
+            return `20${dor.substr(6, 2)}`;
         }
     }
 
     doCloseWindow() {
         const remote = require('electron').remote;
-        var window = remote.getCurrentWindow();
+        const window = remote.getCurrentWindow();
         window.close();
+    }
+
+    doExistCard() {
+        this.existCardError.show();
+        this.doCloseWindow();
+    }
+
+    doExceptionCard() {
+        this.exceptionCardError.show();
+        setTimeout(() => {
+            this.doCloseWindow();
+        }, 3000);
     }
 }

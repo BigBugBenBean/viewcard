@@ -18,6 +18,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ProcessingModule } from '../shared/processing-component';
 import { LocalStorageService } from '../shared/services/common-service/Local-storage.service';
 import { FingerprintLeftComponent, FingerprintRightComponent } from './step-006';
+import {CommonService} from '../shared/services/common-service/common.service';
 
 export const routes: Routes = [
    { path: '', component: PrivacyComponent},
@@ -60,7 +61,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         RouterModule.forChild(routes)
     ],
     providers: [
-        LocalStorageService
+        LocalStorageService,
+        CommonService
     ],
     exports: [
         CommonModule

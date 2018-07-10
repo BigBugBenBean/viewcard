@@ -97,7 +97,7 @@ export class ViewcardDataComponent implements OnInit {
     }
     // M004072(5) 20180619
     processNewCard(icno, dor) {
-        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', 
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard',
             {'contactless_password': {
               'date_of_registration': dor,
               'hkic_no': icno}}).subscribe((resp) => { // readhkicv2citizen
@@ -120,7 +120,6 @@ export class ViewcardDataComponent implements OnInit {
                     this.showdata = true;
                     // this.doCloseCard();
                 } else {
-                    
                 }
             });
         });
@@ -186,5 +185,10 @@ export class ViewcardDataComponent implements OnInit {
 
     readDataFail() {
         this.doCloseCard();
+    }
+
+    timeExpire() {
+        this.nextRoute();
+        // this.modalNoROP.show();
     }
 }

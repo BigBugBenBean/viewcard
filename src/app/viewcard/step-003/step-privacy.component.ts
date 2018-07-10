@@ -1,7 +1,8 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN } from '../../shared/var-setting';
+import { ConfirmModule, ConfirmComponent, TimerModule } from '../../shared';
+import { PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN, TIMEOUT_MILLIS } from '../../shared/var-setting';
 @Component({
   styleUrls: ['./step-privacy.component.scss'],
   templateUrl: './step-privacy.component.html'
@@ -19,6 +20,9 @@ export class PrivacyComponent implements OnInit {
   lblPRIV_POL_LBL = PRIV_POL_LBL;
   lblHAVE_READ_EN = HAVE_READ_EN;
   lblHAVE_READ_CN = HAVE_READ_CN;
+
+  @ViewChild('modalNoROP')
+   public modalNoROP: ConfirmComponent;
 
   @ViewChild('policyBox')
   private policyBox: ElementRef;
@@ -136,7 +140,15 @@ export class PrivacyComponent implements OnInit {
 
   doCloseWindow() {
     const remote = require('electron').remote;
-    var window = remote.getCurrentWindow();
+    const window = remote.getCurrentWindow();
     window.close();
   }
+
+  timeExpire() {
+        this.modalNoROP.show();
+        setTimeout(() => {
+            // this.router.navigate(['/sck001']);
+            this.doCloseWindow();
+        }, TIMEOUT_MILLIS);
+    }
 }

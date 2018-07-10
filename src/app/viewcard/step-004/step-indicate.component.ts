@@ -93,7 +93,7 @@ export class IndicateComponent implements OnInit {
 
     doCloseWindow() {
         const remote = require('electron').remote;
-        var window = remote.getCurrentWindow();
+        const window = remote.getCurrentWindow();
         window.close();
   }
 }

@@ -46,7 +46,6 @@ export class CollectCardComponent implements OnInit {
 
     ngOnInit() {
         this.doCollectCard();
-        
     }
 
     doCollectCard() {
@@ -107,7 +106,7 @@ export class CollectCardComponent implements OnInit {
 
     doCloseWindow() {
         const remote = require('electron').remote;
-        var window = remote.getCurrentWindow();
+        const window = remote.getCurrentWindow();
         window.close();
     }
 }

@@ -1,10 +1,17 @@
 <div>
-  <!-- <sc2-timer (timerExpired)="backRoute()" class="timer"></sc2-timer> -->
+  <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
   <!-- <img src="../../assets/images/button_lan_tc.png" (click) ="langButton()" class="chbtn"> -->
   <input class="chbtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
   <label class="head1">
     {{'SCN-SRK-001-4.PRIV-POLICY-HEADER' | translate}}
   </label>
+  <sc2-confirm #modalNoROP>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{'SCN-GEN-VIEWCARD.TIMEOUT-NO-RESPONSE' | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
   <div class="policyBox" #policyBox (scroll)="onScroll($event)"  (panstart)="onPanStart()" (panup)="onPanUp($event.deltaY)" (pandown)="onPanDown($event.deltaY)">
     <label class="firstWord">{{'SCN-SRK-001-4.PRIV-POLICY' | translate}}</label><br><br>
     <p class="long-text">{{'SCN-SRK-001-4.PRIV-POLICY-PAR' | translate}}</p><br><br>

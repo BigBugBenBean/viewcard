@@ -19,10 +19,24 @@
             </div>
         </div>
     </sc2-confirm>
+    <sc2-confirm #existCardError>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{'SCN-GEN-VIEWCARD.EXIST-CARD' | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #exceptionCardError>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{'SCN-GEN-VIEWCARD.CARD-EXCEPTION' | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
     <sc2-confirm #modalNoROP>
         <div class="app-modal-body">
             <div class="modal-message">
-                {{'SCN-SCK-COMMON.TIMEOUT-NO-RESPONSE' | translate}}
+                {{'SCN-GEN-VIEWCARD.TIMEOUT-NO-RESPONSE' | translate}}
             </div>
         </div>
     </sc2-confirm>
