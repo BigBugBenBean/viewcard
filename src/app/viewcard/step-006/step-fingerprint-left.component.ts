@@ -69,13 +69,13 @@ export class FingerprintLeftComponent implements OnInit {
     initParam() {
         // this.processing.hide();
         this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('EN' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
+            // const lang = params['lang'];
+            // if ('EN' === lang) {
+            //    this.translate.use('en-US');
+            // } else {
+            //    this.translate.use('zh-HK');
+            // }
+            // this.translate.currentLang = lang;
             this.cardType = params.cardType;
             if ('v2' === this.cardType) {
                 this.dor = params.dor;
@@ -133,7 +133,7 @@ export class FingerprintLeftComponent implements OnInit {
     }
 
     v2Route() {
-        this.router.navigate(['viewcard/right'],
+        this.router.navigate(['scn-gen-viewcard/right'],
             { queryParams: {'cardType': this.cardType, 'dor': this.dor, 'icno': this.icno}});
         return;
     }
@@ -147,7 +147,7 @@ export class FingerprintLeftComponent implements OnInit {
     timeExpire() {
         setTimeout(() => {
             this.commonService.doCloseWindow();
-        }, 500);
+        }, 5000);
     }
     /**
      * backPage.

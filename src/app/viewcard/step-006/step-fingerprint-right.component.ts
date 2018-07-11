@@ -60,13 +60,13 @@ export class FingerprintRightComponent implements OnInit {
      */
     initParam() {
         this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('EN' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
+            // const lang = params['lang'];
+            // if ('EN' === lang) {
+            //    this.translate.use('en-US');
+            // } else {
+            //    this.translate.use('zh-HK');
+            // }
+            // this.translate.currentLang = lang;
             this.cardType = params.cardType;
             if ('v2' === this.cardType) {
                 this.dor = params.dor;
@@ -116,6 +116,7 @@ export class FingerprintRightComponent implements OnInit {
         }else {
             this.v1Route();
         }
+	return;
     }
 
     v2Route() {
@@ -189,7 +190,7 @@ export class FingerprintRightComponent implements OnInit {
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
                 // this.processing.hide();
-                // this.modalFail.show();
+                this.modalFail.show();
             }
         });
     }
@@ -273,28 +274,28 @@ export class FingerprintRightComponent implements OnInit {
     doReturnDoc() {
         this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
-        getfingernum(fp_tmpl_in_base64) {
-            const playloadParam =  {
-                'arn': '',
-                'fp_tmpl_format': 'Morpho_PkCompV2',
-                'fp_tmpl_in_base64': ' ' +
-                fp_tmpl_in_base64
-            }
-            this.service.sendRequest('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
-                if (JSON.stringify(resp) !== '{}') {
-                    console.log(resp);
-                    if (!isNaN(resp.finger_num)) {
-                        this.finger_num = resp.finger_num;
-                        this.initPage();
+    getfingernum(fp_tmpl_in_base64) {
+        const playloadParam =  {
+            'arn': '',
+            'fp_tmpl_format': 'Morpho_PkCompV2',
+            'fp_tmpl_in_base64': ' ' +
+            fp_tmpl_in_base64
+        }
+        this.service.sendRequest('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
+            if (JSON.stringify(resp) !== '{}') {
+                console.log(resp);
+                if (!isNaN(resp.finger_num)) {
+                    this.finger_num = resp.finger_num;
+                    this.initPage();
 
-                    } else {
-                        this.messageFail = '沒有匹配到哪個手指';
-                        this.modalFail.show();
-                    }
                 } else {
-                    this.messageFail = 'SCN-GEN-STEPS.READ-CARD-ERROR';
+                    this.messageFail = '沒有匹配到哪個手指';
                     this.modalFail.show();
                 }
-            });
-        }
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.READ-CARD-ERROR';
+                this.modalFail.show();
+            }
+        });
+    }
 }
