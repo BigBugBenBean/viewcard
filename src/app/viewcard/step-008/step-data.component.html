@@ -1,12 +1,22 @@
 <div class="scn-srk-009">
     <div class="mainPanel">
-        <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
+        <sc2-timer (timerExpired)="timerExpire()" class="timer"></sc2-timer>
         <img class="imgMenu" src='../../../assets/images/menubar_4.png'>
-        <sc2-confirm #modalFail>
+        <sc2-confirm #modalTimerFail>
             <div class="app-modal-body">
                 <div class="modal-message">
-                    {{messageFail}}
+                    {{'SCN-GEN-VIEWCARD.TIMEOUT-NO-RESPONSE' | translate}}
                 </div>
+            </div>
+        </sc2-confirm>
+        <sc2-confirm #readCardFail>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.READ-CARD-ERROR' | translate}}
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" class="btnModal confirm" (click)="readDataFail()"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+            </div>
             </div>
         </sc2-confirm>
         <!-- <sc2-timer class="timer" (timerExpired)="timerExpire()" class="timer"></sc2-timer> -->
@@ -108,7 +118,7 @@
         <input type="image" class="confirmButton" src="../../../assets/images/button_NotConfirm.png" (click)="nextRoute()"> -->
         <!-- <input type="button" class="exitButton" value="{{'SCN-GEN-VIEWCARD.NOT-CONFIRM' | translate}}"> -->
         <!-- (click)="modal1.show()" -->
-        <!-- <input type="button" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()"> -->
+        <input type="button" *ngIf="showdata" class="confirmButton" value="{{'SCN-GEN-VIEWCARD.NEXT' | translate}}" (click)="nextRoute()">
         <span class="pageName">SCN-GEN-VIEWCARD</span>
     </div>
 </div>

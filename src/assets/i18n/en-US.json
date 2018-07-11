@@ -318,6 +318,10 @@
         "COLLECT-HKID": "Please collect your HKID card.",
         "EXIST-CARD": "Card reader device is not available.error code:D0009.",
         "CARD-EXCEPTION": "The card reading device is abnormal.Please contact the staff for help.",
-        "TIMEOUT-NO-RESPONSE":"No response received, the service is terminated."
+        "TIMEOUT-NO-RESPONSE":"No response received, the service is terminated.",
+        "RE-SCANER-FINGER": "The scanned fingerprint does not match the original fingerprint. Please rescan.",
+        "RE-SCANER-MAX": "The scanned fingerprint does not match the original fingerprint and has exceeded the maximum number of times",
+        "READ-CARD-ERROR" : "出错",
+        "OK": "OK"
     }
 }

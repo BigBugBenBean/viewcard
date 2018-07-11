@@ -25,8 +25,8 @@ export class FingerprintRightComponent implements OnInit {
 
     // @ViewChild('processing')
     // public processing: ProcessingComponent;
-    messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
-    messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
+    messageRetry: String = 'SCN-GEN-VIEWCARD.RE-SCANER-FINGER';
+    messageFail= 'SCN-GEN-VIEWCARD.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     fingerprintInfo = '1313213213';
     cardType;
@@ -219,7 +219,7 @@ export class FingerprintRightComponent implements OnInit {
             .subscribe((resp) => {
                 if (resp.match_score) {
                     console.log(resp);
-                    if (this.cardType === 1) {
+                    if (this.cardType === 'v1') {
                         this.nextRoute();
                     } else {
                         if (resp.match_score > 5000) {
@@ -240,7 +240,7 @@ export class FingerprintRightComponent implements OnInit {
                         }
                     }
                 } else {
-                    if (this.cardType === 1) {
+                    if (this.cardType === 'v1') {
                         this.nextRoute();
                     }
                     if (this.retryVal < 2) {
@@ -265,7 +265,7 @@ export class FingerprintRightComponent implements OnInit {
 
     processFailQuit() {
         this.modalFail.hide();
-        if (this.cardType === 1) {
+        if (this.cardType === 'v1') {
             this.doReturnDoc();
         }
         this.backRoute();

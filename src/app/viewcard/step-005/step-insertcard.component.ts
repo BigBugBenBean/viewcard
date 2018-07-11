@@ -199,7 +199,7 @@ export class InsertcardComponent implements OnInit {
         setTimeout(() => {
             // this.router.navigate(['//scn-gen/gen001']);
             this.doCloseWindow();
-        }, TIMEOUT_MILLIS);
+        }, 5000);
     }
 
     readFail() {

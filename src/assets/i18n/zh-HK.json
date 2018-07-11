@@ -319,6 +319,10 @@
         "COLLECT-HKID": "請取回你的香港身份證。",
         "EXIST-CARD": "讀卡設備異常。錯誤代碼:D0009.",
         "CARD-EXCEPTION": "讀卡設備不可用。請聯系工作人員尋求幫助。",
-        "TIMEOUT-NO-RESPONSE":"沒有收到響應，服務終止。"
+        "TIMEOUT-NO-RESPONSE":"沒有收到響應，服務終止。",
+        "RE-SCANER-FINGER": "掃描指紋與原指紋不匹配，請重新掃描！",
+        "RE-SCANER-MAX": "掃描指紋與原指紋不匹配，已超過最大次數",
+        "READ-CARD-ERROR" : "讀卡出错.",
+        "OK": "確定"
     }
 }

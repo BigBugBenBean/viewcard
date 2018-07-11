@@ -14,8 +14,11 @@ import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
 })
 
 export class ViewcardDataComponent implements OnInit {
-    @ViewChild('modalFail')
-    public modalFail: ConfirmComponent;
+    @ViewChild('modalTimerFail')
+    public modalTimerFail: ConfirmComponent;
+
+    @ViewChild('readCardFail')
+    public readCardFail: ConfirmComponent;
 
     messageFail: String = `The personal particulars in the new card is not acknowledged by applicant,
         please contact the officer for completing your registration.`;
@@ -102,10 +105,15 @@ export class ViewcardDataComponent implements OnInit {
               'date_of_registration': dor,
               'hkic_no': icno}}).subscribe((resp) => { // readhkicv2citizen
             this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
-                console.log(resp1);
-                this.carddata = {...resp1};
-                this.showdata = true;
-                // this.doCloseCard();
+                if (resp1.error_info.error_code === '0') {
+                    this.carddata = {...resp1};
+                    this.showdata = true;
+                } else {
+                    this.readCardFail.show();
+                    setTimeout(() => {
+                        this.nextRoute();
+                    }, 3000);
+                }
             });
         });
     }
@@ -120,6 +128,11 @@ export class ViewcardDataComponent implements OnInit {
                     this.showdata = true;
                     // this.doCloseCard();
                 } else {
+                    // alert(resp1.error_info.error_code);
+                    this.readCardFail.show();
+                    setTimeout(() => {
+                        this.nextRoute();
+                    }, 3000);
                 }
             });
         });
@@ -160,14 +173,10 @@ export class ViewcardDataComponent implements OnInit {
     }
 
     timerExpire() {
-        this.modalFail.show();
+        this.modalTimerFail.show();
         setTimeout(() => {
-            this.router.navigate(['/sck001']);
-        }, TIMEOUT_MILLIS);
-    }
-
-    backRoute() {
-        this.router.navigate(['/sck001']);
+            this.nextRoute();
+        }, 5000);
     }
 
     langButton() {
@@ -185,10 +194,6 @@ export class ViewcardDataComponent implements OnInit {
 
     readDataFail() {
         this.doCloseCard();
-    }
-
-    timeExpire() {
-        this.nextRoute();
-        // this.modalNoROP.show();
+        this.readCardFail.hide();
     }
 }

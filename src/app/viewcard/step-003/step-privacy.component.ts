@@ -149,6 +149,6 @@ export class PrivacyComponent implements OnInit {
         setTimeout(() => {
             // this.router.navigate(['/sck001']);
             this.doCloseWindow();
-        }, TIMEOUT_MILLIS);
+        }, 5000);
     }
 }

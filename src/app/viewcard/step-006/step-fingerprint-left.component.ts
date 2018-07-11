@@ -31,8 +31,8 @@ export class FingerprintLeftComponent implements OnInit {
 
     // @ViewChild('processing')
     // public processing: ProcessingComponent;
-    messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
-    messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
+    messageRetry: String = 'SCN-GEN-VIEWCARD.RE-SCANER-FINGER';
+    messageFail= 'SCN-GEN-VIEWCARD.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     fingerprintInfo = '1313213213';
     cardType;
@@ -229,7 +229,7 @@ export class FingerprintLeftComponent implements OnInit {
             {'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_tmpl1_in_base64': fpdataLeftTemp, 'fp_tmpl2_in_base64': fpdataCurrentFpdata})
             .subscribe((resp) => {
             if (resp.match_score) {
-                if (this.cardType === 1) {
+                if (this.cardType === 'v1') {
                     this.nextRoute();
                 } else {
                     console.log(resp);
@@ -250,7 +250,7 @@ export class FingerprintLeftComponent implements OnInit {
                     }
                 }
             } else {
-                if (this.cardType === 1) {
+                if (this.cardType === 'v1') {
                     this.nextRoute();
                 }
                 if (this.retryVal < 2) {
@@ -275,7 +275,7 @@ export class FingerprintLeftComponent implements OnInit {
 
     processFailQuit() {
         this.modalFail.hide();
-        if (this.cardType === 1) {
+        if (this.cardType === 'v1') {
             this.doReturnDoc();
         }
         this.backRoute();
