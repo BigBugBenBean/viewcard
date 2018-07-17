@@ -322,7 +322,10 @@
         "TIMEOUT-NO-RESPONSE":"沒有收到響應，服務終止。",
         "RE-SCANER-FINGER": "掃描指紋與原指紋不匹配，請重新掃描！",
         "RE-SCANER-MAX": "掃描指紋與原指紋不匹配，已超過最大次數",
-        "READ-CARD-ERROR" : "讀卡出错.",
-        "OK": "確定"
+        "READ-CARD-ERROR" : "读取卡数据出错.",
+        "OK": "確定",
+        "OC-NO-CARD": "读卡设备没有检测到卡片,请重试.",
+        "OC-COMMON": "",
+        "OCR-FAIL": "OCR设备读卡失败,请重试."
     }
 }

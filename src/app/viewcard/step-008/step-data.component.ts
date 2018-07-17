@@ -4,6 +4,7 @@ import { TimerComponent } from '../shared/sc2-timer/sc2-timer.component';
 import { ConfirmComponent } from '../../shared';
 import { TranslateService } from '@ngx-translate/core';
 import { MsksService } from '../../shared/msks';
+import {CommonService} from '../../shared/services/common-service/common.service';
 import { Request, Response } from '@angular/http';
 import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY,
          ABORT_YES_I18N_KEY, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_CARDREADER } from '../../shared/var-setting';
@@ -20,35 +21,17 @@ export class ViewcardDataComponent implements OnInit {
     @ViewChild('readCardFail')
     public readCardFail: ConfirmComponent;
 
+    @ViewChild('openCardFailNoCard')
+    public openCardFailNoCard: ConfirmComponent;
+
+    @ViewChild('openCardFailCommon')
+    public openCardFailCommon: ConfirmComponent;
+
     messageFail: String = `The personal particulars in the new card is not acknowledged by applicant,
         please contact the officer for completing your registration.`;
 
     title: string;
     isEN: boolean;
-
-    idNo = 'D899336(6)';
-
-    nameEng = 'CHAI, Wun Ching';
-
-    nameChi = '齊煥正';
-
-    nameCcc = '7871 3562 2973';
-
-    birthdate = '01-01-1988';
-
-    sex = 'M';
-
-    symbol = '***AZ';
-
-    registration = '01-1999';
-
-    issueDate = '15-09-2018';
-
-    other = 'N/A';
-
-    condStay = 'N/A';
-
-    lenStay = 'N/A';
 
     showdata = false;
 
@@ -74,10 +57,11 @@ export class ViewcardDataComponent implements OnInit {
         // "card_type": ""
 
     constructor(private router: Router,
-        private elRef: ElementRef,
-        private route: ActivatedRoute,
-        private msksService: MsksService,
-        private translate: TranslateService
+                private elRef: ElementRef,
+                private route: ActivatedRoute,
+                private msksService: MsksService,
+                private commonService: CommonService,
+                private translate: TranslateService
     ) {}
 
     ngOnInit() {
@@ -101,63 +85,47 @@ export class ViewcardDataComponent implements OnInit {
     // M004072(5) 20180619
     processNewCard(icno, dor) {
         this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard',
-            {'contactless_password': {
-              'date_of_registration': dor,
-              'hkic_no': icno}}).subscribe((resp) => { // readhkicv2citizen
-            this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
-                if (resp1.error_info.error_code === '0') {
-                    this.carddata = {...resp1};
-                    this.showdata = true;
-                } else {
-                    this.readCardFail.show();
-                    setTimeout(() => {
-                        this.nextRoute();
-                    }, 3000);
-                }
-            });
+                                     {'contactless_password': { 'date_of_registration': dor,
+                                                                'hkic_no': icno}}).subscribe((resp) => {
+            if (resp.error_info.error_code === '0') {
+                this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
+                    if (resp1.error_info.error_code === '0') {
+                        this.carddata = {...resp1};
+                        this.showdata = true;
+                    } else {
+                        this.doReadCardFail();
+                    }
+                });
+            } else if (resp.error_info.error_code === '7') {
+                this.doOpenCardFailNoCard();
+            } else {
+                this.doOpenCardFailCommon();
+            }
         });
     }
 
     processOldCard() {
         this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', {'contactless_password': {
-              'date_of_registration': null,
-              'hkic_no': null}}).subscribe((resp) => {
-            this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp1) => {
-                if (resp1.error_info.error_code === '0') {
-                    this.carddata = {...resp1};
-                    this.showdata = true;
-                    // this.doCloseCard();
-                } else {
-                    // alert(resp1.error_info.error_code);
-                    this.readCardFail.show();
-                    setTimeout(() => {
-                        this.nextRoute();
-                    }, 3000);
-                }
-            });
-        });
-    }
-
-    doCloseCard() {
-        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            this.msksService.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+              'date_of_registration': null, 'hkic_no': null}}).subscribe((resp) => {
+              if (resp.error_info.error_code === '0') {
+                  this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp1) => {
+                      if (resp1.error_info.error_code === '0') {
+                          this.carddata = {...resp1};
+                          this.showdata = true;
+                      } else {
+                          this.doReadCardFail();
+                      }
+                  });
+              } else if (resp.error_info.error_code === '7') {
+                  this.doOpenCardFailNoCard();
+              } else {
+                  this.doOpenCardFailCommon();
+              }
         });
     }
 
     onGridReady(params) {
         params.api.sizeColumnsToFit();
-    }
-
-    goToGeneral() {
-        this.router.navigate(['/general']);
-    }
-
-    goToPersonal() {
-        this.router.navigate(['/personal']);
-    }
-
-    newIdCard() {
-        // Redirect to page, for advising applicant to click his new ID card at counter.
     }
 
     confirmIncorrect() {
@@ -172,7 +140,7 @@ export class ViewcardDataComponent implements OnInit {
         });
     }
 
-    timerExpire() {
+    timeExpire() {
         this.modalTimerFail.show();
         setTimeout(() => {
             this.nextRoute();
@@ -192,8 +160,24 @@ export class ViewcardDataComponent implements OnInit {
         }
     }
 
-    readDataFail() {
-        this.doCloseCard();
-        this.readCardFail.hide();
+    doReadCardFail() {
+        this.readCardFail.show();
+        this.goPageCollect(8000);
+    }
+
+    doOpenCardFailNoCard() {
+        this.openCardFailNoCard.show();
+        this.goPageCollect(8000);
+    }
+
+    doOpenCardFailCommon() {
+        this.openCardFailCommon.show();
+        this.goPageCollect(8000);
+    }
+
+    goPageCollect(millisecond) {
+        setTimeout(() => {
+            this.nextRoute();
+        }, millisecond);
     }
 }

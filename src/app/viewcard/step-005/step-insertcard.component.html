@@ -19,18 +19,14 @@
             </div>
         </div>
     </sc2-confirm>
-    <sc2-confirm #existCardError>
+    <sc2-confirm #existCardFail>
         <div class="app-modal-body">
             <div class="modal-message">
                 {{'SCN-GEN-VIEWCARD.EXIST-CARD' | translate}}
             </div>
-        </div>
-    </sc2-confirm>
-    <sc2-confirm #exceptionCardError>
-        <div class="app-modal-body">
-            <div class="modal-message">
-                {{'SCN-GEN-VIEWCARD.CARD-EXCEPTION' | translate}}
-            </div>
+            <div class="buttonDiv">
+                    <button type="button" class="btnModal confirm" (click)="goPageCollect(500)"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                </div>
         </div>
     </sc2-confirm>
     <sc2-confirm #modalNoROP>
@@ -40,6 +36,16 @@
             </div>
         </div>
     </sc2-confirm>
+    <sc2-confirm #maxFail>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.OCR-FAIL' | translate}}
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" class="btnModal confirm" (click)="goPageCollect(500)"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                </div>
+            </div>
+        </sc2-confirm>
     <sc2-confirm #modal1>
         <div class="app-modal-body">
             <div class="modal-message">

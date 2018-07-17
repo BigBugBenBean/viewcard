@@ -321,7 +321,9 @@
         "TIMEOUT-NO-RESPONSE":"No response received, the service is terminated.",
         "RE-SCANER-FINGER": "The scanned fingerprint does not match the original fingerprint. Please rescan.",
         "RE-SCANER-MAX": "The scanned fingerprint does not match the original fingerprint and has exceeded the maximum number of times",
-        "READ-CARD-ERROR" : "出错",
-        "OK": "OK"
+        "READ-CARD-ERROR" : "An error occurred while reading the data in the card",
+        "OK": "OK",
+        "OC-NO-CARD": "The card reader did not detect the card, please try again.",
+        "OCR-FAIL": "Fail to open the OCR device.Please try again."
     }
 }

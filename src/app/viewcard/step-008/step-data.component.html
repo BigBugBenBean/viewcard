@@ -1,6 +1,6 @@
 <div class="scn-srk-009">
     <div class="mainPanel">
-        <sc2-timer (timerExpired)="timerExpire()" class="timer"></sc2-timer>
+        <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
         <img class="imgMenu" src='../../../assets/images/menubar_4.png'>
         <sc2-confirm #modalTimerFail>
             <div class="app-modal-body">
@@ -15,8 +15,28 @@
                     {{'SCN-GEN-VIEWCARD.READ-CARD-ERROR' | translate}}
                 </div>
                 <div class="buttonDiv">
-                    <button type="button" class="btnModal confirm" (click)="readDataFail()"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                    <button type="button" class="btnModal confirm" (click)="goPageCollect(500)"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                </div>
             </div>
+        </sc2-confirm>
+        <sc2-confirm #openCardFailNoCard>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.OC-NO-CARD' | translate}}
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" class="btnModal confirm" (click)="goPageCollect(500)"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                </div>
+            </div>
+        </sc2-confirm>
+        <sc2-confirm #openCardFailCommon>
+            <div class="app-modal-body">
+                <div class="modal-message">
+                    {{'SCN-GEN-VIEWCARD.OC-COMMON' | translate}}
+                </div>
+                <div class="buttonDiv">
+                    <button type="button" class="btnModal confirm" (click)="goPageCollect(500)"><span>{{'SCN-GEN-VIEWCARD.OK' | translate}}</span></button>
+                </div>
             </div>
         </sc2-confirm>
         <!-- <sc2-timer class="timer" (timerExpired)="timerExpire()" class="timer"></sc2-timer> -->

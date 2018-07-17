@@ -7,8 +7,8 @@ import {CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_NOTICELIGHT} from '../../var-sett
 export class CommonService {
 
     constructor(private router: Router,
-                  private service: MsksService,
-                  private translate: TranslateService) {}
+                private service: MsksService,
+                private translate: TranslateService) {}
     doCloseWindow() {
         const remote = require('electron').remote;
         const window = remote.getCurrentWindow();

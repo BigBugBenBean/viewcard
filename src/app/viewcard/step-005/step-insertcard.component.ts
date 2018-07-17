@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { ConfirmModule, ConfirmComponent, TimerModule } from '../../shared';
 import { MsksService } from '../../shared/msks';
-import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY, ABORT_YES_I18N_KEY,
+import { READ_ROP140_RETRY, TIMEOUT_MILLIS, TIMEOUT_PAYLOAD, ABORT_I18N_KEY, ABORT_YES_I18N_KEY, MAX_FAIL,
          CHANNEL_ID_RR_NOTICELIGHT, CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT } from '../../shared/var-setting';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Observable';
@@ -23,14 +23,14 @@ export class InsertcardComponent implements OnInit {
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
+    @ViewChild('maxFail')
+    public maxFail: ConfirmComponent;
+
     @ViewChild('imgNext')
     public nextPage: ElementRef;
 
-    @ViewChild('existCardError')
-    public existCardError: ConfirmComponent;
-
-    @ViewChild('exceptionCardError')
-    public exceptionCardError: ConfirmComponent;
+    @ViewChild('existCardFail')
+    public existCardFail: ConfirmComponent;
 
     messageRetry: String = 'Please re-insert your ROP 140/ROP 140A form.';
     messageFail: String = 'The insert form is not be recognized, please contact the officer for completing your registration.';
@@ -40,21 +40,23 @@ export class InsertcardComponent implements OnInit {
     isEN: boolean;
     messageAbort: string;
     isAbort: boolean;
+    failNum = 0;
+    cardType: string;
 
     constructor(private router: Router,
-        private service: MsksService,
-        private route: ActivatedRoute,
-        private translate: TranslateService) { }
+                private service: MsksService,
+                private route: ActivatedRoute,
+                private translate: TranslateService) { }
 
     public ngOnInit() {
         // this.ReadHKID();
         // re activate when hardware is ready
       this.route.queryParams.subscribe((params) => {
-          const cardType = params.cardType;
-          if ('v2' === cardType) {
+          this.cardType = params.cardType;
+          if ('v2' === this.cardType) {
               this.doFlashLight('08');
               this.processNewCard();
-          }else if ('v1' === cardType) {
+          }else if ('v1' === this.cardType) {
               this.doFlashLight('07');
               this.processOldCard();
           }
@@ -88,6 +90,7 @@ export class InsertcardComponent implements OnInit {
         // this.test();
         this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', {'ocr_reader_name': 'ARH ComboSmart'}).subscribe((resp) => {
             this.doLightoff('08');
+            if (resp.error_info.error_code === '0') {
                 const datas: any[] = resp.ocr_data;
                 let dor, icno;
                 for (const i in datas) {
@@ -99,15 +102,21 @@ export class InsertcardComponent implements OnInit {
                         icno = datas[i].field_value;
                     }
                 }
-                    // this.router.navigate(['viewcard/data', 'v2', resp.icno, resp.dor] );
-                this.router.navigate(['scn-gen-viewcard/data'],
-                    { queryParams: {'cardType': 'v2', 'dor': dor, 'icno': icno}});
-                    // this.router.navigate(['scn-gen-viewcard/left'],
-                    //     { queryParams: {
-                    //         'cardType': 'v2',
-                    //         'icno': resp.icno,
-                    //         'dor': resp.dor
-                    //     }});
+                // this.router.navigate(['scn-gen-viewcard/data'],
+                //                      { queryParams: {'cardType': 'v2', 'dor': dor, 'icno': icno}});
+                    this.router.navigate(['scn-gen-viewcard/left'],
+                        { queryParams: {
+                            'cardType': 'v2',
+                            'icno': icno,
+                            'dor': dor
+                        }});
+                } else { // '19' Fail to open the OCR device
+                    if (MAX_FAIL > ++this.failNum) {
+                        this.processNewCard();
+                    } else {
+                        this.doMaxFail();
+                    }
+                }
         });
     }
 
@@ -121,12 +130,12 @@ export class InsertcardComponent implements OnInit {
                     'cardType': 'v1'
                 }});
             } else if (resp.errorcode === 'D0009') {
-                this.existCardError.show();
+                this.doExistCardFail();
             } else {
 
             // this.router.navigate(['scn-gen-viewcard/data'],
             // { queryParams: {'cardType': 'v1'}});
-                this.existCardError.show();
+                this.doExistCardFail();
             }
         });
     }
@@ -135,14 +144,11 @@ export class InsertcardComponent implements OnInit {
         if (!this.isAbort) {
             this.service.sendRequest('RR_EICCOLLECT', 'opengate', { 'timeout': TIMEOUT_PAYLOAD } ).subscribe((resp) => {
                 if (resp.errorcode === '0') {
-                    if (0) {
                         this.modalRetry.hide();
                         this.retryVal = 0;
                         this.MALocalChecking();
-                    }
-                    this.offDevice();
+                    // this.offDevice();
                 } else {
-                    if (0) {
                         this.modalRetry.show();
                         if (this.retryVal < READ_ROP140_RETRY) {
                             this.retryVal += 1;
@@ -150,7 +156,6 @@ export class InsertcardComponent implements OnInit {
                         } else {
                             this.readFail();
                         }
-                    }
                     this.ReadHKID();
                 }
             }, (error) => {
@@ -209,20 +214,15 @@ export class InsertcardComponent implements OnInit {
         }, TIMEOUT_MILLIS);
     }
 
-    flashDevice() {
-        this.service.sendRequest('RR_NOTICELIGHT', 'flash', { 'device': '05' }).subscribe((resp) => {
-            this.ReadHKID();
-        });
-    }
+    // offDevice() {
+    //     this.service.sendRequest('RR_NOTICELIGHT', 'lightoff', { 'device': '05' }).subscribe((resp) => {
+    //         setTimeout(() => {
+    //             const ref = this.nextPage.nativeElement as HTMLElement;
+    //             ref.click();
+    //         }, TIMEOUT_MILLIS);
+    //     });
+    // }
 
-    offDevice() {
-        this.service.sendRequest('RR_NOTICELIGHT', 'lightoff', { 'device': '05' }).subscribe((resp) => {
-            setTimeout(() => {
-                const ref = this.nextPage.nativeElement as HTMLElement;
-                ref.click();
-            }, TIMEOUT_MILLIS);
-        });
-    }
     langButton() {
         const browserLang = this.translate.currentLang;
         if (browserLang === 'zh-HK') {
@@ -250,15 +250,23 @@ export class InsertcardComponent implements OnInit {
         window.close();
     }
 
-    doExistCard() {
-        this.existCardError.show();
-        this.doCloseWindow();
+    doMaxFail() {
+        this.maxFail.show();
+        this.goPageCollect(8000);
     }
 
-    doExceptionCard() {
-        this.exceptionCardError.show();
+    doExistCardFail() {
+        this.existCardFail.show();
+        this.goPageCollect(8000);
+    }
+
+    goPageCollect(millisecond) {
         setTimeout(() => {
-            this.doCloseWindow();
-        }, 3000);
+            this.router.navigate(['scn-gen-viewcard/collect'], {
+            queryParams: {
+                cardType: this.cardType
+            }
+        });
+        }, millisecond);
     }
 }
