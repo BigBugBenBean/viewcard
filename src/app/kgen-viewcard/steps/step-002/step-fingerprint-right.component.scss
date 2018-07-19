@@ -1,0 +1,109 @@
+@import '../../../shared/sc2-confirm/sc2-confirm.components.scss';
+body {
+  font-family:"Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+  font-size: 23px;
+}
+.buttonTC {
+  // position: absolute;
+  // top: 27px;
+  // left: 1018px;
+
+  position: absolute;
+  // margin-top: 30px;
+  // margin-left: 1000px;
+  top: 27px;
+  left: 1018px;
+  width: 202px;
+  height: 66px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 60px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #6B6B6B;
+  border-radius: 5px;
+}
+
+.labelStay {
+  position: absolute;
+  top: 27px;
+  left: 291px;
+  width: 400px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  color: cornflowerblue;
+  white-space: pre-wrap;
+}
+
+.label1 {
+  position: absolute;
+  top: 203px;
+  left: 291px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  color: #6B6B6B;
+  white-space: pre-wrap;
+}
+
+.main-image {
+  position: absolute;
+  top: 305px;
+  left: 291px;
+  bottom: 195px;
+}
+
+.exitButton {
+  // position: absolute;
+  // top: 873px;
+  // left: 291px;
+  // bottom: 69px;
+
+  position: absolute;
+  // margin-left: 276px;
+  // margin-top: 580px;
+  top: 873px;
+  left: 291px;
+  width: 122px;
+  height: 52px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 40px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #A8A8A8;
+  border-radius: 5px;
+}
+
+.timer {
+  position: absolute;
+  left: 760px;
+}
+
+.sideimg{
+  position: absolute;
+  left: 0px;
+}
+
+.steps-div {
+  position: absolute;
+  margin-left: 73px;
+  margin-top: 20px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 42px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #A891BC;
+  // width: 230px;
+  // height: 78px;
+}
+
+.rightimage {
+  position: absolute;
+  right: 60px;
+  top: 103px;
+}
