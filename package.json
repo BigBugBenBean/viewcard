@@ -11,6 +11,7 @@
     "clean:install": "npm set progress=false && npm install",
     "clean": "npm run rimraf -- node_modules doc coverage dist compiled dll",
     "build:main:dev": "npm run clean:dist-main && cross-env mode=LOCAL  npm run webpack -- --config config/webpack.main.dev.js --progress --profile",
+    "build": "npm run clean:dist && npm run build:renderer:dev",
     "build:main:prod": "npm run clean:dist-main && cross-env mode=EXE  npm run webpack -- --config config/webpack.main.prod.js --progress --profile",
     "build:renderer:dev": "npm run clean:dist && cross-env mode=LOCAL  npm run webpack -- --config config/webpack.renderer.dev.js --progress --profile",
     "build:renderer:prod": "npm run clean:dist && cross-env mode=EXE npm run webpack -- --config config/webpack.renderer.prod.js --progress --profile",

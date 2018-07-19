@@ -228,6 +228,7 @@ export class FingerprintLeftComponent implements OnInit {
         this.service.sendRequest('RR_fptool', 'verifytmpl',
             {'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_tmpl1_in_base64': fpdataLeftTemp, 'fp_tmpl2_in_base64': fpdataCurrentFpdata})
             .subscribe((resp) => {
+                this.nextRoute();
             if (resp.match_score) {
                 if (this.cardType === 'v1') {
                     this.nextRoute();
