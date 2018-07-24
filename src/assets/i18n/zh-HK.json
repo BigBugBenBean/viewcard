@@ -378,6 +378,15 @@
         "READ-FINGERPRINT-ERROR": "獲取指紋數據異常，請檢查！",
         "UPDATE-COS-LOS-ERROR": "更新逗留數據異常，請檢查！",
         "OPEN-CARD-EXCEPTON-NOCARD": "調用開卡服務異常-沒檢測到卡，請檢查！",
-        "READER-HAVE-CARD-NOTE": "讀卡器的開門異常[D0009]，請聯系工作人員！"
+        "READER-HAVE-CARD-NOTE": "讀卡器的開門異常[D0009]，請聯系工作人員！",
+        "OPEN-GATE-FAILED-MAX": "開門失敗已超過3次，請檢查！",
+        "CARD-ABNORMAL-NO-READ-DATA": "卡片有異常，無法取卡片信息，請聯系工作人員！",
+        "UNREAD-CARD-BAD-TRY":"讀卡器無法讀取或卡片有問題，請重试！",
+        "READ-DATA-MAX": "读卡失敗次数已超过3次，請檢查！",
+        "FINGERPRINT-NOT-MATCH-FINGER": "指紋沒有匹配到哪個手指,請檢查！",
+        "WEB-SERVICE-GET-COS-LOS-EMPTY": "webservice服務獲取到los,cos數據為空，暫不支持更新!",
+        "CALL-WEB-SERVICE-EXCEPTION": "調用webservice異常:",
+        "UPDATE-FAILED-MAX": "更新失敗已超过3次数，請聯系工作人員！",
+        "NOT-APPLICABLE": "不適用"
     }
 }

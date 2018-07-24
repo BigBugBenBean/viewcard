@@ -376,7 +376,15 @@
         "READ-FINGERPRINT-ERROR": "Get Fingerprint data exception,please check！",
         "UPDATE-COS-LOS-ERROR": "Update stay information exception,please check！",
         "OPEN-CARD-EXCEPTON-NOCARD": "Call opencard service exception (NO Card),please check！",
-        "READER-HAVE-CARD-NOTE": "Card reader gate has a exception[D0009], please check！"
-
+        "READER-HAVE-CARD-NOTE": "Card reader gate has a exception[D0009], please check！",
+        "OPEN-GATE-FAILED-MAX": "The door has failed more than 3 times, please check!",
+        "CARD-ABNORMAL-NO-READ-DATA": "The card is abnormal and cannot be retrieved. Please contact the staff.",
+        "UNREAD-CARD-BAD-TRY":"The card reader could not be read or there was a problem with the card. Please try again！",
+        "READ-DATA-MAX": "The number of failed card readings has exceeded 3 times, please check!",
+        "FINGERPRINT-NOT-MATCH-FINGER": "Fingerprint does not match which finger,please check！",
+        "WEB-SERVICE-GET-COS-LOS-EMPTY": "The webservice service gets the los, cos data is empty, and does not support updates!",
+        "CALL-WEB-SERVICE-EXCEPTION": "Call webservice exception:",
+        "UPDATE-FAILED-MAX": "The update failed more than 3 times, please contact the staff!",
+        "NOT-APPLICABLE": "Not applicable"
     }
 }

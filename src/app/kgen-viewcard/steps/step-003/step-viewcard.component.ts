@@ -39,8 +39,8 @@ export class StepViewcardComponent  implements OnInit {
     carddata: any = {};
     showdata = false;
     carddataJson = '';
-    losView = '不使用';
-    cosView = '';
+    losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+    cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     los = '';
     constructor(private router: Router,
                 private httpClient: HttpClient,
@@ -75,8 +75,8 @@ export class StepViewcardComponent  implements OnInit {
             if (this.los) {
                 this.dealLosData(this.los);
             } else {
-                this.losView = 'No Use';
-                this.cosView = 'No Use';
+                this.losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+                this.cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
             }
             this.showdata = true;
         });
@@ -96,10 +96,10 @@ export class StepViewcardComponent  implements OnInit {
         }, 500);
     }
     dealLosData(losParam) {
-        const yearStr = losParam.substring(0,4);
-        const monthStr = losParam.substring(4,6);
-        const dayStr = losParam.substring(6,8)
-        const str = dayStr +'-' + monthStr + '-'+ yearStr;
+        const yearStr = losParam.substring(0, 4);
+        const monthStr = losParam.substring(4, 6);
+        const dayStr = losParam.substring(6, 8)
+        const str = dayStr + '-' + monthStr + '-' + yearStr;
         this.losView = str;
     }
 

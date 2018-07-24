@@ -282,7 +282,7 @@ export class StepFingerprintLeftComponent implements OnInit {
                     this.finger_num = resp.finger_num;
                     this.initPage();
                 } else {
-                    this.messageFail = '沒有匹配到哪個手指';
+                    this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
                     this.modalFail.show();
                 }
             } else {

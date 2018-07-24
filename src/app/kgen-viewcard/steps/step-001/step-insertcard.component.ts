@@ -137,12 +137,12 @@ export class StepInsertcardComponent implements OnInit {
         console.log('call init page fun.');
         // show old card
         if (this.cardType === 1) {
-            $('#newCard').hide();
-            $('#oldCard').show();
+           // $('#newCard').hide();
+           // $('#oldCard').show();
             this.processOldReader();
         } else {  // show new card
-            $('#oldCard').hide();
-            $('#newCard').show();
+           // $('#oldCard').hide();
+           // $('#newCard').show();
 
             this.processNewReader();
         }
@@ -169,13 +169,13 @@ export class StepInsertcardComponent implements OnInit {
                 if (resp.ocr_data.length < 3) {
                     if (this.retryReadCv2ocrVal < 2) {
                         this.processing.hide();
-                        this.messageRetry = 'IC無法讀取或卡片有問題，請重试！';
+                        this.messageRetry = 'SCN-GEN-STEPS.UNREAD-CARD-BAD-TRY';
 
                         this.modalRetry.show();
                         this.retryReadCv2ocrVal += 1;
                     } else {
                         this.processing.hide();
-                        this.messageFail = '已超过3次读卡次数，請檢查！';
+                        this.messageFail = 'SCN-GEN-STEPS.READ-DATA-MAX';
                         this.modalFail.show();
                     }
 
@@ -193,7 +193,7 @@ export class StepInsertcardComponent implements OnInit {
                     this.retryReadCv2ocrVal += 1;
                 } else {
                     this.processing.hide();
-                    this.messageFail = '已超过3次读卡次数，請檢查！';
+                    this.messageFail = 'SCN-GEN-STEPS.READ-DATA-MAX';
                     this.modalFail.show();
                 }
             }
@@ -218,7 +218,7 @@ export class StepInsertcardComponent implements OnInit {
         }
 
         if (dor == null && icno == null) {
-            this.messageFail = '卡片有異常，無法取卡片信息，請聯系工作人員！';
+            this.messageFail = 'SCN-GEN-STEPS.CARD-ABNORMAL-NO-READ-DATA';
             this.modalFail.show();
         } else {
              this.newReader_dor = dor;
@@ -265,7 +265,7 @@ export class StepInsertcardComponent implements OnInit {
                             this.retryOpenGateVal += 1;
                         } else {
                             this.processing.hide();
-                            this.messageFail = '已超过3次开门次数，請檢查！';
+                            this.messageFail = 'SCN-GEN-STEPS.OPEN-GATE-FAILED-MAX';
                             this.modalFail.show();
                         }
                     }
@@ -278,7 +278,7 @@ export class StepInsertcardComponent implements OnInit {
                         this.retryOpenGateVal += 1;
                     } else {
                         this.processing.hide();
-                        this.messageFail = '已超过3次开门次数，請檢查！';
+                        this.messageFail = 'SCN-GEN-STEPS.OPEN-GATE-FAILED-MAX！';
                         this.modalFail.show();
                     }
                 }
