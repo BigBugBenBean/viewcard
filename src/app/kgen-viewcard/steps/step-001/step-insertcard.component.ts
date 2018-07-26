@@ -162,20 +162,33 @@ export class StepInsertcardComponent implements OnInit {
      *  call readhkicv2ocrdata.
      */
     readNewCardByCv2ocrData() {
-        this.processing.show();
+        // this.processing.show();
         const payloadParam = {'ocr_reader_name':  'ARH ComboSmart' };
         this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', payloadParam).subscribe((resp) => {
             if (JSON.stringify(resp) !== '{}' && resp.error_info.error_code === '0') {
-                if (resp.ocr_data.length < 3) {
+                if (resp.ocr_data.length === 1) {
                     if (this.retryReadCv2ocrVal < 2) {
-                        this.processing.hide();
-                        this.messageRetry = 'SCN-GEN-STEPS.UNREAD-CARD-BAD-TRY';
+                        // this.processing.hide();
+                        this.messageRetry = 'SCN-GEN-STEPS.NO-CARD-OCR-READER';
 
                         this.modalRetry.show();
                         this.retryReadCv2ocrVal += 1;
                     } else {
-                        this.processing.hide();
-                        this.messageFail = 'SCN-GEN-STEPS.READ-DATA-MAX';
+                        // this.processing.hide();
+                        this.messageFail = 'SCN-GEN-STEPS.READ-CARD-FAIL-TERMINATED';
+                        this.modalFail.show();
+                    }
+
+                } else if (resp.ocr_data.length === 2) {
+                    if (this.retryReadCv2ocrVal < 2) {
+                        // this.processing.hide();
+                        this.messageRetry = 'SCN-GEN-STEPS.CANNOT-IDENTIFY-TRY';
+
+                        this.modalRetry.show();
+                        this.retryReadCv2ocrVal += 1;
+                    } else {
+                        // this.processing.hide();
+                        this.messageFail = 'SCN-GEN-STEPS.READ-CARD-FAIL-TERMINATED';
                         this.modalFail.show();
                     }
 
@@ -186,14 +199,14 @@ export class StepInsertcardComponent implements OnInit {
                 }
             } else {
                 if (this.retryReadCv2ocrVal < 2) {
-                    this.processing.hide();
-                    this.messageRetry = resp.error_info.error_message;
+                    // this.processing.hide();
+                    this.messageRetry = 'SCN-GEN-STEPS.OCR-READER-ERROR-TRY';
 
                     this.modalRetry.show();
                     this.retryReadCv2ocrVal += 1;
                 } else {
-                    this.processing.hide();
-                    this.messageFail = 'SCN-GEN-STEPS.READ-DATA-MAX';
+                    // this.processing.hide();
+                    this.messageFail = 'SCN-GEN-STEPS.READ-CARD-FAIL-TERMINATED';
                     this.modalFail.show();
                 }
             }
@@ -243,9 +256,12 @@ export class StepInsertcardComponent implements OnInit {
     /**
      * open card gate fun.
      */
+    /**
+     * open card gate fun.
+     */
     openGateFun() {
         console.log('call openGateFun fun.');
-        this.processing.show();
+        // this.processing.show();
         this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': TIMEOUT_PAYLOAD })
             .subscribe((resp) => {
                 if (resp) {
@@ -258,27 +274,28 @@ export class StepInsertcardComponent implements OnInit {
                         this.modalFail.show();
                     } else {
                         if (this.retryOpenGateVal < 2) {
-                            this.processing.hide();
-                            this.messageRetry = 'SCN-GEN-STEPS.READER-GATE-BAD';
-
+                            // this.processing.hide();
+                            // Card reader door has a problem, please try！
+                            this.messageRetry = 'SCN-GEN-STEPS.READER-GATE-FAIL-TRY';
                             this.modalRetry.show();
                             this.retryOpenGateVal += 1;
                         } else {
-                            this.processing.hide();
+                            // this.processing.hide();
                             this.messageFail = 'SCN-GEN-STEPS.OPEN-GATE-FAILED-MAX';
                             this.modalFail.show();
                         }
                     }
                 } else {
                     if (this.retryOpenGateVal < 2) {
-                        this.processing.hide();
+                        // this.processing.hide();
                         this.messageRetry = 'SCN-GEN-STEPS.READER-GATE-BAD';
 
                         this.modalRetry.show();
                         this.retryOpenGateVal += 1;
                     } else {
-                        this.processing.hide();
-                        this.messageFail = 'SCN-GEN-STEPS.OPEN-GATE-FAILED-MAX！';
+                        // this.processing.hide();
+                        // The door has failed more than 3 times, please check!
+                        this.messageFail = 'SCN-GEN-STEPS.OPEN-GATE-FAILED-MAX';
                         this.modalFail.show();
                     }
                 }

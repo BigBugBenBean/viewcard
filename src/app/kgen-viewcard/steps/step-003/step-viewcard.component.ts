@@ -42,6 +42,7 @@ export class StepViewcardComponent  implements OnInit {
     losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     los = '';
+    cos = '';
     constructor(private router: Router,
                 private httpClient: HttpClient,
                 private commonService: CommonService,
@@ -72,8 +73,10 @@ export class StepViewcardComponent  implements OnInit {
             this.carddataJson = this.localStorages.get('carddataJson');
             this.carddata = JSON.parse(this.carddataJson);
             this.los = this.carddata.los;
+            this.cos = this.carddata.cos;
             if (this.los) {
                 this.dealLosData(this.los);
+                this.cosView = this.cos;
             } else {
                 this.losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
                 this.cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
