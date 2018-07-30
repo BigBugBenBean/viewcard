@@ -59,21 +59,24 @@
         </div>
         <div class="row1 col3">
             <label>{{'SCN-GEN-VIEWCARD.ID-CARD-NO' | translate}}</label>
-            <p *ngIf="cardType === 2">{{carddata.hkic_number}}</p>
-            <p *ngIf="cardType === 1">{{carddata.icno}}</p>
+            <p>{{hkic_number_view}}</p>
+            <!--<p *ngIf="cardType === 2">{{carddata.hkic_number}}</p>-->
+            <!--<p *ngIf="cardType === 1">{{carddata.icno}}</p>-->
         </div>
         <div class="row2 col1">
 
         </div>
         <div class="row2 col2">
             <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CCC' | translate}}</label>
-            <p *ngIf="cardType === 2">{{carddata.name_ccc}}</p>
-            <p *ngIf="cardType === 1">{{carddata.ccc}}</p>
+            <p>{{name_ccc_view}}</p>
+            <!--<p *ngIf="cardType === 2">{{carddata.name_ccc}}</p>-->
+            <!--<p *ngIf="cardType === 1">{{carddata.ccc}}</p>-->
         </div>
         <div class="row2 col3">
             <label>{{'SCN-GEN-VIEWCARD.DATE-OF-BIRTH' | translate}}</label>
-            <p *ngIf="cardType === 2">{{carddata.date_of_birth}}</p>
-            <p *ngIf="cardType === 1">{{carddata.dob}}</p>
+            <p>{{date_of_birth_view}}</p>
+            <!--<p *ngIf="cardType === 2">{{carddata.date_of_birth}}</p>-->
+            <!--<p *ngIf="cardType === 1">{{carddata.dob}}</p>-->
         </div>
         <div class="row3 col1">
 
@@ -92,13 +95,14 @@
             <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
             <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
             <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
-            <img *ngIf="cardType === 1" src="data:image/png;base64,{{carddata.photo}}" height="300" width="220">
+            <!--<img *ngIf="cardType === 1" src="data:image/png;base64,{{carddata.photo}}" height="300" width="220">-->
             <img *ngIf="cardType === 2" src="data:image/png;base64,{{carddata.photo_jpg_in_base64}}" height="300" width="220">
         </div>
         <div class="row4 col2">
             <label>{{'SCN-GEN-VIEWCARD.MONTH-YEAR-REGISTRATION' | translate}}</label>
-            <p *ngIf="cardType === 2">{{carddata.date_of_ic_registration}}</p>
-            <p *ngIf="cardType === 1">{{carddata.date_of_registration}}</p>
+            <p>{{date_of_registration_view}}</p>
+            <!--<p *ngIf="cardType === 2">{{carddata.date_of_ic_registration}}</p>-->
+            <!--<p *ngIf="cardType === 1">{{carddata.date_of_registration}}</p>-->
         </div>
         <div class="row4 col3"> <!--registration-->
             <label>{{'SCN-GEN-STEPS.COND-STAY' | translate}}</label>
@@ -107,7 +111,7 @@
         </div>
         <div class="row5 col2">
             <label>{{'SCN-GEN-VIEWCARD.DATE-OF-ISSUE' | translate}}</label>
-            <p>{{carddata.date_of_first_registration}}</p>
+            <p>{{date_of_first_registration_view}}</p>
         </div>
         <div class="row5 col3">
             <label>{{'SCN-GEN-STEPS.LIMIT-OF-STAY' | translate}}</label>

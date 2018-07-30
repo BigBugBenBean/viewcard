@@ -49,12 +49,13 @@ export class StepPrivacyComponent implements OnInit {
                 this.translate.use('zh-HK');
             } else {
                 this.translate.addLangs(['en-US', 'zh-CN', 'zh-HK']);
-                this.translate.setDefaultLang('zh-HK');
+                this.translate.setDefaultLang('en-US');
                 const browserLang: string = this.translate.getBrowserLang();
-                this.translate.use(browserLang.match(/en-US|zh-HK/) ? browserLang : 'zh-HK');
+                this.translate.use(browserLang.match(/en-US|zh-HK/) ? browserLang : 'en-US');
                 lang = browserLang;
             }
             this.translate.currentLang = lang;
+            this.showCheckBox = true;
         });
     }
 
@@ -90,7 +91,6 @@ export class StepPrivacyComponent implements OnInit {
         const clientHeight = event.target.clientHeight;
         this.showScrollUp = true;
         this.showScrollDown = true;
-
         if ((scrollHeight - clientHeight) <= currScroll) {
             this.showCheckBox = true;
             this.showScrollDown = false;

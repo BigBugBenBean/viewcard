@@ -25,7 +25,7 @@ export class StepProcessingComponent implements OnInit {
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
-    messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
+    messageRetry = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     retryOpencardVal = 0;
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
@@ -172,17 +172,20 @@ export class StepProcessingComponent implements OnInit {
                 }
             } else {
                 if (resp.error_info && resp.error_info.error_code === '7') {
-                    this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-EXCEPTON-NOCARD';
+                    if (this.cardType === 1) {
+                        this.messageRetry = 'SCN-GEN-STEPS.READER-OLD-NO-CARD';
+                    } else {
+                        this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-EXCEPTON-NOCARD';
+                    }
                 } else {
-                    this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-ERROR';
+                    this.messageRetry = 'SCN-GEN-STEPS.READER-OLD-UNIDENTIFIED-CARD';
                 }
                 if (this.retryOpencardVal < 2) {
-                    this.processing.hide();
-                    this.modalRetry.show();
                     this.retryOpencardVal += 1;
+                    this.failTryAgain();
                 } else {
                     this.processing.hide();
-                    this.messageFail = '已超过3次读卡次数，請檢查！';
+                    this.messageFail = this.messageRetry;
                     this.modalFail.show();
                 }
             }

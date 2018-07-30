@@ -33,8 +33,16 @@ export class StepFingerprintLeftComponent implements OnInit {
     fingerprintInfo = '1313213213';
     cardType = 1;
     retryVal = 0;
+    retryVal_01 = 0;
+    retryVal_02 = 0;
+    retryVal_03 = 0;
     // fp_tmpl1_in_base64 = 'Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9';
     // fp_tmpl2_in_base64 = 'AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==';
+
+    // fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
+    //     + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
+    // fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
+    //     `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
     fp_tmpl1_in_base64 = '';
     fp_tmpl2_in_base64 = '';
     carddata: any = {};
@@ -88,25 +96,6 @@ export class StepFingerprintLeftComponent implements OnInit {
     }
     initPage() {
         console.log('call initPage');
-        let imgeSrc = '../../../../assets/images/image12.png';
-        // switch (this.finger_num) {
-        //     case 0 :
-        //         imgeSrc = '../../../../assets/images/image12.png';
-        //         break;
-        //     case 1 :
-        //         imgeSrc = '../../../../assets/images/image12.png';
-        //         break;
-        //     case 2 :
-        //         imgeSrc = '../../../../assets/images/image12.png';
-        //         break;
-        //     case 3 :
-        //         imgeSrc = '../../../../assets/images/image12.png';
-        //         break;
-        //     case 4 :
-        //         imgeSrc = '../../../../assets/images/image12.png';
-        //         break;
-        // }
-        // $('#fingerImage').attr('src', imgeSrc);
         this.processing.hide();
         this.startFingerprintScan();
 
@@ -156,25 +145,35 @@ export class StepFingerprintLeftComponent implements OnInit {
          this.service.sendRequest('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
         // this.service.sendRequest('RR_fptool', 'scanfp', {'arn': '', 'fp_img_format': 'bmp'}).subscribe((resp) => {
             this.processing.show();
-            if (resp) {
+            if (resp && resp.errorcode === '0') {
                 if (resp.fpdata) {
                     // change  fingerprint data type
                     this.extractimgtmpl(resp.fpdata);
                 } else {
-                    if (resp.error_info) {
-                        if (resp.error_info.error_code === '6') {
-                            this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
-                            this.processing.hide();
-                            this.modalFail.show();
-                        }
-                    } else {
-                        this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
+                    if (this.retryVal_01 < 2) {
                         this.processing.hide();
+                        this.messageRetry = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-FINGER';
+                        this.modalRetry.show();
+                        this.retryVal_01 += 1;
+                    } else {
+                        this.processing.hide();
+                        this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-LIMT-MAX';
                         this.modalFail.show();
                     }
                 }
+            } else if (resp && (resp.errorcode === '20002' || resp.errorcode === '20006')) {
+                if (this.retryVal_02 < 2) {
+                    this.processing.hide();
+                    this.messageRetry = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-FINGER';
+                    this.modalRetry.show();
+                    this.retryVal_02 += 1;
+                } else {
+                    this.processing.hide();
+                    this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-LIMT-MAX';
+                    this.modalFail.show();
+                }
             } else {
-                this.messageFail = 'SCN-GEN-STEPS.SCANNER-NOT-CONNECT';
+                this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-DEVICE-EXCEPTION';
                 this.processing.hide();
                 this.modalFail.show();
             }
@@ -279,7 +278,8 @@ export class StepFingerprintLeftComponent implements OnInit {
             if (JSON.stringify(resp) !== '{}') {
                 console.log(resp);
                 if (!isNaN(resp.finger_num)) {
-                    this.finger_num = resp.finger_num;
+                     this.finger_num = resp.finger_num;
+                     $('#finger_num_' + this.finger_num).css('display', 'block');
                     this.initPage();
                 } else {
                     this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';

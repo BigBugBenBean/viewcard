@@ -41,6 +41,11 @@ export class StepViewcardComponent  implements OnInit {
     carddataJson = '';
     losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+    hkic_number_view = '';
+    name_ccc_view = '';
+    date_of_birth_view = '';
+    date_of_registration_view = '';
+    date_of_first_registration_view = '';
     los = '';
     cos = '';
     constructor(private router: Router,
@@ -81,6 +86,23 @@ export class StepViewcardComponent  implements OnInit {
                 this.losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
                 this.cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
             }
+            if (this.cardType === 1) {
+                const icno = this.carddata.icno;
+                const lengthNum = icno.length;
+                const icon_format = icno.substring(0, lengthNum);
+                const last_str = icno.substring(lengthNum - 1, lengthNum);
+                this.hkic_number_view = icon_format + '(' + last_str + ')';
+                this.name_ccc_view = this.processCCCName(this.carddata.ccc);
+                this.date_of_birth_view = this.dealDate(this.carddata.dob);
+                this.date_of_registration_view = this.dealDate(this.carddata.date_of_registration);
+                this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
+            } else {
+                this.hkic_number_view = this.carddata.hkic_number;
+                this.name_ccc_view = this.carddata.name_ccc;
+                this.date_of_birth_view = this.dealDate(this.carddata.date_of_birth);
+                this.date_of_registration_view = this.dealDate(this.carddata.date_of_ic_registration);
+                this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
+            }
             this.showdata = true;
         });
     }
@@ -98,12 +120,38 @@ export class StepViewcardComponent  implements OnInit {
             this.nextRoute();
         }, 500);
     }
+    processCCCName(param) {
+        const reg = /.{4}/g ;
+        const rs = param.match(reg);
+        const h = [];
+        $.each(rs, function(i, v) {
+            if (h.length > 0) {
+                h.push('-' + v);
+            } else {
+                h.push(v);
+            }
+        })
+        return h.join('');
+    }
     dealLosData(losParam) {
         const yearStr = losParam.substring(0, 4);
         const monthStr = losParam.substring(4, 6);
         const dayStr = losParam.substring(6, 8)
         const str = dayStr + '-' + monthStr + '-' + yearStr;
         this.losView = str;
+    }
+    dealDate(paramDate) {
+        const yearStr = paramDate.substring(0, 4);
+        const monthStr = paramDate.substring(4, 6);
+        const dayStr = paramDate.substring(6, 8)
+        const str = dayStr + '-' + monthStr + '-' + yearStr;
+        return str;
+    }
+    dealDateMonth(paramDate) {
+        const yearStr = paramDate.substring(0, 4);
+        const monthStr = paramDate.substring(4, 6);
+        const str =  monthStr + '-' + yearStr;
+        return str;
     }
 
     /**
