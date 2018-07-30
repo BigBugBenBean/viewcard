@@ -55,7 +55,8 @@ export class StepSelectCardComponent implements OnInit {
         console.log('call insertNewCard');
         this.router.navigate(['/kgen-viewcard/insertcard'],
             { queryParams: {'lang': this.translate.currentLang, 'cardType': 2}});
-        // this.router.navigate(['/kgen-updcsls/updatecard'],
+
+        // this.router.navigate(['/kgen-viewcard/fingerprintLeft'],
         //     { queryParams: {'lang': this.translate.currentLang, 'cardType': 2}});
         return;
     }

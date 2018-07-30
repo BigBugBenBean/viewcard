@@ -25,6 +25,17 @@ body {
   border-radius: 5px;
 }
 
+.timerShowCss {
+  position: absolute;
+  top: 203px;
+  right: 50px;
+  width: 250px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  color: red;
+  white-space: pre-wrap;
+  padding: 5px;
+}
 .labelStay {
   position: absolute;
   top: 27px;

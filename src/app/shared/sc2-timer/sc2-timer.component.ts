@@ -13,6 +13,7 @@ import { TIMER_MILLIS } from '../var-setting';
 export class TimerComponent implements OnInit, OnDestroy {
     numSeconds: number;
     displayTime: string;
+    sumSeconds: number;
     timer: any;
     // timer idle
     idler: any;
@@ -32,7 +33,8 @@ export class TimerComponent implements OnInit, OnDestroy {
         this.numSeconds =  TIMER_MILLIS;
         this.displayTime = this.numSeconds + '';
         this.lastAction = Date.now();
-        this.checkInterval = 5000;
+        this.sumSeconds = 60;
+        this.checkInterval = 1000;
         this.minsToIdle = 1;
         this.showTimer = false;
     }
@@ -61,7 +63,7 @@ export class TimerComponent implements OnInit, OnDestroy {
     check() {
         console.log('RESET CHECK TRIGGER');
         const now = Date.now();
-        const timeleft = this.lastAction + this.minsToIdle * 60 * 1000;
+        const timeleft = this.lastAction + this.minsToIdle * this.sumSeconds * 1000;
         const diff = timeleft - now;
         const isIdle = diff < 0;
 

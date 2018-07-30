@@ -36,7 +36,7 @@
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="backRoute()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
                 <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
@@ -45,7 +45,17 @@
     <label class="label1" >{{'SCN-GEN-STEPS.PLACE-RIGHT-FP' | translate}}</label>
     <img src="../../../../assets/videos/insert-right-fingerprint.gif" class="rightimage">
     <!--   (click)="nextRoute()" -->
-    <img id="fingerImage" src="../../../../assets/images/image11.png" class="main-image"/>
+    <img id="finger_num_0" style="display: none" src="../../../../assets/images/fp/Fingerprint-6.png" class="main-image"/>
+    <img id="finger_num_1" style="display: none" src="../../../../assets/images/fp/Fingerprint-7.png" class="main-image"/>
+    <img id="finger_num_2" style="display: none" src="../../../../assets/images/fp/Fingerprint-8.png" class="main-image"/>
+    <img id="finger_num_3" style="display: none" src="../../../../assets/images/fp/Fingerprint-9.png" class="main-image"/>
+    <img id="finger_num_4" style="display: none" src="../../../../assets/images/fp/Fingerprint-10.png" class="main-image"/>
+    <img id="finger_num_5" style="display: none" src="../../../../assets/images/fp/Fingerprint-1.png" class="main-image"/>
+    <img id="finger_num_6" style="display: none" src="../../../../assets/images/fp/Fingerprint-2.png" class="main-image"/>
+    <img id="finger_num_7" style="display: none" src="../../../../assets/images/fp/Fingerprint-3.png" class="main-image"/>
+    <img id="finger_num_8" style="display: none" src="../../../../assets/images/fp/Fingerprint-4.png" class="main-image"/>
+    <img id="finger_num_9" style="display: none" src="../../../../assets/images/fp/Fingerprint-5.png" class="main-image"/>
+
     <input #imgNext type="hidden" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
     <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
