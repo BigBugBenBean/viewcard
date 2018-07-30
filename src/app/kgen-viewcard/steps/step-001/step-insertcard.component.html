@@ -3,8 +3,7 @@
     <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_1.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
-    <p id="timerShowDiv" class="timerShowCss">{{'SCN-GEN-STEPS.TIMEER-OUT-COUNT' | translate}} <span id="timerShow"></span> </p>
-
+    <!--<p id="timerShowDiv" class="timerShowCss">{{'SCN-GEN-STEPS.TIMEER-OUT-COUNT' | translate}} <span id="timerShow"></span> </p>-->
     <sc2-confirm #modalRetry>
         <div class="app-modal-body">
             <div class="modal-message">
@@ -39,7 +38,7 @@
             </div>
             <div class="buttonDiv">
                 <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
     </sc2-confirm>
@@ -49,7 +48,7 @@
     <img id="oldCard" *ngIf="cardType === 1" src="../../../../assets/images/insert-old-hkid.gif" class="main-image" (click) = "nextRoute()">
     <img id="newCard" *ngIf="cardType === 2" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image" (click) = "nextRoute()">
     <input #imgNext type="button" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">
     <label class="footerSteps">Insert Card</label>
 </div>

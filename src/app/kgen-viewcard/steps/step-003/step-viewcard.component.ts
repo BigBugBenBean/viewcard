@@ -8,6 +8,7 @@ import {ProcessingComponent} from '../../../shared/processing-component';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 import {CommonService} from '../../../shared/services/common-service/common.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {TimerComponent} from '../../../shared/sc2-timer';
 @Component({
     templateUrl: './step-viewcard.component.html',
     styleUrls: ['./step-viewcard.component.scss']
@@ -22,6 +23,9 @@ export class StepViewcardComponent  implements OnInit {
 
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
+
+    @ViewChild('timer')
+    public timer: TimerComponent;
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
@@ -104,6 +108,8 @@ export class StepViewcardComponent  implements OnInit {
                 this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
             }
             this.showdata = true;
+            this.timer.sumSeconds = 1;
+            this.timer.initInterval();
         });
     }
     /**

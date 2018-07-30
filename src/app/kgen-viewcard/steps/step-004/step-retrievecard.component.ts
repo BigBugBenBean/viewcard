@@ -15,9 +15,13 @@ export class StepRetrievecardComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modalCollect')
+    public modalCollect: ConfirmComponent;
+
     @ViewChild('timer')
     public timer: TimerComponent;
     messageFail= '';
+    messageCollect = '';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     cardType = 1;
     sumSeconds: number;
@@ -31,8 +35,7 @@ export class StepRetrievecardComponent implements OnInit {
     ngOnInit(): void {
         console.log('init fun');
         this.initParam();
-        this.timer.sumSeconds = 3;
-        this.timer.initInterval();
+
     }
 
     /**
@@ -59,8 +62,9 @@ export class StepRetrievecardComponent implements OnInit {
             if (this.cardType === 1) {
                 this.doReturnDoc();
             } else {
-                this.messageFail = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
-                this.modalFail.show();
+                this.messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
+                this.modalCollect.show();
+                this.timerOutFn();
             }
         });
     }
@@ -74,6 +78,10 @@ export class StepRetrievecardComponent implements OnInit {
                 this.modalFail.show();
             }
         });
+    }
+    timerOutFn() {
+        this.timer.sumSeconds = 1;
+        this.timer.initInterval();
     }
 
     processFailQuit() {

@@ -20,6 +20,9 @@ export class StepProcessingComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modal1')
+    public modal1: ConfirmComponent;
+
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
@@ -39,6 +42,8 @@ export class StepProcessingComponent implements OnInit {
     newReader_icno = null;
     carddata: any = {};
     carddataJson = '';
+    oldCardNoFlag = false;
+    isRestore = false;
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -52,7 +57,6 @@ export class StepProcessingComponent implements OnInit {
         this.initParam();
     }
     initParam() {
-
         this.route.queryParams.subscribe(params => {
             const lang = params['lang'];
             if ('en-US' === lang) {
@@ -122,14 +126,23 @@ export class StepProcessingComponent implements OnInit {
      */
     failTryAgain() {
         this.modalRetry.hide();
-        setTimeout(() => {
-            if (this.cardType === 1) {
-                this.processOldReader();
-            } else {
-                this.processNewReader();
-            }
-        }, 3000);
-
+        if (this.oldCardNoFlag) {
+            this.router.navigate(['/kgen-viewcard/insertcard'],
+                {
+                    queryParams: {
+                        'lang': this.translate.currentLang, 'cardType': this.cardType
+                    }
+                });
+            return;
+        } else {
+            setTimeout(() => {
+                if (this.cardType === 1) {
+                    this.processOldReader();
+                } else {
+                    this.processNewReader();
+                }
+            }, 3000);
+        }
     }
 
     /**
@@ -174,6 +187,8 @@ export class StepProcessingComponent implements OnInit {
                 if (resp.error_info && resp.error_info.error_code === '7') {
                     if (this.cardType === 1) {
                         this.messageRetry = 'SCN-GEN-STEPS.READER-OLD-NO-CARD';
+                        this.oldCardNoFlag = true;
+                        this.modalRetry.show();
                     } else {
                         this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-EXCEPTON-NOCARD';
                     }
@@ -276,11 +291,25 @@ export class StepProcessingComponent implements OnInit {
      * process fail quit fun.
      */
     processFailQuit() {
+
         this.modalFail.hide();
         this.doCloseCard();
         if (this.cardType === 1) {
             this.doReturnDoc();
         }
         this.backRoute();
+    }
+    processModalShow() {
+        this.modal1.show()
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+    processCancel() {
+        this.modal1.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
     }
 }

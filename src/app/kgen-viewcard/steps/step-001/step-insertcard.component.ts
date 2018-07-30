@@ -21,6 +21,9 @@ export class StepInsertcardComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modal1')
+    public modal1: ConfirmComponent;
+
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
@@ -45,6 +48,7 @@ export class StepInsertcardComponent implements OnInit {
     countNum = 30;
     initTimer: any;
     flag = false;
+    isRestore = false;
     constructor(private router: Router,
         private commonService: CommonService,
         private route: ActivatedRoute,
@@ -107,6 +111,7 @@ export class StepInsertcardComponent implements OnInit {
             } else {
                 this.messageFail = 'No card for more than 30 seconds, exit the system';
             }
+            this.modalFail.show();
         } else {
             setTimeout(() => {
                 this.commonService.doCloseWindow();
@@ -288,7 +293,8 @@ export class StepInsertcardComponent implements OnInit {
         this.timer.sumSeconds = 3;
         this.flag = true;
         this.timer.initInterval();
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': TIMEOUT_PAYLOAD })
+        // this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': TIMEOUT_PAYLOAD })
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': TIMEOUT_PAYLOAD })
             .subscribe((resp) => {
                 if (resp && resp.errorcode !== undefined ) {
                     if (resp.errorcode === '0') {
@@ -339,5 +345,19 @@ export class StepInsertcardComponent implements OnInit {
             this.commonService.doLightoff('08');
         }
         this.backRoute();
+    }
+
+    processModalShow() {
+        this.modal1.show()
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+    processCancel() {
+        this.modal1.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
     }
 }

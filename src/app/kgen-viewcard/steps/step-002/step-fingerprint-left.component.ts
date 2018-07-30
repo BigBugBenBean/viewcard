@@ -279,7 +279,7 @@ export class StepFingerprintLeftComponent implements OnInit {
                 console.log(resp);
                 if (!isNaN(resp.finger_num)) {
                      this.finger_num = resp.finger_num;
-                     $('#finger_num_' + this.finger_num).css('display', 'block');
+                     // $('#finger_num_' + this.finger_num).css('display', 'block');
                     this.initPage();
                 } else {
                     this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';

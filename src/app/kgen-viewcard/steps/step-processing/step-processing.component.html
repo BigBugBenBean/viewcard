@@ -22,6 +22,7 @@
             </div>
         </div>
     </sc2-confirm>
+
     <sc2-confirm #modalNoROP>
         <div class="app-modal-body">
             <div class="modal-message">
@@ -36,12 +37,12 @@
             </div>
             <div class="buttonDiv">
                 <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
     </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
 
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "modal1.show()">
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalShow()">
 </div>

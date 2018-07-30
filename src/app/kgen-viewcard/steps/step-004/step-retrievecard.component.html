@@ -24,6 +24,16 @@
             </div>
         </div>
     </sc2-confirm>
+    <sc2-confirm #modalCollect>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageCollect| translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="modalCollect.hide()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
     <label class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
 
     <!--   (click)="nextRoute()" -->

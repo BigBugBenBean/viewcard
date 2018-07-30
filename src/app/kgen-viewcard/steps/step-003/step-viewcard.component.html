@@ -2,7 +2,7 @@
 
 </head>
 <div class="mainPanel">
-    <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
+    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
     <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_3.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
