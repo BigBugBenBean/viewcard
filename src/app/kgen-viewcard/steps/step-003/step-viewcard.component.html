@@ -1,0 +1,125 @@
+<head>
+
+</head>
+<div class="mainPanel">
+    <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
+    <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
+    <img src="../../../../assets/images/menubar_3.png" class="sideimg" />
+    <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
+    <sc2-confirm #modalRetry>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageRetry | translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="failTryAgain()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalFail>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageFail| translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalNoROP>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{'SCN-SCK-COMMON.TIMEOUT-NO-RESPONSE' | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modal1>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageAbort | translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-process-comp #processing></sc2-process-comp>
+    <label class="label1" >{{'SCN-GEN-STEPS.CONFIRM-INFO' | translate}}</label>
+    <div class="information" [hidden]="!showdata">
+        <div class="row1 col1">
+            <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CHINESE' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.name_chinese}}</p>
+            <p *ngIf="cardType === 1">{{carddata.chinese_name}}</p>
+        </div>
+        <div class="row1 col2">
+            <label>{{'SCN-GEN-VIEWCARD.NAME-IN-ENGLISH' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.name_english}}</p>
+            <p *ngIf="cardType === 1">{{carddata.english_name}}</p>
+        </div>
+        <div class="row1 col3">
+            <label>{{'SCN-GEN-VIEWCARD.ID-CARD-NO' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.hkic_number}}</p>
+            <p *ngIf="cardType === 1">{{carddata.icno}}</p>
+        </div>
+        <div class="row2 col1">
+
+        </div>
+        <div class="row2 col2">
+            <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CCC' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.name_ccc}}</p>
+            <p *ngIf="cardType === 1">{{carddata.ccc}}</p>
+        </div>
+        <div class="row2 col3">
+            <label>{{'SCN-GEN-VIEWCARD.DATE-OF-BIRTH' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.date_of_birth}}</p>
+            <p *ngIf="cardType === 1">{{carddata.dob}}</p>
+        </div>
+        <div class="row3 col1">
+
+        </div>
+        <div class="row3 col2">
+            <label>{{'SCN-GEN-VIEWCARD.SEX' | translate}}</label>
+            <p>{{carddata.gender}}</p>
+            <!-- <label>{{'SCN-GEN-VIEWCARD.SEX' | translate}}</label>
+            <p>{{carddata.gender}}</p> -->
+        </div>
+        <div class="row3 col3">
+            <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
+            <p>{{carddata.indicators}}</p>
+        </div>
+        <div class="image">
+            <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
+            <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
+            <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
+            <img *ngIf="cardType === 1" src="data:image/png;base64,{{carddata.photo}}" height="300" width="220">
+            <img *ngIf="cardType === 2" src="data:image/png;base64,{{carddata.photo_jpg_in_base64}}" height="300" width="220">
+        </div>
+        <div class="row4 col2">
+            <label>{{'SCN-GEN-VIEWCARD.MONTH-YEAR-REGISTRATION' | translate}}</label>
+            <p *ngIf="cardType === 2">{{carddata.date_of_ic_registration}}</p>
+            <p *ngIf="cardType === 1">{{carddata.date_of_registration}}</p>
+        </div>
+        <div class="row4 col3"> <!--registration-->
+            <label>{{'SCN-GEN-STEPS.COND-STAY' | translate}}</label>
+            <p>{{cosView | translate}}</p>
+
+        </div>
+        <div class="row5 col2">
+            <label>{{'SCN-GEN-VIEWCARD.DATE-OF-ISSUE' | translate}}</label>
+            <p>{{carddata.date_of_first_registration}}</p>
+        </div>
+        <div class="row5 col3">
+            <label>{{'SCN-GEN-STEPS.LIMIT-OF-STAY' | translate}}</label>
+            <p >{{losView | translate}}</p>
+
+        </div>
+    </div>
+    <!--   (click)="nextRoute()" -->
+
+    <input #imgNext type="hidden" (click)="nextRoute()">
+    <input type="button" class="confirmButton" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="nextRoute()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <label class="footerSteps">scn-gen-step-001</label>
+</div>

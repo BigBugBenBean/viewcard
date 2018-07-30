@@ -5,7 +5,7 @@ import { NoContentComponent } from './no-content';
 import { DataResolver } from './app.resolver';
 
 export const ROUTES: Routes = [
-  { path: '', redirectTo: 'scn-gen-viewcard', pathMatch: 'full'},
-  { path: 'scn-gen-viewcard', loadChildren: './viewcard#ViewcardModule'},
+  { path: '', redirectTo: 'kgen-viewcard', pathMatch: 'full'},
+  { path: 'kgen-viewcard', loadChildren: './kgen-viewcard#ViewcardModule'},
   { path: '**',    component: NoContentComponent },
 ];

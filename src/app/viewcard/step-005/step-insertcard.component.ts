@@ -61,29 +61,6 @@ export class InsertcardComponent implements OnInit {
               this.processOldCard();
           }
       });
-
-        // this.service.sendRequest(CHANNEL_ID_RR_CARDREADER,
-        //                          'opencard', {'date_of_registration': '19800531', 'hkic_no': 'M002981(0)'})
-        // .startWith(this.service.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'flash', {'device': '03'}))
-        // .subscribe((resp1) => {
-        //     this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp) => {
-        //     });
-        // });
-
-        // this.messageAbort = ABORT_I18N_KEY;
-        // this.isAbort = false;
-        // const browserLang = this.translate.currentLang;
-        // if (browserLang === 'zh-HK') {
-        //     this.isEN = false;
-        // } else {
-        //     this.isEN = true;
-        // }
-        // this.flashDevice();
-// 07   舊卡燈
-// 08 光學閱讀器
-// 12  blue
-// 13  red
-// 14  green
     }
 
     processNewCard() {
@@ -107,7 +84,7 @@ export class InsertcardComponent implements OnInit {
                     this.router.navigate(['scn-gen-viewcard/left'],
                         { queryParams: {
                             'cardType': 'v2',
-                            'icno': icno,
+                            'icno': icno + ')',
                             'dor': dor
                         }});
                 } else { // '19' Fail to open the OCR device
@@ -132,9 +109,6 @@ export class InsertcardComponent implements OnInit {
             } else if (resp.errorcode === 'D0009') {
                 this.doExistCardFail();
             } else {
-
-            // this.router.navigate(['scn-gen-viewcard/data'],
-            // { queryParams: {'cardType': 'v1'}});
                 this.doExistCardFail();
             }
         });

@@ -34,6 +34,7 @@ export class ViewcardDataComponent implements OnInit {
     isEN: boolean;
 
     showdata = false;
+    imges_base64 = '';
 
     img = '../../../assets/images/photo1.jpg'; // set to '' if no image found or set to the Image path;
 
@@ -76,7 +77,7 @@ export class ViewcardDataComponent implements OnInit {
       this.route.queryParams.subscribe((params) => {
           this.cardType = params.cardType;
           if ('v2' === params.cardType) {
-              this.processNewCard(params.icno, params.dor);
+              this.processNewCard(params.icno + ')', params.dor);
           }else if ('v1' === params.cardType) {
               this.processOldCard();
           }
@@ -88,7 +89,8 @@ export class ViewcardDataComponent implements OnInit {
                                      {'contactless_password': { 'date_of_registration': dor,
                                                                 'hkic_no': icno}}).subscribe((resp) => {
             if (resp.error_info.error_code === '0') {
-                this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
+                // this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2citizen').subscribe((resp1) => {
+                this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2').subscribe((resp1) => {
                     if (resp1.error_info.error_code === '0') {
                         this.carddata = {...resp1};
                         this.showdata = true;
@@ -121,6 +123,15 @@ export class ViewcardDataComponent implements OnInit {
               } else {
                   this.doOpenCardFailCommon();
               }
+        });
+    }
+
+    readhkicv2photo() {
+        this.msksService.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2photo').subscribe((resp) => {
+            if (JSON.stringify(resp) !== '{}' && resp.error_info.error_code === '0') {
+                console.log('update sucess!');
+                this.imges_base64 = resp.photo_jpg_in_base64;
+            }
         });
     }
 

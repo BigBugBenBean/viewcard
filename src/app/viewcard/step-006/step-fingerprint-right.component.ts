@@ -220,6 +220,7 @@ export class FingerprintRightComponent implements OnInit {
             .subscribe((resp) => {
                 if (resp.match_score) {
                     console.log(resp);
+                    this.nextRoute();
                     if (this.cardType === 'v1') {
                         this.nextRoute();
                     } else {
