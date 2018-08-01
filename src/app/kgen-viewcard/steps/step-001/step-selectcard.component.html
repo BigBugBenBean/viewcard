@@ -1,8 +1,18 @@
 <div class="mainPanel">
-    <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
+    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
     <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_1.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
+    <sc2-confirm #modalFail>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageFail| translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
     <sc2-confirm #modal1>
         <div class="app-modal-body">
             <div class="modal-message">

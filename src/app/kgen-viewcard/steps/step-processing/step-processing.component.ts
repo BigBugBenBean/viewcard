@@ -126,7 +126,9 @@ export class StepProcessingComponent implements OnInit {
      */
     failTryAgain() {
         this.modalRetry.hide();
-        if (this.oldCardNoFlag) {
+        if (this.cardType === 1 && this.oldCardNoFlag) {
+            this.commonService.doCloseCard();
+            this.commonService.doReturnDoc();
             this.router.navigate(['/kgen-viewcard/insertcard'],
                 {
                     queryParams: {
@@ -136,11 +138,7 @@ export class StepProcessingComponent implements OnInit {
             return;
         } else {
             setTimeout(() => {
-                if (this.cardType === 1) {
-                    this.processOldReader();
-                } else {
                     this.processNewReader();
-                }
             }, 3000);
         }
     }
@@ -164,7 +162,7 @@ export class StepProcessingComponent implements OnInit {
      * close card fun.
      */
     initCloseCardForReader() {
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             this.initPage(this.cardType);
         });
     }
@@ -175,7 +173,7 @@ export class StepProcessingComponent implements OnInit {
     openCardCommonFun(cardType, payloadParam) {
         console.log('call openCardFun fun.');
         this.processing.show();
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'opencard', payloadParam).subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payloadParam).subscribe((resp) => {
             if ((JSON.stringify(resp) !== '{}' && resp.result !== false) || (resp.result !== undefined && resp.result !== false)) {
                 if (cardType === 1) {
                     this.doLightOff('07');
@@ -191,13 +189,15 @@ export class StepProcessingComponent implements OnInit {
                         this.modalRetry.show();
                     } else {
                         this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-EXCEPTON-NOCARD';
+                        if (this.retryOpencardVal < 2) {
+                            this.retryOpencardVal += 1;
+                            this.failTryAgain();
+                        } else {
+                            this.processing.hide();
+                            this.messageFail = this.messageRetry;
+                            this.modalFail.show();
+                        }
                     }
-                } else {
-                    this.messageRetry = 'SCN-GEN-STEPS.READER-OLD-UNIDENTIFIED-CARD';
-                }
-                if (this.retryOpencardVal < 2) {
-                    this.retryOpencardVal += 1;
-                    this.failTryAgain();
                 } else {
                     this.processing.hide();
                     this.messageFail = this.messageRetry;
@@ -226,7 +226,7 @@ export class StepProcessingComponent implements OnInit {
      *  read data from new reader.
      */
     readhkicv2() {
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv2').subscribe((resp) => {
             this.carddata = {...resp};
             this.fp_tmpl1_in_base64 = resp.fingerprint0;
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
@@ -253,7 +253,7 @@ export class StepProcessingComponent implements OnInit {
     }
 
     readhkicv1() {
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
             this.carddata = {...resp};
             this.fp_tmpl1_in_base64 = resp.fingerprint0;
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
@@ -269,22 +269,22 @@ export class StepProcessingComponent implements OnInit {
      */
     doFlashLight(deviceCode: string)  {
         console.log('call doFlashLight');
-        this.service.sendRequest('CHANNEL_ID_RR_NOTICELIGHT', 'flash', { 'device': deviceCode }).subscribe((resp) => { });
+        this.service.sendRequestWithLog('CHANNEL_ID_RR_NOTICELIGHT', 'flash', { 'device': deviceCode }).subscribe((resp) => { });
     }
 
     doLightOff(deviceCode: string) {
         console.log('call doLightOff');
-        this.service.sendRequest('CHANNEL_ID_RR_NOTICELIGHT', 'lightoff', { 'device': deviceCode }).subscribe((resp) => { });
+        this.service.sendRequestWithLog('CHANNEL_ID_RR_NOTICELIGHT', 'lightoff', { 'device': deviceCode }).subscribe((resp) => { });
     }
 
     /**
      * close card fun.
      */
     doCloseCard() {
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => { });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => { });
     }
     doReturnDoc() {
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     /**

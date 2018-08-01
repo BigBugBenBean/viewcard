@@ -186,7 +186,7 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     doReturnDoc() {
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
 }

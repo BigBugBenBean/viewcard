@@ -142,7 +142,7 @@ export class StepFingerprintLeftComponent implements OnInit {
      */
     startFingerprintScanner() {
         console.log('call : startFingerprintScanner fun.')
-         this.service.sendRequest('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
+         this.service.sendRequestWithLog('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
         // this.service.sendRequest('RR_fptool', 'scanfp', {'arn': '', 'fp_img_format': 'bmp'}).subscribe((resp) => {
             this.processing.show();
             if (resp && resp.errorcode === '0') {
@@ -185,7 +185,7 @@ export class StepFingerprintLeftComponent implements OnInit {
      * @param fpdata
      */
     extractimgtmpl (fpdata) {
-        this.service.sendRequest('RR_fptool', 'extractimgtmpl',
+        this.service.sendRequestWithLog('RR_fptool', 'extractimgtmpl',
             {'finger_num': this.finger_num, 'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_img_in_base64': fpdata}).subscribe((resp) => {
             if (resp) {
                 console.log(resp);
@@ -201,7 +201,7 @@ export class StepFingerprintLeftComponent implements OnInit {
      */
     verifytempl(fpdataLeftTemp, fpdataCurrentFpdata) {
         console.log('call verifytempl');
-        this.service.sendRequest('RR_fptool', 'verifytmpl',
+        this.service.sendRequestWithLog('RR_fptool', 'verifytmpl',
             {'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_tmpl1_in_base64': fpdataLeftTemp, 'fp_tmpl2_in_base64': fpdataCurrentFpdata})
             .subscribe((resp) => {
                 // old ,new pause fingerprint compare.
@@ -259,7 +259,7 @@ export class StepFingerprintLeftComponent implements OnInit {
         this.backRoute();
     }
     doReturnDoc() {
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     /**
@@ -274,7 +274,7 @@ export class StepFingerprintLeftComponent implements OnInit {
              fp_tmpl_in_base64
         }
 
-        this.service.sendRequest('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
+        this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
             if (JSON.stringify(resp) !== '{}') {
                 console.log(resp);
                 if (!isNaN(resp.finger_num)) {

@@ -58,7 +58,7 @@ export class StepRetrievecardComponent implements OnInit {
     }
 
     doCloseCard() {
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.cardType === 1) {
                 this.doReturnDoc();
             } else {
@@ -69,7 +69,7 @@ export class StepRetrievecardComponent implements OnInit {
         });
     }
     doReturnDoc() {
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
             if (resp) {
                 console.log('suess!');
                 this.timeExpire();

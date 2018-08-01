@@ -165,24 +165,6 @@ export class StepInsertcardComponent implements OnInit {
             this.processNewReader();
         }
     }
-    colck() {
-        console.log('colck')
-        if (this.countNum > 0) {
-            this.countNum--;
-            console.log('colck' + this.countNum);
-            $('#timerShow').html(this.countNum + ' S');
-        } else {
-            clearInterval(this.initTimer);
-            this.commonService.doLightoff('07');
-            if (this.translate.currentLang === 'zh-HK') {
-                this.messageFail = '超过30秒没有插卡，退出系统';
-            } else {
-                this.messageFail = 'No card for more than 30 seconds, exit the system';
-            }
-
-            this.modalFail.show();
-        }
-    }
 
 // ====================================================== Common End =======================================================================
 // ====================================================== New Reader Start =================================================================
@@ -200,7 +182,7 @@ export class StepInsertcardComponent implements OnInit {
      */
     readNewCardByCv2ocrData() {
         const payloadParam = {'ocr_reader_name':  'ARH ComboSmart' };
-        this.service.sendRequest(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', payloadParam).subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', payloadParam).subscribe((resp) => {
             if (resp.error_info !== undefined && resp.error_info.error_code === '0') {
                 if (resp.ocr_data.length === 1) {
                     if (this.retryReadCv2ocrVal < 2) {

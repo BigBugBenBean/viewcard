@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
 import {MsksService} from '../../msks';
-import {CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_NOTICELIGHT} from '../../var-setting';
+import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_NOTICELIGHT} from '../../var-setting';
 @Injectable()
 export class CommonService {
 
@@ -26,16 +26,20 @@ export class CommonService {
     }
 
     doFlashLight(deviceCode: string) {
-        this.service.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'flash', {'device': deviceCode}).subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_NOTICELIGHT, 'flash', {'device': deviceCode}).subscribe((resp) => {
         });
     }
 
     doLightoff(deviceCode: string) {
-        this.service.sendRequest(CHANNEL_ID_RR_NOTICELIGHT, 'lightoff', {'device': deviceCode}).subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_NOTICELIGHT, 'lightoff', {'device': deviceCode}).subscribe((resp) => {
         });
     }
 
+    doCloseCard() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => { });
+    }
+
     doReturnDoc() {
-        this.service.sendRequest(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 }

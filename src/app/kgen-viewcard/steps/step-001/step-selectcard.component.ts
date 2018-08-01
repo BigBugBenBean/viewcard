@@ -3,12 +3,21 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {TranslateService} from '@ngx-translate/core';
 import {CommonService} from '../../../shared/services/common-service/common.service';
+import {TimerComponent} from '../../../shared/sc2-timer';
+import {ConfirmComponent} from '../../../shared/sc2-confirm';
 
 @Component({
     templateUrl: './step-selectcard.component.html',
     styleUrls: ['./step-selectcard.component.scss']
 })
 export class StepSelectCardComponent implements OnInit {
+
+    @ViewChild('timer')
+    public timer: TimerComponent;
+    @ViewChild('modalFail')
+    public modalFail: ConfirmComponent;
+    flag = false;
+    messageFail = '';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -31,6 +40,9 @@ export class StepSelectCardComponent implements OnInit {
                 this.translate.use('zh-HK');
             }
             this.translate.currentLang = lang;
+            this.timer.sumSeconds = 10;
+            this.flag = true;
+            this.timer.initInterval();
         });
     }
 
@@ -43,9 +55,18 @@ export class StepSelectCardComponent implements OnInit {
     }
 
     timeExpire() {
-        setTimeout(() => {
-            this.commonService.doCloseWindow();
-        }, 500);
+        if (this.flag) {
+            if (this.translate.currentLang === 'zh-HK') {
+                this.messageFail = '超过30秒沒有操作，退出系统';
+            } else {
+                this.messageFail = 'No operating for more than 30 seconds, exit the system';
+            }
+            this.modalFail.show();
+        } else {
+            setTimeout(() => {
+                this.commonService.doCloseWindow();
+            }, 500);
+        }
     }
 
     /**
@@ -88,5 +109,10 @@ export class StepSelectCardComponent implements OnInit {
         } else {
             this.translate.use('zh-HK');
         }
+    }
+
+    processFailQuit() {
+        this.modalFail.hide();
+        this.backRoute();
     }
 }
