@@ -6,7 +6,7 @@ import {MsksService} from '../../../shared/msks';
 import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 import {TranslateService} from '@ngx-translate/core';
-import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT, TIMEOUT_PAYLOAD} from '../../../shared/var-setting';
+import {CHANNEL_ID_RR_CARDREADER} from '../../../shared/var-setting';
 
 @Component({
     templateUrl: './step-processing.component.html',
@@ -57,6 +57,7 @@ export class StepProcessingComponent implements OnInit {
         this.initParam();
     }
     initParam() {
+        this.processing.show();
         this.route.queryParams.subscribe(params => {
             const lang = params['lang'];
             if ('en-US' === lang) {
@@ -66,11 +67,20 @@ export class StepProcessingComponent implements OnInit {
             }
             this.translate.currentLang = lang;
             this.cardType = Number.parseInt(params['cardType']);
-            this.newReader_dor = this.localStorages.get('newReader_dor');
-            this.newReader_icno = this.localStorages.get('newReader_icno');
             this.cleanLocalstorageData();
-            this.initCloseCardForReader();
+            this.initPage();
         });
+    }
+    /**
+     * init page.
+     */
+    initPage() {
+        console.log('call init page fun.');
+        if (this.cardType === 1) {
+            this.readhkicv1()
+        } else {  // show new card
+            this.readhkicv2();
+        }
     }
 
     /**
@@ -120,108 +130,7 @@ export class StepProcessingComponent implements OnInit {
             this.translate.use('zh-HK');
         }
     }
-
-    /**
-     * 重試.
-     */
-    failTryAgain() {
-        this.modalRetry.hide();
-        if (this.cardType === 1 && this.oldCardNoFlag) {
-            this.commonService.doCloseCard();
-            this.commonService.doReturnDoc();
-            this.router.navigate(['/kgen-viewcard/insertcard'],
-                {
-                    queryParams: {
-                        'lang': this.translate.currentLang, 'cardType': this.cardType
-                    }
-                });
-            return;
-        } else {
-            setTimeout(() => {
-                    this.processNewReader();
-            }, 3000);
-        }
-    }
-
-    /**
-     * init page.
-     */
-    initPage(cardType) {
-        console.log('call init page fun.');
-        // show old card
-        if (cardType === 1) {
-            this.processOldReader();
-        } else {  // show new card
-            this.doFlashLight('08');
-            this.processNewReader();
-        }
-    }
-
-// ====================================================== Common Start =================================================================
-    /**
-     * close card fun.
-     */
-    initCloseCardForReader() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            this.initPage(this.cardType);
-        });
-    }
-
-    /**
-     *  open card fun.
-     */
-    openCardCommonFun(cardType, payloadParam) {
-        console.log('call openCardFun fun.');
-        this.processing.show();
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payloadParam).subscribe((resp) => {
-            if ((JSON.stringify(resp) !== '{}' && resp.result !== false) || (resp.result !== undefined && resp.result !== false)) {
-                if (cardType === 1) {
-                    this.doLightOff('07');
-                    this.readhkicv1();
-                } else {
-                    this.readhkicv2();
-                }
-            } else {
-                if (resp.error_info && resp.error_info.error_code === '7') {
-                    if (this.cardType === 1) {
-                        this.messageRetry = 'SCN-GEN-STEPS.READER-OLD-NO-CARD';
-                        this.oldCardNoFlag = true;
-                        this.modalRetry.show();
-                    } else {
-                        this.messageRetry = 'SCN-GEN-STEPS.OPEN-CARD-EXCEPTON-NOCARD';
-                        if (this.retryOpencardVal < 2) {
-                            this.retryOpencardVal += 1;
-                            this.failTryAgain();
-                        } else {
-                            this.processing.hide();
-                            this.messageFail = this.messageRetry;
-                            this.modalFail.show();
-                        }
-                    }
-                } else {
-                    this.processing.hide();
-                    this.messageFail = this.messageRetry;
-                    this.modalFail.show();
-                }
-            }
-        });
-    }
-// ====================================================== Common End =======================================================================
 // ====================================================== New Reader Start =================================================================
-
-    /**
-     *  read new card data.
-     */
-    processNewReader() {
-        const payload = {
-            'card_reader_id':  null,
-            'contactless_password': {
-                'date_of_registration': this.newReader_dor,
-                'hkic_no':  this.newReader_icno
-            }
-        }
-        this.openCardCommonFun(2, payload);
-    }
     /**
      *  read data from new reader.
      */
@@ -238,20 +147,6 @@ export class StepProcessingComponent implements OnInit {
 
 // ====================================================== New Reader End===================================================================
 // ====================================================== Old Reader Start=================================================================
-    /**
-     *  read old card data,call opengate.
-     */
-    processOldReader() {
-        this.doFlashLight('07');
-        const payload = {'card_reader_id': null,
-            'contactless_password': {
-                'date_of_registration': null,
-                'hkic_no': null}
-        };
-        // old Reader open card.
-        this.openCardCommonFun(1, payload);
-    }
-
     readhkicv1() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
             this.carddata = {...resp};
@@ -262,30 +157,7 @@ export class StepProcessingComponent implements OnInit {
             this.nextRoute();
         });
     }
-// ====================================================== Old Reader End =================================================================
-    /**
-     *  do flash Light.
-     * @returns {Observable<any>}
-     */
-    doFlashLight(deviceCode: string)  {
-        console.log('call doFlashLight');
-        this.service.sendRequestWithLog('CHANNEL_ID_RR_NOTICELIGHT', 'flash', { 'device': deviceCode }).subscribe((resp) => { });
-    }
-
-    doLightOff(deviceCode: string) {
-        console.log('call doLightOff');
-        this.service.sendRequestWithLog('CHANNEL_ID_RR_NOTICELIGHT', 'lightoff', { 'device': deviceCode }).subscribe((resp) => { });
-    }
-
-    /**
-     * close card fun.
-     */
-    doCloseCard() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => { });
-    }
-    doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
-    }
+// ====================================================== Old Reader End ================================================================
 
     /**
      * process fail quit fun.
@@ -293,9 +165,9 @@ export class StepProcessingComponent implements OnInit {
     processFailQuit() {
 
         this.modalFail.hide();
-        this.doCloseCard();
+        this.commonService.doCloseCard();
         if (this.cardType === 1) {
-            this.doReturnDoc();
+            this.commonService.doReturnDoc();
         }
         this.backRoute();
     }

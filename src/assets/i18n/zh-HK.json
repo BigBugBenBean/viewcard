@@ -407,6 +407,25 @@
         "READER-COLLECT-FAIL": "身份證退出失敗，請聯絡職員查詢",
         "NOT-APPLICABLE": "不適用",
         "TIMEER-OUT-COUNT": "倒計時：",
-        "COLLECT-CARD-SURE": "請取回你的卡片."
+        "COLLECT-CARD-SURE": "請取回你的卡片.",
+        "BILL-PRINT-BTN": "打印",
+        "BILL-PRINT-MESSAGE": "確認是否要打印？",
+        "COMFIRM-OCR-READER": "讀卡錯誤，如果你持有新智能身份證，你可以把它放有光學閱讀器以繼續使用服務，你需要繼續嗎？",
+        "INSERT_CARD_SCREEN_S1": "",
+        "INSERT_CARD_SCREEN_S2": "身份證閱讀器初始化失敗，系統暫停使用",
+        "INSERT_CARD_SCREEN_S3": "身份證閱讀器初始化失敗，請向職員查詢",
+        "INSERT_CARD_SCREEN_S4": "請插入身份證以使用服務",
+        "INSERT_CARD_SCREEN_S5": "請依指示插入身份證以使用服務",
+        "INSERT_CARD_SCREEN_S6": "讀卡錯誤，如果你持有新智能身份證，你可以把它放有光學閱讀器以繼續使用服務，你需要繼續嗎？",
+        "INSERT_CARD_SCREEN_S7": "晶片閱讀錯誤。請重試",
+        "INSERT_CARD_SCREEN_S7_1": "晶片閱讀錯誤超過三次，系統暫停使用",
+        "OCR_READER_SCREEN_S8" : "光學閱讀器初始化失敗，系統暫停使用",
+        "OCR_READER_SCREEN_S9" : "身份證閱讀器初始化失敗，請向職員查詢",
+        "OCR_READER_SCREEN_S10" : "請將身份證放在光學閱讀器上",
+        "OCR_READER_SCREEN_S10_1" : "已超過3次重試“請將身份證放在光學閱讀器上”，系統暫停使用",
+        "OCR_READER_SCREEN_S11" : "你所提供的身份證不能夠辦認，請確認後重試",
+        "OCR_READER_SCREEN_S11_1" : "已超過3次重試“你所提供的身份證不能夠辦認，請確認後重試”，系統暫停使用",
+        "OCR_READER_SCREEN_S12" : "RFID 閱讀錯誤。請取回你的身份證重試。",
+        "OCR_READER_SCREEN_S13" : "讀卡錯誤，服務將會中止"
     }
 }

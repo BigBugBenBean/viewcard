@@ -78,6 +78,23 @@ body {
   border-radius: 5px;
 }
 
+.printButton {
+  position: absolute;
+  top: 873px;
+  left: 431px;
+  width: 122px;
+  height: 52px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 40px;
+  font-family: 'Arial','Microsoft YaHei','黑体','宋体',sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #A8A8A8;
+  border-radius: 5px;
+}
+
 .timer {
   position: absolute;
   left: 760px;

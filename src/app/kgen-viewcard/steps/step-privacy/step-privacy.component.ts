@@ -134,7 +134,9 @@ export class StepPrivacyComponent implements OnInit {
     }
 
     nextRoute() {
-        this.router.navigate(['/kgen-viewcard/selectCard'], { queryParams: {'lang': this.translate.currentLang}});
+        // this.router.navigate(['/kgen-viewcard/selectCard'], { queryParams: {'lang': this.translate.currentLang}});
+        // 修改調整
+        this.router.navigate(['/kgen-viewcard/insertcard'], { queryParams: {'lang': this.translate.currentLang}});
     }
 
     exitRoute() {

@@ -91,7 +91,7 @@
             <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
             <p>{{carddata.indicators}}</p>
         </div>
-        <div class="image">
+        <div class="image" *ngIf="cardType === 2">
             <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
             <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
             <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
@@ -125,5 +125,6 @@
     <input type="button" class="confirmButton" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
     <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <input type="button" [hidden]="!showdata" class="printButton" value="{{'SCN-GEN-STEPS.BILL-PRINT-BTN' | translate}}" (click)="printBill()">
     <label class="footerSteps">scn-gen-step-001</label>
 </div>

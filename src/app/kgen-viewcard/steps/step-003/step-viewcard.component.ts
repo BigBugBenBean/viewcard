@@ -108,8 +108,7 @@ export class StepViewcardComponent  implements OnInit {
                 this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
             }
             this.showdata = true;
-            this.timer.sumSeconds = 1;
-            this.timer.initInterval();
+            this.initTimerSet(1, 30);
         });
     }
     /**
@@ -188,5 +187,89 @@ export class StepViewcardComponent  implements OnInit {
     doReturnDoc() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
+    /**
+     *  start print
+     */
+    printBill() {
+        const icnoStar = this.hkic_number_view.replace(/(\w)/g, function(a, b, c, d){return (c > 1 && c < 5) ? '*' : a});
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const second = date.getSeconds();
+        const datestr = day + '-' + month + '-' + year + '  ' + hour + ':' + minute + ':' + second;
+        const printcontent =
+            ' ******************************************** \n' +
+            '           香港入境事務處\n' +
+            '        Hong Kong Immigration Department\n' +
+            ' ++++++++++++++++++++++++++++++++++++++++++++ \n' +
+            ' 身份證明文件號碼: ' + icnoStar + '\n' +
+            ' Identity document number:\n' +
+            ' --------------------------------------------- \n' +
+            ' 交易類別:          查詢預約申領香港智能身份證 \n' +
+            ' Type of service:   Enquiry appointment booking \n' +
+            '                    for IC application \n' +
+            ' -------------------------------------------- \n' +
+            '  交易狀態:                完成   \n' +
+            '  Transaction state:       Completed     \n' +
+            ' -------------------------------------------- \n' +
+            '  日期及時間:     ' + datestr + '\n' +
+            '  Date and time\n' +
+            ' -------------------------------------------- \n' +
+            '  交易參考編號:  5791 7092 0600 1323\n' +
+            '  Transaction reference number:\n' +
+            ' --------------------------------------------- \n' +
+            '  備註:                     不適用\n' +
+            '  Remark:                 Unavailable\n' +
+            ' ********************************************* \n' ;
+        const dataJson = [
+            {
+                'type': 'txt',
+                'data': printcontent,
+                'height': '600',
+                'leftMargin': '10',
+                'attribute': 'normal'
+            },
+            {
+                'type': 'vspace',
+                'data': '100',
+                'height': '',
+                'leftMargin': '',
+                'attribute': ''
+            },
+            {
+                'type': 'cutpaper',
+                'data': '',
+                'height': '',
+                'leftMargin': '',
+                'attribute': 'full'
+            },
+        ];
+        console.log('call : printslip fun.' + JSON.stringify(dataJson))
+        this.printSlip(dataJson);
+    }
+    printSlip(dataJson) {
+        console.log('call : printslip fun.' + JSON.stringify(dataJson))
+        this.service.sendRequestWithLog('RR_SLIPPRINTER', 'printslip', {'data': dataJson}).subscribe((resp) => {
+            if (resp.errorcode === '0') {
+                console.log('printslip operate success');
+               // this.printCut();
+            } else {
+                console.log('call printslip fail!');
+            }
+        });
+    }
 
+    /**
+     *  setTimer.
+     * @param sumSeconds
+     * @param numSeconds
+     */
+    initTimerSet(sumSeconds, numSeconds) {
+        this.timer.sumSeconds = sumSeconds;
+        this.timer.numSeconds = numSeconds;
+        this.timer.initInterval();
+    }
 }
