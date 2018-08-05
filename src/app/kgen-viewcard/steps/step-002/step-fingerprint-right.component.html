@@ -1,5 +1,5 @@
 <div class="mainPanel">
-    <sc2-timer (timerExpired)="timeExpire()" class="timer"></sc2-timer>
+    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
     <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_2.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
@@ -30,14 +30,14 @@
             </div>
         </div>
     </sc2-confirm>
-    <sc2-confirm #modal1>
+    <sc2-confirm #modalQuit>
         <div class="app-modal-body">
             <div class="modal-message">
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
     </sc2-confirm>
@@ -58,7 +58,7 @@
     <!--<img id="finger_num_9" style="display: none" src="../../../../assets/images/fp/Fingerprint-5.png" class="main-image"/>-->
 
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">
     <label class="footerSteps">scn-gen-step-001</label>
 </div>

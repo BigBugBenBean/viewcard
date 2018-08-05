@@ -62,13 +62,13 @@
             </div>
         </div>
     </sc2-confirm>
-    <sc2-confirm #modal1>
+    <sc2-confirm #modalQuit>
         <div class="app-modal-body">
             <div class="modal-message">
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
                 <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>

@@ -1,6 +1,3 @@
-<head>
-
-</head>
 <div class="mainPanel">
     <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
     <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
@@ -26,21 +23,14 @@
             </div>
         </div>
     </sc2-confirm>
-    <sc2-confirm #modalNoROP>
-        <div class="app-modal-body">
-            <div class="modal-message">
-                {{'SCN-SCK-COMMON.TIMEOUT-NO-RESPONSE' | translate}}
-            </div>
-        </div>
-    </sc2-confirm>
-    <sc2-confirm #modal1>
+    <sc2-confirm #modalQuit>
         <div class="app-modal-body">
             <div class="modal-message">
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="modal1.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
     </sc2-confirm>
@@ -92,10 +82,6 @@
             <p>{{carddata.indicators}}</p>
         </div>
         <div class="image" *ngIf="cardType === 2">
-            <!-- <p class="imgPlaceholder" *ngIf="!img || img!=''">Image</p> -->
-            <!-- <img src="{{img}}" *ngIf="img" alt=""> -->
-            <!-- <img src='../../../assets/images/img_sample1.png' class="photo-image"> -->
-            <!--<img *ngIf="cardType === 1" src="data:image/png;base64,{{carddata.photo}}" height="300" width="220">-->
             <img *ngIf="cardType === 2" src="data:image/png;base64,{{carddata.photo_jpg_in_base64}}" height="300" width="220">
         </div>
         <div class="row4 col2">
@@ -119,12 +105,9 @@
 
         </div>
     </div>
-    <!--   (click)="nextRoute()" -->
-
     <input #imgNext type="hidden" (click)="nextRoute()">
     <input type="button" class="confirmButton" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">
     <input type="button" [hidden]="!showdata" class="printButton" value="{{'SCN-GEN-STEPS.BILL-PRINT-BTN' | translate}}" (click)="printBill()">
-    <label class="footerSteps">scn-gen-step-001</label>
 </div>

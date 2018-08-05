@@ -8,7 +8,7 @@ import {LocalStorageService} from '../../../shared/services/common-service/Local
 import {ProcessingComponent} from '../../../shared/processing-component';
 import {HttpClient} from '@angular/common/http';
 import {CommonService} from '../../../shared/services/common-service/common.service';
-import {CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
+import {TimerComponent} from '../../../shared/sc2-timer';
 @Component({
     templateUrl: './step-fingerprint-left.component.html',
     styleUrls: ['./step-fingerprint-left.component.scss']
@@ -22,15 +22,22 @@ export class StepFingerprintLeftComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modalQuit')
+    public modalQuit: ConfirmComponent;
+
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
+
+    @ViewChild('timer')
+    public timer: TimerComponent;
     messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     fingerprintInfo = '1313213213';
+    isRestore = false;
     cardType = 1;
     retryVal = 0;
     retryVal_01 = 0;
@@ -111,9 +118,7 @@ export class StepFingerprintLeftComponent implements OnInit {
     }
 
     timeExpire() {
-        setTimeout(() => {
-            this.commonService.doCloseWindow();
-        }, 500);
+        this.commonService.doCloseWindow();
     }
     /**
      * backPage.
@@ -251,15 +256,38 @@ export class StepFingerprintLeftComponent implements OnInit {
         this.startFingerprintScan();
     }
 
+    processModalShow() {
+        this.modalQuit.show()
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+
     processFailQuit() {
         this.modalFail.hide();
         if (this.cardType === 1) {
-            this.doReturnDoc();
+            this.commonService.doReturnDoc();
         }
-        this.backRoute();
+        this.commonService.initTimerSet(this.timer, 0, 5);
     }
-    doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+
+    processQuit() {
+        this.modalQuit.hide();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        if (this.cardType === 1) {
+            this.commonService.doReturnDoc();
+        }
+        this.commonService.initTimerSet(this.timer, 0, 5);
+    }
+    processCancel() {
+        this.modalQuit.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
     }
 
     /**

@@ -30,7 +30,18 @@
                 {{messageCollect| translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="modalCollect.hide()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processCollectQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalQuit>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageAbort | translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="modalQuit.hide()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
             </div>
         </div>
     </sc2-confirm>
@@ -40,7 +51,7 @@
     <img *ngIf="cardType === 1" src="../../../../assets/images/collect-old-hkid.gif" class="main-image" (click) = "nextRoute()">
     <img *ngIf="cardType === 2" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image" (click) = "nextRoute()">
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modal1.show()" />
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modal1.show()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modalQuit.show()" />
+    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modalQuit.show()">
     <label class="footerSteps">scn-gen-step-001</label>
 </div>

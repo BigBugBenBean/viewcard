@@ -18,6 +18,9 @@ export class StepRetrievecardComponent implements OnInit {
     @ViewChild('modalCollect')
     public modalCollect: ConfirmComponent;
 
+    @ViewChild('modalQuit')
+    public modalQuit: ConfirmComponent;
+
     @ViewChild('timer')
     public timer: TimerComponent;
     messageFail= '';
@@ -64,7 +67,6 @@ export class StepRetrievecardComponent implements OnInit {
             } else {
                 this.messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
                 this.modalCollect.show();
-                this.timerOutFn();
             }
         });
     }
@@ -72,27 +74,37 @@ export class StepRetrievecardComponent implements OnInit {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
             if (resp) {
                 console.log('suess!');
-                this.timeExpire();
+                this.commonService.initTimerSet(this.timer, 0, 5);
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
                 this.modalFail.show();
             }
         });
     }
-    timerOutFn() {
-        this.timer.sumSeconds = 1;
-        this.timer.initInterval();
+
+    processCollectQuit() {
+        this.modalCollect.hide();
+        this.commonService.initTimerSet(this.timer, 0, 5);
     }
 
     processFailQuit() {
         this.modalFail.hide();
-        this.backRoute();
+        this.commonService.initTimerSet(this.timer, 0, 5);
     }
 
+    /**
+     * click abort button.
+     */
+    processQuit() {
+        this.modalQuit.hide();
+        this.commonService.initTimerSet(this.timer, 0, 5);
+    }
+
+    /**
+     * count time.
+     */
     timeExpire() {
-        setTimeout(() => {
-            this.commonService.doCloseWindow();
-        }, 500);
+        this.commonService.doCloseWindow();
     }
 
     nextRoute() {

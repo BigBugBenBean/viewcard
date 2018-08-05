@@ -5,6 +5,7 @@ import {MsksService} from '../../msks';
 import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT, CHANNEL_ID_RR_NOTICELIGHT, INI_URL} from '../../var-setting';
 import {HttpClient} from '@angular/common/http';
 import {LocalStorageService} from './Local-storage.service';
+import {TimerComponent} from '../../sc2-timer';
 @Injectable()
 export class CommonService {
 
@@ -14,9 +15,10 @@ export class CommonService {
                 private httpClient: HttpClient,
                 private translate: TranslateService) {}
     doCloseWindow() {
-        const remote = require('electron').remote;
-        const window = remote.getCurrentWindow();
-        window.close();
+         this.router.navigate(['/kgen-viewcard/privacy'], { queryParams: {'lang': this.translate.currentLang}});
+        // const remote = require('electron').remote;
+        // const window = remote.getCurrentWindow();
+        // window.close();
     }
 
     changeDor(dor: string): string {
@@ -85,5 +87,21 @@ export class CommonService {
             this.ls.set('max_camera_read', data['max_camera_read']);
             this.ls.set('new_card_timeout', data['new_card_timeout']);
         });
+    }
+
+    /**
+     *  setTimer.
+     * @param sumSeconds
+     * @param numSeconds
+     */
+    initTimerSet(timer: TimerComponent, sumSeconds, numSeconds) {
+        timer.sumSeconds = sumSeconds;
+        timer.numSeconds = numSeconds;
+        let numToString = '' + numSeconds;
+        if (numToString.length < 2) {
+            numToString = '0' + numToString;
+        }
+        timer.displayTime = numToString;
+        timer.initInterval();
     }
 }

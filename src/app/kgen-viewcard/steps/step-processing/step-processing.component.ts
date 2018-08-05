@@ -7,6 +7,7 @@ import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 import {TranslateService} from '@ngx-translate/core';
 import {CHANNEL_ID_RR_CARDREADER} from '../../../shared/var-setting';
+import {TimerComponent} from '../../../shared/sc2-timer';
 
 @Component({
     templateUrl: './step-processing.component.html',
@@ -20,14 +21,17 @@ export class StepProcessingComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
-    @ViewChild('modal1')
-    public modal1: ConfirmComponent;
+    @ViewChild('modalQuit')
+    public modalQuit: ConfirmComponent;
 
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
+
+    @ViewChild('timer')
+    public timer: TimerComponent;
     messageRetry = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     retryOpencardVal = 0;
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
@@ -109,9 +113,7 @@ export class StepProcessingComponent implements OnInit {
     }
 
     timeExpire() {
-        setTimeout(() => {
-            this.commonService.doCloseWindow();
-        }, 500);
+        this.commonService.doCloseWindow();
     }
 
     /**
@@ -158,28 +160,45 @@ export class StepProcessingComponent implements OnInit {
         });
     }
 // ====================================================== Old Reader End ================================================================
-
     /**
      * process fail quit fun.
      */
     processFailQuit() {
-
         this.modalFail.hide();
         this.commonService.doCloseCard();
         if (this.cardType === 1) {
             this.commonService.doReturnDoc();
         }
-        this.backRoute();
+        this.commonService.initTimerSet(this.timer, 0, 5);
     }
+
+    /**
+     * show abort modal.
+     */
     processModalShow() {
-        this.modal1.show()
+        this.modalQuit.show()
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
         }
     }
+
+    /**
+     * click abort button.
+     */
+    processQuit() {
+        this.modalQuit.hide();
+        if (this.cardType === 1) {
+            this.commonService.doReturnDoc();
+        }
+        this.commonService.initTimerSet(this.timer, 0, 5);
+    }
+
+    /**
+     * cancel abort operation
+     */
     processCancel() {
-        this.modal1.hide();
+        this.modalQuit.hide();
         if (this.isRestore) {
             this.processing.show();
         }

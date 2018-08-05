@@ -2,7 +2,6 @@ import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MsksService} from '../../../shared/msks';
-import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
 import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {ProcessingComponent} from '../../../shared/processing-component';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
@@ -21,8 +20,8 @@ export class StepViewcardComponent  implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
-    @ViewChild('modalNoROP')
-    public modalNoROP: ConfirmComponent;
+    @ViewChild('modalQuit')
+    public modalQuit: ConfirmComponent;
 
     @ViewChild('timer')
     public timer: TimerComponent;
@@ -42,6 +41,8 @@ export class StepViewcardComponent  implements OnInit {
     imges_base64 = '';
     carddata: any = {};
     showdata = false;
+    isQuit = false;
+    isRestore = false;
     carddataJson = '';
     losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
@@ -108,7 +109,7 @@ export class StepViewcardComponent  implements OnInit {
                 this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
             }
             this.showdata = true;
-            this.initTimerSet(1, 30);
+            this.commonService.initTimerSet(this.timer, 1, 30);
         });
     }
     /**
@@ -121,9 +122,12 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     timeExpire() {
-        setTimeout(() => {
+        if (this.isQuit) {
+           this.backRoute();
+        } else {
             this.nextRoute();
-        }, 500);
+        }
+
     }
     processCCCName(param) {
         const reg = /.{4}/g ;
@@ -179,14 +183,12 @@ export class StepViewcardComponent  implements OnInit {
     processFailQuit() {
         this.modalFail.hide();
         if (this.cardType === 1) {
-            this.doReturnDoc();
+            this.commonService.doReturnDoc();
         }
-        this.backRoute();
+        this.isQuit = true;
+        this.commonService.initTimerSet(this.timer, 0, 5);
     }
 
-    doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
-    }
     /**
      *  start print
      */
@@ -263,13 +265,36 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     /**
-     *  setTimer.
-     * @param sumSeconds
-     * @param numSeconds
+     * show abort modal.
      */
-    initTimerSet(sumSeconds, numSeconds) {
-        this.timer.sumSeconds = sumSeconds;
-        this.timer.numSeconds = numSeconds;
-        this.timer.initInterval();
+    processModalShow() {
+        this.modalQuit.show()
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
     }
+
+    /**
+     * click abort button.
+     */
+    processQuit() {
+        this.modalQuit.hide();
+        if (this.cardType === 1) {
+            this.commonService.doReturnDoc();
+        }
+        this.isQuit = true;
+        this.commonService.initTimerSet(this.timer, 0, 5);
+    }
+
+    /**
+     * cancel abort operation
+     */
+    processCancel() {
+        this.modalQuit.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+    }
+
 }
