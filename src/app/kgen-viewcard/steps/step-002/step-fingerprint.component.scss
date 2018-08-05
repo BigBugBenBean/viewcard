@@ -1,0 +1,245 @@
+@import '../../../shared/sc2-confirm/sc2-confirm.components.scss';
+
+.kgen-fingerprint {
+  overflow-y: hidden;
+
+  .hand-image {
+    position: absolute;
+    width: 930px;
+    height: 420px;
+    left: 288px;
+    top: 383px;
+    background-image: url(../../../../assets/images/hands-no-circle.png);
+    background-size: 930px;
+  }
+
+  .hand-image:after {
+    content: "";
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1.5px solid #D0021B;
+    z-index: 1;
+
+    background: inherit;
+    -webkit-transform: scale(1.7);
+  }
+
+  .fp0 {
+    background-position-x: 437px;
+    background-position-y: 63%;
+  }
+
+  .fp0:after  {
+    left: 492px;
+    top: 220px;
+  }
+
+  .fp1 {
+    background-position-x: 395px;
+    background-position-y: 26%;
+  }
+
+  .fp1:after  {
+    left: 525px;
+    top: 100px;
+  }
+
+  .fp2 {
+    background-position-x: 303px;
+    background-position-y: 17%;
+  }
+
+  .fp2:after  {
+    left: 620px;
+    top: 40px;
+  }
+
+  .fp3 {
+    background-position-x: 210px;
+    background-position-y: 26%;
+  }
+
+  .fp3:after  {
+    left: 715px;
+    top: 100px;
+  }
+
+  .fp4 {
+    background-position-x: 145px;
+    background-position-y: 48%;
+  }
+
+  .fp4:after  {
+    left: 780px;
+    top: 190px;
+  }
+
+  .fp5 {
+    background-position-x: -372px;
+    background-position-y: 63%;
+  }
+
+  .fp5:after  {
+    left: 368px;
+    top: 220px;
+  }
+
+  .fp6 {
+    background-position-x: -330px;
+    background-position-y: 26%;
+  }
+
+  .fp6:after  {
+    left: 340px;
+    top: 100px;
+  }
+
+  .fp7 {
+    background-position-x: -238px;
+    background-position-y: 17%;
+  }
+
+  .fp7:after  {
+    left: 240px;
+    top: 40px;
+  }
+
+  .fp8 {
+    background-position-x: -145px;
+    background-position-y: 26%;
+  }
+
+  .fp8:after  {
+    left: 145px;
+    top: 100px;
+  }
+
+  .fp9 {
+    background-position-x: -82px;
+    background-position-y: 47%;
+  }
+
+  .fp9:after  {
+    left: 77px;
+    top: 190px;
+  }
+
+  .mainPanel {
+    width: 1280px;
+    height: 1024px;
+    background-color: #fffdf4;
+    position: relative;
+
+    .steps-div {
+      position: absolute;
+      margin-left: 73px;
+      margin-top: 20px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 42px;
+      font-weight: bold;
+      color: #FFFFFF;
+      background: #A891BC;
+      // width: 230px;
+      // height: 78px;
+    }
+  }
+
+  .sidebar {
+    // width: 250px;
+    // background-color: #fffdf4;
+    // padding-right: 0;
+    // float: left;
+
+    left: 0px;
+    position: absolute;
+  }
+
+  // .sidebar img{
+  //     width: 100%;
+  //     height: 1024px;
+  // }
+
+  .headerText {
+    position: absolute;
+    top: 203px;
+    left: 291px;
+    font-size: 36px;
+    opacity: 1;
+    width: 552px;
+    color: #333333;
+    line-height: 48px;
+    white-space: pre-wrap;
+  }
+
+  .rightimage {
+    position: absolute;
+    right: 60px;
+    top: 183px;
+  }
+
+  .content {
+    position: absolute;
+    top: 383px;
+    right: 63px;
+  }
+
+  div.content {
+    position: sticky;
+  }
+
+  .exitButton {
+    // position: absolute;
+    // top: 873px;
+    // left: 291px;
+    // bottom: 69px;
+
+    position: absolute;
+    top: 873px;
+    left: 291px;
+    width: 122px;
+    height: 52px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #A8A8A8;
+    border-radius: 5px;
+  }
+
+  .timer {
+    position: absolute;
+    left: 760px;
+  }
+
+  .pageName {
+    position: absolute;
+    bottom: 5px;
+    right: 856px;
+    opacity: 1;
+    color: #bdbdbd;
+    font-size: 18px;
+    line-height: 21px;
+  }
+
+  .buttonTC {
+    position: absolute;
+    top: 27px;
+    left: 1018px;
+    width: 202px;
+    height: 66px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 60px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #6B6B6B;
+    border-radius: 5px;
+  }
+
+}
