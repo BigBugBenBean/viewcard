@@ -7,7 +7,7 @@ import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 import {ProcessingComponent} from '../../../shared/processing-component';
 import {CommonService} from '../../../shared/services/common-service/common.service';
-import {CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
+import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
 import {TimerComponent} from '../../../shared/sc2-timer';
 @Component({
     templateUrl: './step-fingerprint-right.component.html',
@@ -37,6 +37,7 @@ export class StepFingerprintRightComponent implements OnInit {
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     fingerprintInfo = '1313213213';
     isRestore = false;
+    isAbort = false;
     cardType = 1;
     retryVal = 0;
     retryVal_01 = 0;
@@ -180,6 +181,9 @@ export class StepFingerprintRightComponent implements OnInit {
                  this.processing.hide();
                  this.modalFail.show();
              }
+         }, (error) => {
+             console.log('takephoto ERROR ' + error);
+             this.doCloseCard();
          });
     }
 
@@ -194,6 +198,9 @@ export class StepFingerprintRightComponent implements OnInit {
                 console.log(resp);
                 this.verifytempl(this.fptemp, resp.fp_tmpl_in_base64);
             }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.doCloseCard();
         });
     }
 
@@ -243,6 +250,9 @@ export class StepFingerprintRightComponent implements OnInit {
                         this.modalFail.show();
                     }
                 }
+            }, (error) => {
+                console.log('verifytmpl ERROR ' + error);
+                this.doCloseCard();
             });
     }
 
@@ -254,6 +264,11 @@ export class StepFingerprintRightComponent implements OnInit {
         this.startFingerprintScan();
     }
 
+    processFailQuit() {
+        this.modalFail.hide();
+        this.doCloseCard();
+    }
+
     processModalShow() {
         this.modalQuit.show()
         if (this.processing.visible) {
@@ -262,30 +277,57 @@ export class StepFingerprintRightComponent implements OnInit {
         }
     }
 
-    processFailQuit() {
-        this.modalFail.hide();
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
-        }
-        this.commonService.initTimerSet(this.timer, 0, 5);
-    }
-
     processQuit() {
         this.modalQuit.hide();
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
         }
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
-        }
-        this.commonService.initTimerSet(this.timer, 0, 5);
+        this.isAbort = true;
+        this.doStopScan();
     }
     processCancel() {
         this.modalQuit.hide();
         if (this.isRestore) {
             this.processing.show();
         }
+    }
+    doCloseCard() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            if (this.cardType === 1) {
+                this.doReturnDoc();
+            } else {
+                if (this.isAbort) {
+                    this.backRoute();
+                } else {
+                    this.commonService.initTimerSet(this.timer, 0, 5);
+                }
+            }
+        }, (error) => {
+            console.log('closecard ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
+        });
+    }
+
+    doReturnDoc() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            if (this.isAbort) {
+                this.backRoute();
+            } else {
+                this.commonService.initTimerSet(this.timer, 0, 5);
+            }
+        }, (error) => {
+            console.log('returndoc ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
+        });
+    }
+    doStopScan() {
+        this.service.sendRequestWithLog('RR_FPSCANNERREG', 'stopscan').subscribe(() => {
+            this.doCloseCard();
+        }, (error) => {
+            console.log('stopscan ERROR ' + error);
+            this.doCloseCard();
+        });
     }
     getfingernum(fp_tmpl_in_base64) {
         const playloadParam =  {
@@ -310,6 +352,9 @@ export class StepFingerprintRightComponent implements OnInit {
                 this.messageFail = 'SCN-GEN-STEPS.READ-CARD-ERROR';
                 this.modalFail.show();
             }
+        }, (error) => {
+            console.log('getfingernum ERROR ' + error);
+            this.doCloseCard();
         });
     }
 }

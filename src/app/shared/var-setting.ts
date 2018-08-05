@@ -3,7 +3,7 @@ export const READ_HKID_RETRY: Number = 3;
 export const RR_FPSCANNERREG_MAX_RETRY: Number = 3;
 export const TIMEOUT_MILLIS = 1000;
 export const TIMER_MILLIS = 30;
-export const TIMEOUT_PAYLOAD = 5000;
+export const TIMEOUT_PAYLOAD = 1000;
 export const INI_URL = '/terminal/kioskini';
 // export const INI_URL = 'http://localhost:8080/terminal/kioskini';
 // DISPLAY EXPORT

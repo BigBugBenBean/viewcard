@@ -15,10 +15,11 @@ export class CommonService {
                 private httpClient: HttpClient,
                 private translate: TranslateService) {}
     doCloseWindow() {
-         this.router.navigate(['/kgen-viewcard/privacy'], { queryParams: {'lang': this.translate.currentLang}});
-        // const remote = require('electron').remote;
-        // const window = remote.getCurrentWindow();
-        // window.close();
+         // this.router.navigate(['/kgen-viewcard/privacy'], { queryParams: {'lang': this.translate.currentLang}});
+         // return;
+        const remote = require('electron').remote;
+                // const window = remote.getCurrentWindow();
+                // window.close();
     }
 
     changeDor(dor: string): string {
@@ -47,6 +48,10 @@ export class CommonService {
 
     doReturnDoc() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+    }
+
+    checkFpNull(fpObj: any) {
+        return fpObj === null || fpObj === 'null' || fpObj === '';
     }
 
     /**

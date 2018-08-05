@@ -397,6 +397,8 @@
         "CARD-ABNORMAL-NO-READ-DATA": "卡片有異常，無法取卡片信息，請聯系工作人員！",
         "UNREAD-CARD-BAD-TRY":"讀卡器無法讀取或卡片有問題，請重试！",
         "READ-DATA-MAX": "读卡失敗次数已超过3次，請檢查！",
+        "FINGER-FLAT": "手指平放指紋掃描器上。",
+        "MESSAGE-TIMEOUT": "操作超時。請到收集櫃檯尋求幫助。",
         "FINGERPRINT-NOT-MATCH-FINGER": "指紋沒有匹配到哪個手指,請檢查！",
         "FINGERPRINT-NOT-DETECT-FINGER": "指纹器没有检测到手指，请放手指到指纹器重试",
         "FINGERPRINT-NOT-DETECT-LIMT-MAX": "已經超過3次沒有檢測到手指的指紋，系統將中止退出！",

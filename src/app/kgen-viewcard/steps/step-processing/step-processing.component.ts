@@ -103,7 +103,7 @@ export class StepProcessingComponent implements OnInit {
         this.localStorages.set('fp_tmpl1_in_base64', this.fp_tmpl1_in_base64);
         this.localStorages.set('fp_tmpl2_in_base64', this.fp_tmpl2_in_base64);
         this.localStorages.set('carddataJson', this.carddataJson);
-        this.router.navigate(['/kgen-viewcard/fingerprintLeft'],
+        this.router.navigate(['/kgen-viewcard/fingerprint'],
             {
                 queryParams: {
                     'lang': this.translate.currentLang, 'cardType': this.cardType
@@ -132,6 +132,61 @@ export class StepProcessingComponent implements OnInit {
             this.translate.use('zh-HK');
         }
     }
+
+    /**
+     * handle ..
+     * @param fp_tmpl1_in_base64
+     * @param fp_tmpl2_in_base64
+     */
+    handleFingerNumber(fp_tmpl1_in_base64, fp_tmpl2_in_base64) {
+        if (!this.commonService.checkFpNull(fp_tmpl1_in_base64)) {
+            this.getFingerNumber(fp_tmpl1_in_base64, (rp1) => {
+                this.localStorages.set('fp_tmpl1_fingernum', rp1.finger_num.toString());
+                if (!this.commonService.checkFpNull(fp_tmpl2_in_base64)) {
+                    this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
+                        this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
+                    });
+                } else {
+                    this.localStorages.set('fp_tmpl2_fingernum', null);
+                }
+            });
+        } else {
+            this.localStorages.set('fp_tmpl1_fingernum', null);
+            if (!this.commonService.checkFpNull(fp_tmpl2_in_base64)) {
+                this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
+                    this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
+                });
+            } else {
+                this.localStorages.set('fp_tmpl2_fingernum', null);
+            }
+        }
+        this.nextRoute();
+    }
+
+    /**
+     * get finger num.
+     * @param fp_tmpl_in_base64
+     */
+    getFingerNumber(fp_tmpl_in_base64: string,  callback: (resp) => void = (resp) => {}) {
+        const playloadParam =  {
+            'arn': '',
+            'fp_tmpl_format': 'Morpho_PkCompV2',
+            'fp_tmpl_in_base64':  '' +  fp_tmpl_in_base64
+        }
+        this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
+                console.log(resp);
+                if (resp.error_info.error_code === '0') {
+                    // resp.finger_num = Math.floor(Math.random() * Math.floor(10)).toString();
+                    callback(resp);
+                } else {
+                    this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
+                    this.modalFail.show();
+                }
+        }, (error) => {
+            console.log('getfingernum ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
+        });
+    }
 // ====================================================== New Reader Start =================================================================
     /**
      *  read data from new reader.
@@ -143,6 +198,7 @@ export class StepProcessingComponent implements OnInit {
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
             this.carddataJson = JSON.stringify(this.carddata);
             this.processing.hide();
+            this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
             this.nextRoute();
         });
     }
@@ -156,6 +212,7 @@ export class StepProcessingComponent implements OnInit {
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
             this.carddataJson = JSON.stringify(this.carddata);
             this.processing.hide();
+            this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
             this.nextRoute();
         });
     }

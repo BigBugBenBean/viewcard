@@ -21,6 +21,9 @@ export class StepRetrievecardComponent implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('processing')
+    public processing: ProcessingComponent;
+
     @ViewChild('timer')
     public timer: TimerComponent;
     messageFail= '';
@@ -28,6 +31,8 @@ export class StepRetrievecardComponent implements OnInit {
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     cardType = 1;
     sumSeconds: number;
+    isRestore = false;
+    isAbort = false;
     constructor(private router: Router,
                 private commonService: CommonService,
                 private route: ActivatedRoute,
@@ -54,50 +59,68 @@ export class StepRetrievecardComponent implements OnInit {
             }
             this.translate.currentLang = lang;
             this.cardType = Number.parseInt(params['cardType']);
-           this.doCloseCard();
             this.commonService.doLightoff('07');
             this.commonService.doLightoff('08');
+            this.doCloseCard();
         });
     }
 
+    processFailQuit() {
+        this.modalFail.hide();
+        this.doCloseCard();
+    }
+
+    processModalShow() {
+        this.modalQuit.show()
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+
+    processQuit() {
+        this.modalQuit.hide();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.isAbort = true;
+        this.doCloseCard();
+    }
+    processCancel() {
+        this.modalQuit.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+    }
     doCloseCard() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.cardType === 1) {
                 this.doReturnDoc();
             } else {
-                this.messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
-                this.modalCollect.show();
+                if (this.isAbort) {
+                    this.backRoute();
+                } else {
+                    this.commonService.initTimerSet(this.timer, 0, 5);
+                }
             }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
         });
     }
+
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
-            if (resp) {
-                console.log('suess!');
-                this.commonService.initTimerSet(this.timer, 0, 5);
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            if (this.isAbort) {
+                this.backRoute();
             } else {
-                this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
-                this.modalFail.show();
+                this.commonService.initTimerSet(this.timer, 0, 5);
             }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
         });
-    }
-
-    processCollectQuit() {
-        this.modalCollect.hide();
-        this.commonService.initTimerSet(this.timer, 0, 5);
-    }
-
-    processFailQuit() {
-        this.modalFail.hide();
-        this.commonService.initTimerSet(this.timer, 0, 5);
-    }
-
-    /**
-     * click abort button.
-     */
-    processQuit() {
-        this.modalQuit.hide();
-        this.commonService.initTimerSet(this.timer, 0, 5);
     }
 
     /**

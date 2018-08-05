@@ -25,6 +25,7 @@ import {FingerprintService} from '../shared/services/fingerprint-service/fingerp
 import {ReadcardService} from '../shared/services/readcard-service/readcard.service';
 import {CommonService} from '../shared/services/common-service/common.service';
 import {StepProcessingComponent} from './steps/step-processing/step-processing.component';
+import {StepFingerprintComponent} from './steps/step-002/step-fingerprint.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'privacy', pathMatch: 'full' },
@@ -35,6 +36,7 @@ const routes: Routes = [
     { path: 'processing', component: StepProcessingComponent },
     { path: 'fingerprintLeft', component: StepFingerprintLeftComponent },
     { path: 'fingerprintRight', component: StepFingerprintRightComponent },
+    { path: 'fingerprint', component: StepFingerprintComponent },
     { path: 'viewcard', component: StepViewcardComponent },
     { path: 'retrievecard', component: StepRetrievecardComponent }
 
@@ -51,6 +53,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         StepProcessingComponent,
         StepFingerprintLeftComponent,
         StepFingerprintRightComponent,
+        StepFingerprintComponent,
         StepViewcardComponent,
         StepRetrievecardComponent
     ],

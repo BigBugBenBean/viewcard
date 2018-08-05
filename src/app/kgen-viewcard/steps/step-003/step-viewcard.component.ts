@@ -8,6 +8,7 @@ import {LocalStorageService} from '../../../shared/services/common-service/Local
 import {CommonService} from '../../../shared/services/common-service/common.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {TimerComponent} from '../../../shared/sc2-timer';
+import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
 @Component({
     templateUrl: './step-viewcard.component.html',
     styleUrls: ['./step-viewcard.component.scss']
@@ -43,6 +44,7 @@ export class StepViewcardComponent  implements OnInit {
     showdata = false;
     isQuit = false;
     isRestore = false;
+    isAbort = false;
     carddataJson = '';
     losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
@@ -180,15 +182,6 @@ export class StepViewcardComponent  implements OnInit {
         }
     }
 
-    processFailQuit() {
-        this.modalFail.hide();
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
-        }
-        this.isQuit = true;
-        this.commonService.initTimerSet(this.timer, 0, 5);
-    }
-
     /**
      *  start print
      */
@@ -264,9 +257,11 @@ export class StepViewcardComponent  implements OnInit {
         });
     }
 
-    /**
-     * show abort modal.
-     */
+    processFailQuit() {
+        this.modalFail.hide();
+        this.doCloseCard();
+    }
+
     processModalShow() {
         this.modalQuit.show()
         if (this.processing.visible) {
@@ -275,26 +270,49 @@ export class StepViewcardComponent  implements OnInit {
         }
     }
 
-    /**
-     * click abort button.
-     */
     processQuit() {
         this.modalQuit.hide();
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
         }
-        this.isQuit = true;
-        this.commonService.initTimerSet(this.timer, 0, 5);
+        this.isAbort = true;
+        this.doCloseCard();
     }
-
-    /**
-     * cancel abort operation
-     */
     processCancel() {
         this.modalQuit.hide();
         if (this.isRestore) {
             this.processing.show();
         }
+    }
+    doCloseCard() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            if (this.cardType === 1) {
+                this.doReturnDoc();
+            } else {
+                if (this.isAbort) {
+                    this.backRoute();
+                } else {
+                    this.commonService.initTimerSet(this.timer, 0, 5);
+                }
+            }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
+        });
+    }
+
+    doReturnDoc() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            if (this.isAbort) {
+                this.backRoute();
+            } else {
+                this.commonService.initTimerSet(this.timer, 0, 5);
+            }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.commonService.initTimerSet(this.timer, 0, 5);
+        });
     }
 
 }
