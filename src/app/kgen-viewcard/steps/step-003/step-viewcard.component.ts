@@ -190,6 +190,21 @@ export class StepViewcardComponent  implements OnInit {
      * backPage.
      */
     backRoute() {
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        if (this.modalPrintBill.visible) {
+            this.modalPrintBill.hide();
+        }
         this.commonService.doCloseWindow();
     }
 
@@ -207,6 +222,9 @@ export class StepViewcardComponent  implements OnInit {
      *  start print
      */
     printBill() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         // this.hkic_number_view = 'M004143(8)';
         const icnoStar = this.hkic_number_view.replace(/(\w)/g, function(a, b, c, d){return (c > 1 && c < 5) ? '*' : a});
         const date = new Date();
@@ -276,13 +294,22 @@ export class StepViewcardComponent  implements OnInit {
         this.printSlip(dataJson);
     }
     printSlip(dataJson) {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         console.log('call : printslip fun.' + JSON.stringify(dataJson))
         this.service.sendRequestWithLog('RR_SLIPPRINTER', 'printslip', {'data': dataJson}).subscribe((resp) => {
             if (resp.errorcode === '0') {
                 console.log('printslip operate success');
+                if (this.timeOutPause || this.isAbort) {
+                    return;
+                }
               this.nextRoute();
             } else {
                 console.log('call printslip fail!');
+                if (this.timeOutPause || this.isAbort) {
+                    return;
+                }
                 this.nextRoute();
             }
         }, (error) => {
@@ -307,7 +334,6 @@ export class StepViewcardComponent  implements OnInit {
     processQuit() {
         this.modalQuit.hide();
         if (this.processing.visible) {
-            this.isRestore = true;
             this.processing.hide();
         }
         this.isAbort = true;
@@ -320,9 +346,13 @@ export class StepViewcardComponent  implements OnInit {
         }
     }
     doCloseCard() {
+        this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
+                setTimeout(() => {
+                    this.backRoute();
+                }, 2000);
             } else {
                 this.backRoute();
             }
@@ -333,16 +363,7 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            setTimeout(() => {
-                this.backRoute();
-            }, 2000);
-        }, (error) => {
-            console.log('returndoc ERROR ' + error);
-            setTimeout(() => {
-                this.backRoute();
-            }, 2000);
-        });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     processNextPrint() {

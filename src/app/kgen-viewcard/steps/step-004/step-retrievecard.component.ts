@@ -102,14 +102,15 @@ export class StepRetrievecardComponent implements OnInit {
         }
     }
     doCloseCard() {
+        this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
                 setTimeout(() => {
                     this.backRoute();
-                }, 1000);
+                }, 2000);
             } else {
-                this.modalCollect.show();
+                this.modalCollectShow();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
@@ -119,8 +120,19 @@ export class StepRetrievecardComponent implements OnInit {
         });
     }
 
+    modalCollectShow() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalCollect.show();
+    }
+
     processCollectQuit() {
         this.modalCollect.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
         setTimeout(() => {
             this.backRoute();
         }, 2000);
@@ -149,6 +161,9 @@ export class StepRetrievecardComponent implements OnInit {
     }
 
     nextRoute() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         this.router.navigate(['/kgen-viewcard/privacy'], { queryParams: {'lang': this.translate.currentLang}});
     }
 
@@ -156,7 +171,6 @@ export class StepRetrievecardComponent implements OnInit {
      * backPage.
      */
     backRoute() {
-        this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
         }
