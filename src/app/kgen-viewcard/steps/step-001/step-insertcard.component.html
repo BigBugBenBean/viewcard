@@ -76,8 +76,8 @@
     <label class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
     <sc2-process-comp #processing></sc2-process-comp>
     <!--   (click)="nextRoute()" -->
-    <img id="oldCard" *ngIf="cardType === 1" src="../../../../assets/images/insert-old-hkid.gif" class="main-image">
-    <img id="newCard" *ngIf="cardType === 2" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image">
+    <img id="oldCard" *ngIf="readType === 1" src="../../../../assets/images/insert-old-hkid.gif" class="main-image">
+    <img id="newCard" *ngIf="readType === 2" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="button" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
     <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">

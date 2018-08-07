@@ -24,6 +24,9 @@ export class StepViewcardComponent  implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalPrintBill')
+    public modalPrintBill: ConfirmComponent;
+
     @ViewChild('timer')
     public timer: TimerComponent;
 
@@ -32,22 +35,25 @@ export class StepViewcardComponent  implements OnInit {
     messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messagePrint = 'SCN-GEN-STEPS.BILL-PRINT-MESSAGE';
     title: string;
     api_path = ''
     img = '../../../../assets/images/photo1.jpg'; // set to '' if no image found or set to the Image path;
 
     buttonNum: Number = 2;
     cardType = 1;
-
+    readType = 1;
     imges_base64 = '';
     carddata: any = {};
     showdata = false;
     isQuit = false;
     isRestore = false;
     isAbort = false;
+    timeOutPause = false;
     carddataJson = '';
     losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
     cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+    deviceId = 'K1-SCK-03';
     hkic_number_view = '';
     name_ccc_view = '';
     date_of_birth_view = '';
@@ -97,7 +103,7 @@ export class StepViewcardComponent  implements OnInit {
                 const icno = this.carddata.icno;
                 const lengthNum = icno.length;
                 const icon_format = icno.substring(0, lengthNum);
-                const last_str = icno.substring(lengthNum - 1, lengthNum);
+                const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
                 this.hkic_number_view = icon_format + '(' + last_str + ')';
                 this.name_ccc_view = this.processCCCName(this.carddata.ccc);
                 this.date_of_birth_view = this.dealDate(this.carddata.dob);
@@ -118,18 +124,33 @@ export class StepViewcardComponent  implements OnInit {
      * nextPage.
      */
     nextRoute() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         this.router.navigate(['/kgen-viewcard/retrievecard'],
             { queryParams: {'lang': this.translate.currentLang, 'cardType': this.cardType}});
         return;
     }
 
     timeExpire() {
-        if (this.isQuit) {
-           this.backRoute();
-        } else {
-            this.nextRoute();
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
         }
-
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        if (this.modalPrintBill.visible) {
+            this.modalPrintBill.hide();
+        }
+        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalFail.show();
     }
     processCCCName(param) {
         const reg = /.{4}/g ;
@@ -186,15 +207,25 @@ export class StepViewcardComponent  implements OnInit {
      *  start print
      */
     printBill() {
+        // this.hkic_number_view = 'M004143(8)';
         const icnoStar = this.hkic_number_view.replace(/(\w)/g, function(a, b, c, d){return (c > 1 && c < 5) ? '*' : a});
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
+        let monthStr = month + '';
+        if (month < 10) {
+            monthStr = '0' + month;
+        }
         const day = date.getDate();
+        let dayStr = day + '';
+        if (day < 10) {
+            dayStr = '0' + dayStr;
+        }
         const hour = date.getHours();
         const minute = date.getMinutes();
         const second = date.getSeconds();
-        const datestr = day + '-' + month + '-' + year + '  ' + hour + ':' + minute + ':' + second;
+        const datestr = dayStr + '-' + monthStr + '-' + year + '  ' + hour + ':' + minute + ':' + second;
+        const billNo = this.deviceId + '_' + year + monthStr + dayStr + hour + minute + second;
         const printcontent =
             ' ******************************************** \n' +
             '           香港入境事務處\n' +
@@ -203,9 +234,8 @@ export class StepViewcardComponent  implements OnInit {
             ' 身份證明文件號碼: ' + icnoStar + '\n' +
             ' Identity document number:\n' +
             ' --------------------------------------------- \n' +
-            ' 交易類別:          查詢預約申領香港智能身份證 \n' +
-            ' Type of service:   Enquiry appointment booking \n' +
-            '                    for IC application \n' +
+            ' 交易類別:          查看芯片中的個人數據 \n' +
+            ' Type of service:   View personal data in chip \n' +
             ' -------------------------------------------- \n' +
             '  交易狀態:                完成   \n' +
             '  Transaction state:       Completed     \n' +
@@ -213,7 +243,7 @@ export class StepViewcardComponent  implements OnInit {
             '  日期及時間:     ' + datestr + '\n' +
             '  Date and time\n' +
             ' -------------------------------------------- \n' +
-            '  交易參考編號:  5791 7092 0600 1323\n' +
+            '  交易參考編號:  ' + billNo + '\n' +
             '  Transaction reference number:\n' +
             ' --------------------------------------------- \n' +
             '  備註:                     不適用\n' +
@@ -250,10 +280,14 @@ export class StepViewcardComponent  implements OnInit {
         this.service.sendRequestWithLog('RR_SLIPPRINTER', 'printslip', {'data': dataJson}).subscribe((resp) => {
             if (resp.errorcode === '0') {
                 console.log('printslip operate success');
-               // this.printCut();
+              this.nextRoute();
             } else {
                 console.log('call printslip fail!');
+                this.nextRoute();
             }
+        }, (error) => {
+            console.log('printslip ERROR ' + error);
+            this.nextRoute();
         });
     }
 
@@ -287,32 +321,45 @@ export class StepViewcardComponent  implements OnInit {
     }
     doCloseCard() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            if (this.cardType === 1) {
+            if (this.readType === 1) {
                 this.doReturnDoc();
             } else {
-                if (this.isAbort) {
-                    this.backRoute();
-                } else {
-                    this.commonService.initTimerSet(this.timer, 0, 5);
-                }
+                this.backRoute();
             }
         }, (error) => {
-            console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            console.log('closecard ERROR ' + error);
+            this.backRoute();
         });
     }
 
     doReturnDoc() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            if (this.isAbort) {
+            setTimeout(() => {
                 this.backRoute();
-            } else {
-                this.commonService.initTimerSet(this.timer, 0, 5);
-            }
+            }, 2000);
         }, (error) => {
-            console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            console.log('returndoc ERROR ' + error);
+            setTimeout(() => {
+                this.backRoute();
+            }, 2000);
         });
+    }
+
+    processNextPrint() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalPrintBill.show();
+    }
+
+    handlePrint() {
+        this.modalPrintBill.hide();
+        this.printBill();
+    }
+    printCancel() {
+        this.modalPrintBill.hide();
+        this.nextRoute();
     }
 
 }

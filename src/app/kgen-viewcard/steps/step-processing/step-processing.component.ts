@@ -6,7 +6,7 @@ import {MsksService} from '../../../shared/msks';
 import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 import {TranslateService} from '@ngx-translate/core';
-import {CHANNEL_ID_RR_CARDREADER} from '../../../shared/var-setting';
+import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
 import {TimerComponent} from '../../../shared/sc2-timer';
 
 @Component({
@@ -37,6 +37,7 @@ export class StepProcessingComponent implements OnInit {
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
     cardType = 1;
+    readType = 1;
     fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
         + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
     fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
@@ -48,6 +49,8 @@ export class StepProcessingComponent implements OnInit {
     carddataJson = '';
     oldCardNoFlag = false;
     isRestore = false;
+    isAbort = false;
+    timeOutPause = false;
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -71,6 +74,7 @@ export class StepProcessingComponent implements OnInit {
             }
             this.translate.currentLang = lang;
             this.cardType = Number.parseInt(params['cardType']);
+            this.readType = Number.parseInt(this.localStorages.get('readType'));
             this.cleanLocalstorageData();
             this.initPage();
         });
@@ -100,8 +104,13 @@ export class StepProcessingComponent implements OnInit {
      * nextPage.
      */
     nextRoute() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         this.localStorages.set('fp_tmpl1_in_base64', this.fp_tmpl1_in_base64);
         this.localStorages.set('fp_tmpl2_in_base64', this.fp_tmpl2_in_base64);
+        this.localStorages.set('fp_tmpl1_fingernum', '0');
+        this.localStorages.set('fp_tmpl2_fingernum', '5');
         this.localStorages.set('carddataJson', this.carddataJson);
         this.router.navigate(['/kgen-viewcard/fingerprint'],
             {
@@ -113,13 +122,41 @@ export class StepProcessingComponent implements OnInit {
     }
 
     timeExpire() {
-        this.commonService.doCloseWindow();
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalFail.show();
     }
 
     /**
      * backPage.
      */
     backRoute() {
+        this.timer.ngOnDestroy();
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
         this.commonService.doCloseWindow();
     }
 
@@ -145,9 +182,13 @@ export class StepProcessingComponent implements OnInit {
                 if (!this.commonService.checkFpNull(fp_tmpl2_in_base64)) {
                     this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
                         this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
+                        this.processing.hide();
+                        this.nextRoute();
                     });
                 } else {
                     this.localStorages.set('fp_tmpl2_fingernum', null);
+                    this.processing.hide();
+                    this.nextRoute();
                 }
             });
         } else {
@@ -155,12 +196,15 @@ export class StepProcessingComponent implements OnInit {
             if (!this.commonService.checkFpNull(fp_tmpl2_in_base64)) {
                 this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
                     this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
+                    this.processing.hide();
+                    this.nextRoute();
                 });
             } else {
                 this.localStorages.set('fp_tmpl2_fingernum', null);
+                this.processing.hide();
+                this.nextRoute();
             }
         }
-        this.nextRoute();
     }
 
     /**
@@ -184,7 +228,8 @@ export class StepProcessingComponent implements OnInit {
                 }
         }, (error) => {
             console.log('getfingernum ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
+            this.modalFail.show();
         });
     }
 // ====================================================== New Reader Start =================================================================
@@ -197,8 +242,7 @@ export class StepProcessingComponent implements OnInit {
             this.fp_tmpl1_in_base64 = resp.fingerprint0;
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
             this.carddataJson = JSON.stringify(this.carddata);
-            this.processing.hide();
-            this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            //  this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
             this.nextRoute();
         });
     }
@@ -211,27 +255,16 @@ export class StepProcessingComponent implements OnInit {
             this.fp_tmpl1_in_base64 = resp.fingerprint0;
             this.fp_tmpl2_in_base64 = resp.fingerprint1;
             this.carddataJson = JSON.stringify(this.carddata);
-            this.processing.hide();
-            this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            // this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
             this.nextRoute();
         });
     }
 // ====================================================== Old Reader End ================================================================
-    /**
-     * process fail quit fun.
-     */
     processFailQuit() {
         this.modalFail.hide();
-        this.commonService.doCloseCard();
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
-        }
-        this.commonService.initTimerSet(this.timer, 0, 5);
+        this.doCloseCard();
     }
 
-    /**
-     * show abort modal.
-     */
     processModalShow() {
         this.modalQuit.show()
         if (this.processing.visible) {
@@ -240,24 +273,38 @@ export class StepProcessingComponent implements OnInit {
         }
     }
 
-    /**
-     * click abort button.
-     */
     processQuit() {
         this.modalQuit.hide();
-        if (this.cardType === 1) {
-            this.commonService.doReturnDoc();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
         }
-        this.commonService.initTimerSet(this.timer, 0, 5);
+        this.isAbort = true;
+        this.doCloseCard();
     }
-
-    /**
-     * cancel abort operation
-     */
     processCancel() {
         this.modalQuit.hide();
         if (this.isRestore) {
             this.processing.show();
         }
+    }
+    doCloseCard() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            if (this.readType === 1) {
+                this.doReturnDoc();
+                setTimeout(() => {
+                    this.backRoute();
+                }, 1000);
+            } else {
+                this.backRoute();
+            }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.backRoute();
+        });
+    }
+
+    doReturnDoc() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 }

@@ -31,11 +31,8 @@ const routes: Routes = [
     { path: '', redirectTo: 'privacy', pathMatch: 'full' },
     { path: 'start', component: StartComponent },
     { path: 'privacy', component: StepPrivacyComponent },
-    { path: 'selectCard', component: StepSelectCardComponent },
     { path: 'insertcard', component: StepInsertcardComponent },
     { path: 'processing', component: StepProcessingComponent },
-    { path: 'fingerprintLeft', component: StepFingerprintLeftComponent },
-    { path: 'fingerprintRight', component: StepFingerprintRightComponent },
     { path: 'fingerprint', component: StepFingerprintComponent },
     { path: 'viewcard', component: StepViewcardComponent },
     { path: 'retrievecard', component: StepRetrievecardComponent }
@@ -48,11 +45,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     declarations: [
         StartComponent,
         StepPrivacyComponent,
-        StepSelectCardComponent,
         StepInsertcardComponent,
         StepProcessingComponent,
-        StepFingerprintLeftComponent,
-        StepFingerprintRightComponent,
         StepFingerprintComponent,
         StepViewcardComponent,
         StepRetrievecardComponent

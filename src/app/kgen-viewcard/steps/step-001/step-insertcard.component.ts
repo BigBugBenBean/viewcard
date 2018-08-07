@@ -54,6 +54,7 @@ export class StepInsertcardComponent implements OnInit {
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
     cardType = 1;
+    readType = 1;
     fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
         + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
     fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
@@ -66,6 +67,8 @@ export class StepInsertcardComponent implements OnInit {
     isAbort = false;
     openGateFlag = false;
     openCardFlag = false;
+    timeOut = false;
+    timeOutPause = false;
     isRestore = false;
     isfailure = false;
     isQuit = false;
@@ -112,7 +115,7 @@ export class StepInsertcardComponent implements OnInit {
             setTimeout(() => {
                 console.log('*******start call openGate function *********');
                 // this.processNewReader();
-                 this.openGateFun();
+                this.openGateFun();
             }, 1000);
         });
     }
@@ -129,10 +132,14 @@ export class StepInsertcardComponent implements OnInit {
      * nextPage.
      */
     nextRoute() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         if (this.cardType === 2) {
             this.localStorages.set('newReader_dor', this.newReader_dor);
             this.localStorages.set('newReader_icno', this.newReader_icno);
         }
+        this.localStorages.set('readType', this.readType.toString());
         this.router.navigate(['/kgen-viewcard/processing'],
             {
                 queryParams: {
@@ -143,25 +150,50 @@ export class StepInsertcardComponent implements OnInit {
     }
 
     timeExpire() {
+        this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
         }
-        if (this.openGateFlag && !this.isfailure) {
-                // S/N4
-                if (this.retryOpenGateByTimeoutNocardVal < 3) {
-                    this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
-                    this.retryOpenGateByTimeoutNocardVal += 1;
-                    this.modalRetryOpenGate.show();
-                } else {
-                    // S/N4 f the retry limitexcess?
-                    this.commonService.doLightoff('07');
-                    this.messageFail = 'SCN-GEN-STEPS.READER-NEW-RFID-FAIL';
-                    this.operType = this.SN_2;
-                    this.isfailure = true;
-                    this.modalFail.show();
-                }
+            if (this.modalRetryOCR.visible) {
+            this.modalRetryOCR.hide();
+        }
+        if (this.modalRetryOpenGate.visible) {
+            this.modalRetryOpenGate.hide();
+        }
+        if (this.modalRetryOpenCard.visible) {
+            this.modalRetryOpenCard.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modal1Comfirm.visible) {
+            this.modal1Comfirm.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+
+        if (!this.timeOut && !this.isfailure) {
+            // S/N4
+            if (this.retryOpenGateByTimeoutNocardVal < 2) {
+                this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
+                this.retryOpenGateByTimeoutNocardVal += 1;
+                this.modalRetryOpenGate.show();
+                this.timeOutPause = false;
+            } else {
+                // S/N4 f the retry limitexcess?
+                this.commonService.doLightoff('07');
+                this.timeOut = true;
+                this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+                this.operType = this.SN_2;
+                this.isfailure = true;
+                this.modalFail.show();
+            }
         } else {
-            this.commonService.doCloseWindow();
+            this.timeOut = true;
+            this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+            this.isfailure = true;
+            this.modalFail.show();
         }
     }
 
@@ -169,6 +201,29 @@ export class StepInsertcardComponent implements OnInit {
      * backPage.
      */
     backRoute() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetryOCR.visible) {
+            this.modalRetryOCR.hide();
+        }
+        if (this.modalRetryOpenGate.visible) {
+            this.modalRetryOpenGate.hide();
+        }
+        if (this.modalRetryOpenCard.visible) {
+            this.modalRetryOpenCard.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modal1Comfirm.visible) {
+            this.modal1Comfirm.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
 
@@ -189,22 +244,29 @@ export class StepInsertcardComponent implements OnInit {
         this.commonService.doFlashLight('07');
         this.commonService.initTimerSet(this.timer, 1, 15)
         this.isfailure = false;
+        this.timeOut = false;
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': TIMEOUT_PAYLOAD })
             .subscribe((resp) => {
                 if (resp && resp.errorcode !== undefined ) {
                     this.openGateFlag = true;
                     if (resp.errorcode === '0') {
                         this.commonService.doLightoff('07');
+                        this.timeOut = true;
+                        this.reSetTimeout();
                         this.openCardFun();
                     } else if (resp.errorcode === 'D0009') {
                         // S/N3  have card in reader.
                         this.isHasCard = true;
+                        this.timeOut = true;
+                        this.reSetTimeout();
                         this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S3';
                         this.operType = this.SN_3;
                         this.isfailure = true;
                         this.modalFail.show();
                     } else if (resp.errorcode === 'D0006' || resp.errorcode === 'D000A') {
-                        if (this.retryOpenGateVal < 3) {
+                        this.timeOut = true;
+                        this.reSetTimeout();
+                        if (this.retryOpenGateVal < 2) {
                             this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
                             this.modalRetryOpenGate.show();
                             this.retryOpenGateVal += 1;
@@ -220,6 +282,8 @@ export class StepInsertcardComponent implements OnInit {
                         // 身份證閱讀器初始化失敗，請向職員查詢
                         this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                         this.operType = this.SN_2;
+                        this.timeOut = true;
+                        this.reSetTimeout();
                         this.isfailure = true;
                         this.modalFail.show();
                     }
@@ -229,6 +293,8 @@ export class StepInsertcardComponent implements OnInit {
                     // 身份證閱讀器初始化失敗，系統暫停使用
                     this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                     this.operType = this.SN_2;
+                    this.timeOut = true;
+                    this.reSetTimeout();
                     this.isfailure = true;
                     this.modalFail.show();
                 }
@@ -236,6 +302,8 @@ export class StepInsertcardComponent implements OnInit {
                 console.log('**********opengate:' + error);
                 this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                 this.operType = this.SN_2;
+                this.timeOut = true;
+                this.reSetTimeout();
                 this.isfailure = true;
                 this.modalFail.show();
             });
@@ -246,12 +314,19 @@ export class StepInsertcardComponent implements OnInit {
         this.openGateFun();
     }
 
+    reSetTimeout() {
+        this.retryOpenGateByTimeoutNocardVal = 0;
+    }
+    reSetOpenGateVal() {
+        this.retryOpenGateVal = 0;
+    }
     /**
      *  open card fun.
      */
     openCardFun() {
         console.log('call openCardFun fun.');
         this.processing.show();
+        this.reSetOpenGateVal();
         this.commonService.initTimerSet(this.timer, 1, 30)
         const payload = {
             'card_reader_id': null,
@@ -266,10 +341,11 @@ export class StepInsertcardComponent implements OnInit {
                 this.commonService.doLightoff('07');
                 this.cardType = resp.card_version;
                 this.openCardFlag = true;
+
                 this.nextRoute();
             } else {
                 // open card failed S/N7
-                if (this.retryOpencardVal < 3) {
+                if (this.retryOpencardVal < 2) {
                     this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S7';
                     this.retryOpencardVal += 1;
                     this.modalRetryOpenCard.show();
@@ -286,6 +362,10 @@ export class StepInsertcardComponent implements OnInit {
         });
     }
 
+    reSetOpencardVal() {
+        this.retryOpencardVal = 0;
+    }
+
     /**
      *  tryagain 3
      */
@@ -299,6 +379,7 @@ export class StepInsertcardComponent implements OnInit {
      */
     doCloseCardByTryagain() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            this.openCardFlag = false;
             this.doReturnDocByTryagain();
         });
     }
@@ -310,8 +391,9 @@ export class StepInsertcardComponent implements OnInit {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
             if (resp) {
                 setTimeout(() => {
+                    this.openGateFlag = false;
                     this.openGateFun();
-                }, 1000);
+                }, 500);
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
                 this.modalFail.show();
@@ -346,6 +428,7 @@ export class StepInsertcardComponent implements OnInit {
      */
     doCloseCardByOcr() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            this.openCardFlag = false;
             this.doReturnDocByOcr();
         });
     }
@@ -357,6 +440,7 @@ export class StepInsertcardComponent implements OnInit {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
             if (resp) {
                 setTimeout(() => {
+                    this.openGateFlag = false;
                     this.processNewReader();
                 }, 2000);
             } else {
@@ -373,6 +457,8 @@ export class StepInsertcardComponent implements OnInit {
         this.commonService.doFlashLight('08');
         this.commonService.initTimerSet(this.timer, 1, 15)
         this.isfailure = false;
+        this.readType = 2;
+        this.reSetOpencardVal();
         this.openGateFlag = false;
         this.openCardFlag = false;
         this.readhkicv2ocrdata();
@@ -465,13 +551,19 @@ export class StepInsertcardComponent implements OnInit {
         }
     }
 
+    retSetOcrVal() {
+        this.retryReadCv2ocrVal_SN_10 = 0;
+        this.retryReadCv2ocrVal_SN_11 = 1;
+    }
+
     /**
      *  open card fun.
      */
     openCardNewFun() {
         console.log('call openCardNewFun fun.');
         this.processing.show();
-        this.commonService.initTimerSet(this.timer, 1, 30)
+        this.retSetOcrVal();
+        this.commonService.initTimerSet(this.timer, 1, 30);
         const payload = {
             'card_reader_id':  null,
             'contactless_password': {
@@ -521,19 +613,7 @@ export class StepInsertcardComponent implements OnInit {
      */
     processFailQuit() {
         this.modalFail.hide();
-        if (this.operType === this.SN_2 || this.operType === this.SN_3 || this.operType === this.SN_4 ||
-                 this.operType === this.SN_5 || this.operType === this.SN_6 || this.operType === this.SN_7) {
-            this.cardType = 1;
-        } else {
-            this.cardType = 2;
-        }
-        if (this.openCardFlag) {
-            this.doCloseCard();
-        } else {
-            if (this.openGateFlag) {
-                this.doReturnDoc();
-            }
-        }
+        this.doCloseCard();
     }
 
     /**
@@ -560,14 +640,7 @@ export class StepInsertcardComponent implements OnInit {
         this.isQuit = true;
         this.commonService.doLightoff('08');
         this.commonService.doLightoff('07');
-        if (this.openCardFlag) {
-            this.doCloseCard();
-        } else {
-            if (this.openGateFlag) {
-                this.doReturnDoc();
-            }
-        }
-
+        this.doCloseCard();
     }
 
     /**
@@ -579,33 +652,30 @@ export class StepInsertcardComponent implements OnInit {
             this.processing.show();
         }
     }
+
+    /**
+     * close card function.
+     */
     doCloseCard() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            if (this.cardType === 1) {
+            if (this.readType === 1) {
                 this.doReturnDoc();
-            } else {
-                if (this.isAbort) {
+                setTimeout(() => {
                     this.backRoute();
-                } else {
-                    this.commonService.initTimerSet(this.timer, 0, 5);
-                }
+                }, 1000);
+            } else {
+                this.backRoute();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            this.backRoute();
         });
     }
 
+    /**
+     * return card.
+     */
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            if (this.isAbort) {
-                this.backRoute();
-            } else {
-                this.commonService.initTimerSet(this.timer, 0, 5);
-            }
-        }, (error) => {
-            console.log('returndoc ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
-        });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {});
     }
 }

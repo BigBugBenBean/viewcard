@@ -42,7 +42,9 @@ export class StepFingerprintComponent implements OnInit {
     maxFingerCount = 2;
     isRestore = false;
     isAbort = false;
+    timeOutPause = false;
     cardType = 1;
+    readType = 1;
     retryVal = 0;
     retryVal_01 = 0;
     retryVal_02 = 0;
@@ -50,12 +52,12 @@ export class StepFingerprintComponent implements OnInit {
     // fp_tmpl1_in_base64 = 'Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9';
     // fp_tmpl2_in_base64 = 'AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==';
 
-    fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
-        + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
-    fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
-        `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
-    // fp_tmpl1_in_base64 = '';
-    // fp_tmpl2_in_base64 = '';
+    // fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
+    //     + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
+    // fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
+    //     `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
+    fp_tmpl1_in_base64 = '';
+    fp_tmpl2_in_base64 = '';
     fp_tmpl1_fingernum = '';
     fp_tmpl2_fingernum = '';
     carddata: any = {};
@@ -98,6 +100,7 @@ export class StepFingerprintComponent implements OnInit {
             }
             this.translate.currentLang = lang;
             this.cardType = Number.parseInt(params['cardType']);
+            this.readType = Number.parseInt(this.localStorages.get('readType'));
             this.initParamData();
 
         });
@@ -109,8 +112,8 @@ export class StepFingerprintComponent implements OnInit {
     initParamData() {
         this.fp_tmpl1_in_base64 = this.localStorages.get('fp_tmpl1_in_base64');
         this.fp_tmpl2_in_base64 = this.localStorages.get('fp_tmpl2_in_base64');
-         this.fp_tmpl1_fingernum = this.localStorages.get('fp_tmpl1_fingernum');
-         this.fp_tmpl2_fingernum = this.localStorages.get('fp_tmpl2_fingernum');
+        this.fp_tmpl1_fingernum = this.localStorages.get('fp_tmpl1_fingernum');
+        this.fp_tmpl2_fingernum = this.localStorages.get('fp_tmpl2_fingernum');
          // this.fp_tmpl1_fingernum = '0';
          // this.fp_tmpl2_fingernum = '5';
         this.fptemp = this.fp_tmpl2_in_base64;
@@ -127,18 +130,43 @@ export class StepFingerprintComponent implements OnInit {
      * nextPage.
      */
     nextRoute() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
         this.router.navigate(['/kgen-viewcard/viewcard'],
             { queryParams: {'lang': this.translate.currentLang, 'cardType': this.cardType}});
         return;
     }
 
     timeExpire() {
-        this.commonService.doCloseWindow();
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalFail.show();
     }
     /**
      * backPage.
      */
     backRoute() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
 
@@ -161,8 +189,17 @@ export class StepFingerprintComponent implements OnInit {
         // this.modalInfo.hide();
         console.log('this.fingerCount: ', this.fingerCount);
         this.fingerCount++;
-        this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
-        this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
+        // alert('fp_tmpl1_fingernum=' + this.fp_tmpl1_fingernum + ',fp_tmpl2_fingernum= this.fp_tmpl2_fingernum');
+        if (!this.commonService.checkFpNull(this.fp_tmpl1_fingernum)) {
+            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
+        }
+        if (!this.commonService.checkFpNull(this.fp_tmpl2_fingernum)) {
+            this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
+        }
+        // this.allFingerNum.push('fp0');
+        // this.allFingerNum.push('fp6');
+        // if (this.allFingerNum.length < 1) {
+        // }
         // if (this.fingerCount > 1) {
         //     // this.allFingerNum.push('fp' + this.fp_tmpl2_in_base64);
         //     this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
@@ -330,32 +367,22 @@ export class StepFingerprintComponent implements OnInit {
     }
     doCloseCard() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            if (this.cardType === 1) {
+            if (this.readType === 1) {
                 this.doReturnDoc();
-            } else {
-                if (this.isAbort) {
+                setTimeout(() => {
                     this.backRoute();
-                } else {
-                    this.commonService.initTimerSet(this.timer, 0, 5);
-                }
+                }, 1000);
+            } else {
+                this.backRoute();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            this.backRoute();
         });
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            if (this.isAbort) {
-                this.backRoute();
-            } else {
-                this.commonService.initTimerSet(this.timer, 0, 5);
-            }
-        }, (error) => {
-            console.log('returndoc ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
-        });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     doStopScan() {
@@ -366,38 +393,4 @@ export class StepFingerprintComponent implements OnInit {
             this.doCloseCard();
         });
     }
-
-    /**
-     * get finger num.
-     * @param fp_tmpl_in_base64
-     */
-    // getfingernum(fp_tmpl_in_base64) {
-    //     const playloadParam =  {
-    //         'arn': '',
-    //         'fp_tmpl_format': 'Morpho_PkCompV2',
-    //         'fp_tmpl_in_base64':  '' +
-    //             fp_tmpl_in_base64
-    //     }
-    //
-    //     this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
-    //         if (JSON.stringify(resp) !== '{}') {
-    //             console.log(resp);
-    //             if (!isNaN(resp.finger_num)) {
-    //                 this.finger_num = resp.finger_num;
-    //                 // $('#finger_num_' + this.finger_num).css('display', 'block');
-    //                 this.initPage();
-    //             } else {
-    //                 this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
-    //                 this.modalFail.show();
-    //             }
-    //         } else {
-    //             this.messageFail = 'SCN-GEN-STEPS.READ-CARD-ERROR';
-    //             this.modalFail.show();
-    //         }
-    //     }, (error) => {
-    //         console.log('getfingernum ERROR ' + error);
-    //         this.commonService.initTimerSet(this.timer, 0, 5);
-    //     });
-    //
-    // }
 }

@@ -49,8 +49,8 @@
     <label class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
 
     <!--   (click)="nextRoute()" -->
-    <img *ngIf="cardType === 1" src="../../../../assets/images/collect-old-hkid.gif" class="main-image" (click) = "nextRoute()">
-    <img *ngIf="cardType === 2" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image" (click) = "nextRoute()">
+    <img *ngIf="readType === 1" src="../../../../assets/images/collect-old-hkid.gif" class="main-image" (click) = "nextRoute()">
+    <img *ngIf="readType === 2" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image" (click) = "nextRoute()">
     <input #imgNext type="hidden" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="modalQuit.show()" />
     <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "modalQuit.show()">

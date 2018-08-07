@@ -7,6 +7,7 @@ import {CommonService} from '../../../shared/services/common-service/common.serv
 import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {ProcessingComponent} from '../../../shared/processing-component';
 import {TimerComponent} from '../../../shared/sc2-timer';
+import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
 @Component({
     templateUrl: './step-retrievecard.component.html',
     styleUrls: ['./step-retrievecard.component.scss']
@@ -27,16 +28,19 @@ export class StepRetrievecardComponent implements OnInit {
     @ViewChild('timer')
     public timer: TimerComponent;
     messageFail= '';
-    messageCollect = '';
+    messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     cardType = 1;
+    readType = 1;
     sumSeconds: number;
     isRestore = false;
     isAbort = false;
+    timeOutPause = false;
     constructor(private router: Router,
                 private commonService: CommonService,
                 private route: ActivatedRoute,
                 private service: MsksService,
+                private localStorages: LocalStorageService,
                 private translate: TranslateService) {
     }
 
@@ -59,9 +63,13 @@ export class StepRetrievecardComponent implements OnInit {
             }
             this.translate.currentLang = lang;
             this.cardType = Number.parseInt(params['cardType']);
+            this.readType = Number.parseInt(this.localStorages.get('readType'));
             this.commonService.doLightoff('07');
             this.commonService.doLightoff('08');
-            this.doCloseCard();
+            setTimeout(() => {
+                this.doCloseCard();
+            }, 2000);
+
         });
     }
 
@@ -95,39 +103,49 @@ export class StepRetrievecardComponent implements OnInit {
     }
     doCloseCard() {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            if (this.cardType === 1) {
+            if (this.readType === 1) {
                 this.doReturnDoc();
-            } else {
-                if (this.isAbort) {
+                setTimeout(() => {
                     this.backRoute();
-                } else {
-                    this.commonService.initTimerSet(this.timer, 0, 5);
-                }
+                }, 1000);
+            } else {
+                this.modalCollect.show();
             }
         }, (error) => {
-            console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
+            console.log('closecard ERROR ' + error);
+            setTimeout(() => {
+                this.backRoute();
+            }, 2000);
         });
     }
 
+    processCollectQuit() {
+        this.modalCollect.hide();
+        setTimeout(() => {
+            this.backRoute();
+        }, 2000);
+    }
+
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            if (this.isAbort) {
-                this.backRoute();
-            } else {
-                this.commonService.initTimerSet(this.timer, 0, 5);
-            }
-        }, (error) => {
-            console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.initTimerSet(this.timer, 0, 5);
-        });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     /**
      * count time.
      */
     timeExpire() {
-        this.commonService.doCloseWindow();
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalFail.show();
     }
 
     nextRoute() {
@@ -138,6 +156,17 @@ export class StepRetrievecardComponent implements OnInit {
      * backPage.
      */
     backRoute() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
 

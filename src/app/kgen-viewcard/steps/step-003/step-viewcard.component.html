@@ -34,6 +34,17 @@
             </div>
         </div>
     </sc2-confirm>
+    <sc2-confirm #modalPrintBill>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messagePrint | translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="handlePrint()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="printCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
     <label class="label1" >{{'SCN-GEN-STEPS.CONFIRM-INFO' | translate}}</label>
     <div class="information" [hidden]="!showdata">
@@ -106,8 +117,7 @@
         </div>
     </div>
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input type="button" class="confirmButton" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="nextRoute()">
+    <input type="button" [hidden]="!showdata" class="confirmButton" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="processNextPrint()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
     <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">
-    <input type="button" [hidden]="!showdata" class="printButton" value="{{'SCN-GEN-STEPS.BILL-PRINT-BTN' | translate}}" (click)="printBill()">
 </div>

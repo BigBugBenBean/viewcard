@@ -18,8 +18,8 @@ export class CommonService {
          // this.router.navigate(['/kgen-viewcard/privacy'], { queryParams: {'lang': this.translate.currentLang}});
          // return;
         const remote = require('electron').remote;
-                // const window = remote.getCurrentWindow();
-                // window.close();
+            const window = remote.getCurrentWindow();
+            window.close();
     }
 
     changeDor(dor: string): string {
