@@ -24,6 +24,9 @@ export class StepProcessingComponent implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalTimeout')
+    public modalTimeout: ConfirmComponent;
+
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
@@ -36,6 +39,7 @@ export class StepProcessingComponent implements OnInit {
     retryOpencardVal = 0;
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     cardType = 1;
     readType = 1;
     fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
@@ -123,23 +127,7 @@ export class StepProcessingComponent implements OnInit {
         return;
     }
 
-    timeExpire() {
-        this.timeOutPause = true;
-        if (this.processing.visible) {
-            this.processing.hide();
-        }
-        if (this.modalRetry.visible) {
-            this.modalRetry.hide();
-        }
-        if (this.modalFail.visible) {
-            this.modalFail.hide();
-        }
-        if (this.modalQuit.visible) {
-            this.modalQuit.hide();
-        }
-        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
-        this.modalFail.show();
-    }
+
 
     /**
      * backPage.
@@ -280,20 +268,60 @@ export class StepProcessingComponent implements OnInit {
         });
     }
 // ====================================================== Old Reader End ================================================================
+
+    timeExpire() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalTimeout.show();
+        this.quitDisabledAll();
+        setTimeout(() => {
+            this.processTimeoutQuit();
+        }, 5000);
+    }
+
+
+    processTimeoutQuit() {
+        this.modalTimeout.hide();
+        this.doCloseCard();
+    }
     processFailQuit() {
         this.modalFail.hide();
         this.doCloseCard();
     }
 
-    processModalShow() {
+    quitDisabledAll() {
+        $('#exitBtn').attr('disabled', 'false');
+        $('#langBtn').attr('disabled', 'false');
+
+    }
+    cancelQuitEnabledAll() {
+        $('#exitBtn').removeAttr('disabled');
+        $('#langBtn').removeAttr('disabled');
+    }
+
+    processModalQuitShow() {
         this.modalQuit.show()
+        this.isAbort = true;
+        this.quitDisabledAll();
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
         }
     }
 
-    processQuit() {
+    processConfirmQuit() {
         this.modalQuit.hide();
         if (this.processing.visible) {
             this.processing.hide();
@@ -301,8 +329,10 @@ export class StepProcessingComponent implements OnInit {
         this.isAbort = true;
         this.doCloseCard();
     }
-    processCancel() {
+    processCancelQuit() {
         this.modalQuit.hide();
+        this.isAbort = false;
+        this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
         }

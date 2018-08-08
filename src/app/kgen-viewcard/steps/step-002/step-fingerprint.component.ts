@@ -26,6 +26,9 @@ export class StepFingerprintComponent implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalTimeout')
+    public modalTimeout: ConfirmComponent;
+
     @ViewChild('modalNoROP')
     public modalNoROP: ConfirmComponent;
 
@@ -37,6 +40,7 @@ export class StepFingerprintComponent implements OnInit {
     messageRetry: String = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     fingerprintInfo = '1313213213';
     fingerCount = 0;
     maxFingerCount = 2;
@@ -138,20 +142,7 @@ export class StepFingerprintComponent implements OnInit {
          return;
     }
 
-    timeExpire() {
-        this.timeOutPause = true;
-        if (this.processing.visible) {
-            this.processing.hide();
-        }
-        if (this.modalRetry.visible) {
-            this.modalRetry.hide();
-        }
-        if (this.modalQuit.visible) {
-            this.modalQuit.hide();
-        }
-        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
-        this.modalFail.show();
-    }
+
     /**
      * backPage.
      */
@@ -385,20 +376,59 @@ export class StepFingerprintComponent implements OnInit {
         this.startFingerprintScan();
     }
 
+    // *************************************************************************************************************************************
+
+    timeExpire() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalTimeout.show();
+        this.quitDisabledAll();
+        setTimeout(() => {
+            this.processTimeoutQuit();
+        }, 5000);
+    }
+
+    processTimeoutQuit() {
+        this.modalTimeout.hide();
+        this.doCloseCard();
+    }
+
     processFailQuit() {
         this.modalFail.hide();
         this.doCloseCard();
     }
 
-    processModalShow() {
+    quitDisabledAll() {
+        $('#exitBtn').attr('disabled', 'false');
+        $('#langBtn').attr('disabled', 'false');
+
+    }
+    cancelQuitEnabledAll() {
+        $('#exitBtn').removeAttr('disabled');
+        $('#langBtn').removeAttr('disabled');
+    }
+
+    processModalQuitShow() {
         this.modalQuit.show()
+        this.isAbort = true;
+        this.quitDisabledAll();
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
         }
     }
 
-    processQuit() {
+    processConfirmQuit() {
+
         this.modalQuit.hide();
         if (this.processing.visible) {
             this.processing.hide();
@@ -406,8 +436,10 @@ export class StepFingerprintComponent implements OnInit {
         this.isAbort = true;
         this.doCloseCard();
     }
-    processCancel() {
+    processCancelQuit() {
         this.modalQuit.hide();
+        this.isAbort = false;
+        this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
         }
@@ -419,7 +451,7 @@ export class StepFingerprintComponent implements OnInit {
                 this.doReturnDoc();
                 setTimeout(() => {
                     this.backRoute();
-                }, 2000);
+                }, 5000);
             } else {
                 this.backRoute();
             }

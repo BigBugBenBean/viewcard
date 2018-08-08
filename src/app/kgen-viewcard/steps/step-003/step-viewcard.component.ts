@@ -24,6 +24,9 @@ export class StepViewcardComponent  implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalTimeout')
+    public modalTimeout: ConfirmComponent;
+
     @ViewChild('modalPrintBill')
     public modalPrintBill: ConfirmComponent;
 
@@ -36,6 +39,7 @@ export class StepViewcardComponent  implements OnInit {
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messagePrint = 'SCN-GEN-STEPS.BILL-PRINT-MESSAGE';
+    messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     title: string;
     api_path = ''
     img = '../../../../assets/images/photo1.jpg'; // set to '' if no image found or set to the Image path;
@@ -132,26 +136,6 @@ export class StepViewcardComponent  implements OnInit {
         return;
     }
 
-    timeExpire() {
-        this.timeOutPause = true;
-        if (this.processing.visible) {
-            this.processing.hide();
-        }
-        if (this.modalRetry.visible) {
-            this.modalRetry.hide();
-        }
-        if (this.modalFail.visible) {
-            this.modalFail.hide();
-        }
-        if (this.modalQuit.visible) {
-            this.modalQuit.hide();
-        }
-        if (this.modalPrintBill.visible) {
-            this.modalPrintBill.hide();
-        }
-        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
-        this.modalFail.show();
-    }
     processCCCName(param) {
         const reg = /.{4}/g ;
         const rs = param.match(reg);
@@ -240,10 +224,22 @@ export class StepViewcardComponent  implements OnInit {
             dayStr = '0' + dayStr;
         }
         const hour = date.getHours();
+        let hourStr = hour + '';
+        if (hour < 10) {
+            hourStr = '0' + hourStr;
+        }
         const minute = date.getMinutes();
+        let minuteStr  = minute + '';
+        if (minute < 10) {
+            minuteStr =  '0' + minuteStr;
+        }
         const second = date.getSeconds();
-        const datestr = dayStr + '-' + monthStr + '-' + year + '  ' + hour + ':' + minute + ':' + second;
-        const billNo = this.deviceId + '_' + year + monthStr + dayStr + hour + minute + second;
+        let secondStr = second + '';
+        if (second < 10) {
+            secondStr = '0' + secondStr;
+        }
+        const datestr = dayStr + '-' + monthStr + '-' + year + '  ' + hourStr + ':' + minuteStr + ':' + secondStr;
+        const billNo = this.deviceId + '_' + year + monthStr + dayStr + hourStr + minuteStr + secondStr;
         const printcontent =
             ' ******************************************** \n' +
             '           香港入境事務處\n' +
@@ -318,20 +314,63 @@ export class StepViewcardComponent  implements OnInit {
         });
     }
 
+    timeExpire() {
+        this.timeOutPause = true;
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalRetry.visible) {
+            this.modalRetry.hide();
+        }
+        if (this.modalFail.visible) {
+            this.modalFail.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        if (this.modalPrintBill.visible) {
+            this.modalPrintBill.hide();
+        }
+        this.messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalTimeout.show();
+        this.quitDisabledAll();
+        setTimeout(() => {
+            this.processTimeoutQuit();
+        }, 5000);
+    }
+
+    processTimeoutQuit() {
+        this.modalTimeout.hide();
+        this.doCloseCard();
+    }
     processFailQuit() {
         this.modalFail.hide();
         this.doCloseCard();
     }
 
-    processModalShow() {
+    quitDisabledAll() {
+        $('#exitBtn').attr('disabled', 'false');
+        $('#langBtn').attr('disabled', 'false');
+        $('#confirmBtn').attr('disabled', 'false');
+
+    }
+    cancelQuitEnabledAll() {
+        $('#exitBtn').removeAttr('disabled');
+        $('#langBtn').removeAttr('disabled');
+        $('#confirmBtn').removeAttr('disabled');
+    }
+
+    processModalQuitShow() {
         this.modalQuit.show()
+        this.isAbort = true;
+        this.quitDisabledAll();
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
         }
     }
 
-    processQuit() {
+    processConfirmQuit() {
         this.modalQuit.hide();
         if (this.processing.visible) {
             this.processing.hide();
@@ -339,8 +378,10 @@ export class StepViewcardComponent  implements OnInit {
         this.isAbort = true;
         this.doCloseCard();
     }
-    processCancel() {
+    processCancelQuit() {
         this.modalQuit.hide();
+        this.isAbort = false;
+        this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
         }

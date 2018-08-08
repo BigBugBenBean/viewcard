@@ -398,7 +398,7 @@
         "UNREAD-CARD-BAD-TRY": "The card reader could not be read or there was a problem with the card. Please try again！",
         "READ-DATA-MAX": "The number of failed card readings has exceeded 3 times, please check!",
         "FINGER-FLAT": "Finger flat on the fingerprint scanner.",
-        "MESSAGE-TIMEOUT": "Operation Timeout.",
+        "MESSAGE-TIMEOUT": "System operation timeout, 5 seconds after the system automatic exit.",
         "FINGERPRINT-NOT-MATCH-FINGER": "Fingerprint does not match which finger,please check！",
         "FINGERPRINT-NOT-DETECT-FINGER": "The fingerprint device does not detect the finger, please put your finger to the fingerprint device and try again!",
         "FINGERPRINT-NOT-DETECT-LIMT-MAX": "The fingerprint of the finger has not been detected more than 3 times, and the system will abort and exit!",

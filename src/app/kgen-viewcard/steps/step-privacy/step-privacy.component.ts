@@ -4,14 +4,29 @@ import { TranslateService } from '@ngx-translate/core';
 import { PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN } from '../../../shared/var-setting';
 import {MsksService} from '../../../shared/msks';
 import {CommonService} from '../../../shared/services/common-service/common.service';
+import {ConfirmComponent} from '../../../shared/sc2-confirm';
+import {ProcessingComponent} from '../../../shared/processing-component';
 @Component({
     styleUrls: ['./step-privacy.component.scss'],
     templateUrl: './step-privacy.component.html'
 })
 export class StepPrivacyComponent implements OnInit {
+    @ViewChild('modalQuit')
+    public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalTimeout')
+    public modalTimeout: ConfirmComponent;
+
+    @ViewChild('processing')
+    public processing: ProcessingComponent;
+
+    messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
+    messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     showCheckBox = false;
     enableButton = false;
+    isAbort = false;
+    isRestore = false;
     isChecked = false;
     checkBox: string;
     imgChkbox = require('../../../../assets/images/checkbox.png');
@@ -134,19 +149,80 @@ export class StepPrivacyComponent implements OnInit {
     }
 
     nextRoute() {
-        // this.router.navigate(['/kgen-viewcard/selectCard'], { queryParams: {'lang': this.translate.currentLang}});
         // 修改調整
         this.router.navigate(['/kgen-viewcard/insertcard'], { queryParams: {'lang': this.translate.currentLang}});
-         // this.router.navigate(['/kgen-viewcard/fingerprintLeft'], { queryParams: {'lang': this.translate.currentLang}});
         return;
-    }
-
-    exitRoute() {
-        this.commonService.doCloseWindow();
     }
 
     backRoute() {
         this.commonService.doCloseWindow();
+    }
+
+    timeExpire() {
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        if (this.modalQuit.visible) {
+            this.modalQuit.hide();
+        }
+        this.messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalTimeout.show();
+        this.quitDisabledAll();
+        setTimeout(() => {
+            this.processTimeoutQuit();
+        }, 5000);
+    }
+
+    processTimeoutQuit() {
+        this.modalTimeout.hide();
+        this.backRoute();
+    }
+
+    quitDisabledAll() {
+        $('#exitBtn').attr('disabled', 'false');
+        $('#nextBtn').attr('disabled', 'false');
+        $('#checkedBoxBtn').attr('disabled', 'false');
+        //$('#checkbox').unbind('click');
+        $('#scrollUpBtn').attr('disabled', 'false');
+        $('#scrollDownBtn').attr('disabled', 'false');
+        $('#langBtn').attr('disabled', 'false');
+
+    }
+    cancelQuitEnabledAll() {
+        $('#exitBtn').removeAttr('disabled');
+        $('#nextBtn').removeAttr('disabled');
+        $('#checkedBoxBtn').removeAttr('disabled');
+        $('#scrollUpBtn').removeAttr('disabled');
+        $('#scrollDownBtn').removeAttr('disabled');
+        $('#langBtn').removeAttr('disabled');
+    }
+
+    processModalQuitShow() {
+        this.modalQuit.show()
+        this.isAbort = true;
+       this.quitDisabledAll();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+
+    processConfirmQuit() {
+        this.modalQuit.hide();
+        if (this.processing.visible) {
+            this.processing.hide();
+        }
+        this.isAbort = true;
+        this.backRoute();
+
+    }
+    processCancelQuit() {
+        this.modalQuit.hide();
+        this.isAbort = false;
+        this.cancelQuitEnabledAll();
+        if (this.isRestore) {
+            this.processing.show();
+        }
     }
 
     langButton() {

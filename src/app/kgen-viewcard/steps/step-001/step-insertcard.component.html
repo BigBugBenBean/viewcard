@@ -1,9 +1,9 @@
 <div class="mainPanel">
-    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
-    <input class="buttonTC" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
+    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer ></sc2-timer>
+    <!--<sc2-timer (timerExpired)="timeExpireOpenGate()" class="timer" #timerOpenGate id="timerOpenGateObj"></sc2-timer>-->
+    <input class="buttonTC" id="langBtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_1.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
-    <!--<p id="timerShowDiv" class="timerShowCss">{{'SCN-GEN-STEPS.TIMEER-OUT-COUNT' | translate}} <span id="timerShow"></span> </p>-->
     <sc2-confirm #modalRetryOCR>
         <div class="app-modal-body">
             <div class="modal-message">
@@ -68,8 +68,15 @@
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="processCancel()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processConfirmQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancelQuit()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalTimeout>
+        <div class="app-modal-body">
+            <div class="modal-message" style="align-content: center">
+                {{messageTimeout | translate}}
             </div>
         </div>
     </sc2-confirm>
@@ -79,7 +86,7 @@
     <img id="oldCard" *ngIf="readType === 1" src="../../../../assets/images/insert-old-hkid.gif" class="main-image">
     <img id="newCard" *ngIf="readType === 2" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="button" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalShow()" />
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalShow()">
+    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
+    <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
     <label class="footerSteps">Insert Card</label>
 </div>

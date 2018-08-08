@@ -22,6 +22,9 @@ export class StepRetrievecardComponent implements OnInit {
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
+    @ViewChild('modalTimeout')
+    public modalTimeout: ConfirmComponent;
+
     @ViewChild('processing')
     public processing: ProcessingComponent;
 
@@ -30,6 +33,7 @@ export class StepRetrievecardComponent implements OnInit {
     messageFail= '';
     messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     cardType = 1;
     readType = 1;
     sumSeconds: number;
@@ -72,76 +76,7 @@ export class StepRetrievecardComponent implements OnInit {
 
         });
     }
-
-    processFailQuit() {
-        this.modalFail.hide();
-        this.doCloseCard();
-    }
-
-    processModalShow() {
-        this.modalQuit.show()
-        if (this.processing.visible) {
-            this.isRestore = true;
-            this.processing.hide();
-        }
-    }
-
-    processQuit() {
-        this.modalQuit.hide();
-        if (this.processing.visible) {
-            this.isRestore = true;
-            this.processing.hide();
-        }
-        this.isAbort = true;
-        this.doCloseCard();
-    }
-    processCancel() {
-        this.modalQuit.hide();
-        if (this.isRestore) {
-            this.processing.show();
-        }
-    }
-    doCloseCard() {
-        this.processing.show();
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
-            if (this.readType === 1) {
-                this.doReturnDoc();
-                setTimeout(() => {
-                    this.backRoute();
-                }, 2000);
-            } else {
-                this.modalCollectShow();
-            }
-        }, (error) => {
-            console.log('closecard ERROR ' + error);
-            setTimeout(() => {
-                this.backRoute();
-            }, 2000);
-        });
-    }
-
-    modalCollectShow() {
-        if (this.processing.visible) {
-            this.isRestore = true;
-            this.processing.hide();
-        }
-        this.modalCollect.show();
-    }
-
-    processCollectQuit() {
-        this.modalCollect.hide();
-        if (this.isRestore) {
-            this.processing.show();
-        }
-        setTimeout(() => {
-            this.backRoute();
-        }, 2000);
-    }
-
-    doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
-    }
-
+    // ************************************************************************************************************************************
     /**
      * count time.
      */
@@ -156,8 +91,98 @@ export class StepRetrievecardComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.messageFail = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
-        this.modalFail.show();
+        this.messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+        this.modalTimeout.show();
+        this.quitDisabledAll();
+        setTimeout(() => {
+            this.processTimeoutQuit();
+        }, 5000);
+    }
+
+    processTimeoutQuit() {
+        this.modalTimeout.hide();
+        this.doCloseCard();
+    }
+
+    processFailQuit() {
+        this.modalFail.hide();
+        this.doCloseCard();
+    }
+
+    quitDisabledAll() {
+        $('#exitBtn').attr('disabled', 'false');
+        $('#langBtn').attr('disabled', 'false');
+
+    }
+    cancelQuitEnabledAll() {
+        $('#exitBtn').removeAttr('disabled');
+        $('#langBtn').removeAttr('disabled');
+    }
+
+    processModalQuitShow() {
+        this.modalQuit.show()
+        this.isAbort = true;
+        this.quitDisabledAll();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+    }
+
+    processConfirmQuit() {
+        this.modalQuit.hide();
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.isAbort = true;
+        this.doCloseCard();
+    }
+    processCancelQuit() {
+        this.modalQuit.hide();
+        this.isAbort = false;
+        this.cancelQuitEnabledAll();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+    }
+    doCloseCard() {
+        this.processing.show();
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            if (this.readType === 1) {
+                this.doReturnDoc();
+                setTimeout(() => {
+                    this.backRoute();
+                }, 1000);
+            } else {
+                this.modalCollectShow();
+            }
+        }, (error) => {
+            console.log('closecard ERROR ' + error);
+            setTimeout(() => {
+                this.backRoute();
+            }, 2000);
+        });
+    }
+    modalCollectShow() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalCollect.show();
+    }
+    processCollectQuit() {
+        this.modalCollect.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+        setTimeout(() => {
+            this.backRoute();
+        }, 2000);
+    }
+
+    doReturnDoc() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
     nextRoute() {

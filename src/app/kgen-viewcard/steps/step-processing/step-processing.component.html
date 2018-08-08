@@ -1,6 +1,6 @@
 <div>
     <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
-    <input class="chbtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
+    <input class="chbtn" type="button" id="langBtn" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img src="../../../../assets/images/menubar_1_insert_card.png" class="nav-bar sideimg" />
     <sc2-confirm #modalRetry>
         <div class="app-modal-body">
@@ -22,26 +22,26 @@
             </div>
         </div>
     </sc2-confirm>
-    <sc2-confirm #modalNoROP>
-        <div class="app-modal-body">
-            <div class="modal-message">
-                {{'SCN-GEN-STEPS.TIMEOUT-NO-RESPONSE' | translate}}
-            </div>
-        </div>
-    </sc2-confirm>
     <sc2-confirm #modalQuit>
         <div class="app-modal-body">
             <div class="modal-message">
                 {{messageAbort | translate}}
             </div>
             <div class="buttonDiv">
-                <button type="button" class="btnModal confirm" (click)="processQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
-                <button type="button" class="btnModal cancel" (click)="processCancel"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+                <button type="button" class="btnModal confirm" (click)="processConfirmQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancelQuit()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalTimeout>
+        <div class="app-modal-body">
+            <div class="modal-message" style="align-content: center">
+                {{messageTimeout | translate}}
             </div>
         </div>
     </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
 
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input class="exitButton" type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalShow()">
+    <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalQuitShow()">
 </div>

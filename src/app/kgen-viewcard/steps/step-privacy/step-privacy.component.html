@@ -1,5 +1,25 @@
 <div>
-    <input class="chbtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+    <input class="chbtn" id="langBtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+    <sc2-confirm #modalQuit>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageAbort | translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processConfirmQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+                <button type="button" class="btnModal cancel" (click)="processCancelQuit()"><span>{{'SCN-GEN-STEPS.NO' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-confirm #modalTimeout>
+        <div class="app-modal-body">
+            <div class="modal-message" style="align-content: center">
+                {{messageTimeout | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
+    <sc2-process-comp #processing></sc2-process-comp>
+
     <label class="head1">
         {{'SCN-SRK-001-4.PRIV-POLICY-HEADER' | translate}}
     </label>
@@ -19,15 +39,14 @@
 
     </div>
 
-    <input type="image" *ngIf="showScrollUp"  class="scrollUp" src="../../../../assets/images/icon_arrow_up.png" (mousedown)="mouseDown(-30)"  (touchstart)="mouseDown(-30)" (mouseup)="stopHold()" (touchend)="stopHold()" />
-    <input type="image" *ngIf="showScrollDown" class="scrollDown" src="../../../../assets/images/icon_arrow_down.png" (mousedown)="mouseDown(30)"  (touchstart)="mouseDown(30)" (mouseup)="stopHold()"  (touchend)="stopHold()"/>
+    <input type="image" id="scrollUpBtn" *ngIf="showScrollUp"  class="scrollUp" src="../../../../assets/images/icon_arrow_up.png" (mousedown)="mouseDown(-30)"  (touchstart)="mouseDown(-30)" (mouseup)="stopHold()" (touchend)="stopHold()" />
+    <input type="image" id="scrollDownBtn" *ngIf="showScrollDown" class="scrollDown" src="../../../../assets/images/icon_arrow_down.png" (mousedown)="mouseDown(30)"  (touchstart)="mouseDown(30)" (mouseup)="stopHold()"  (touchend)="stopHold()"/>
 
     <div *ngIf="showCheckBox">
-        <input type="image" class="checkbox" [src]="imgChkbox" (click)="checked()" />
+        <input type="image" id="checkedBoxBtn" class="checkbox" [src]="imgChkbox" (click)="checked()" />
         <label class="checkBoxLabel1">{{'SCN-SRK-001-4.PRIV-POLICY-AGREE' | translate}}</label>
         <!-- <label class="checkBoxLabel1">{{lblHAVE_READ_EN}}</label> -->
     </div>
-    <input class="exitButton" type="button" value="{{'SCN-SRK-001-1.EXIT'|translate}}" (click) = "exitRoute()">
-    <input *ngIf="enableButton" class="conBtn" type="button" value="{{'SCN-SRK-001-4.CONFIRM' | translate}}" (click) = "nextRoute()">
-    <label class="footer"> SCN-SCK-001-2 </label>
-    <div>
+    <input class="exitButton" type="button" id='exitBtn' value="{{'SCN-SRK-001-1.EXIT'|translate}}" (click) = "processModalQuitShow()">
+    <input *ngIf="enableButton" class="conBtn" id="nextBtn" type="button" value="{{'SCN-SRK-001-4.CONFIRM' | translate}}" (click) = "nextRoute()">
+</div>
