@@ -1,5 +1,16 @@
 <div>
+    <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer ></sc2-timer>
     <input class="chbtn" id="langBtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+    <sc2-confirm #modalFail>
+        <div class="app-modal-body">
+            <div class="modal-message">
+                {{messageFail| translate}}
+            </div>
+            <div class="buttonDiv">
+                <button type="button" class="btnModal confirm" (click)="processFailQuit()"><span>{{'SCN-GEN-STEPS.YES' | translate}}</span></button>
+            </div>
+        </div>
+    </sc2-confirm>
     <sc2-confirm #modalQuit>
         <div class="app-modal-body">
             <div class="modal-message">

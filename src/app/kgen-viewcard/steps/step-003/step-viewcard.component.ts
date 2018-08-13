@@ -65,6 +65,11 @@ export class StepViewcardComponent  implements OnInit {
     date_of_first_registration_view = '';
     los = '';
     cos = '';
+    PAGE_VIEW_ABORT_QUIT_ITEMOUT = 5000;
+    PAGE_VIEW_RETURN_CARD_ITEMOUT = 5000;
+    PAGE_VIEW_TIME_EXPIRE_ITEMOUT = 5000;
+    LOCATION_DEVICE_ID = 'K1-SCK-01';
+    APP_LANG = '';
     constructor(private router: Router,
                 private httpClient: HttpClient,
                 private commonService: CommonService,
@@ -76,53 +81,71 @@ export class StepViewcardComponent  implements OnInit {
 
     ngOnInit(): void {
         console.log('init fun');
-        this.initParam();
+        this.initConfigParam();
+        this.initLanguage();
+        this.startBusiness();
+    }
+
+    initConfigParam() {
+        this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.LOCATION_DEVICE_ID = this.localStorages.get('LOCATION_DEVICE_ID');
+        this.PAGE_VIEW_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_ABORT_QUIT_ITEMOUT'));
+        this.PAGE_VIEW_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_RETURN_CARD_ITEMOUT'));
+        this.PAGE_VIEW_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_TIME_EXPIRE_ITEMOUT'));
+        this.carddataJson = this.localStorages.get('carddataJson');
+    }
+
+    initLanguage() {
+        if ('en-US' === this.APP_LANG) {
+            this.translate.use('en-US');
+        } else {
+            this.translate.use('zh-HK');
+        }
+        this.translate.currentLang = this.APP_LANG;
+    }
+
+    startBusiness() {
+       // this.processing.show();
+        if (this.carddataJson) {
+            this.carddata = JSON.parse(this.carddataJson);
+            this.startProcess();
+        }
     }
 
     /**
      * init param data.
      */
-    initParam() {
-        this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('en-US' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
-            this.cardType = Number.parseInt(params['cardType']);
-            this.carddataJson = this.localStorages.get('carddataJson');
-            this.carddata = JSON.parse(this.carddataJson);
-            this.los = this.carddata.los;
-            this.cos = this.carddata.cos;
-            if (this.los) {
-                this.dealLosData(this.los);
-                this.cosView = this.cos;
-            } else {
-                this.losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
-                this.cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
-            }
-            if (this.cardType === 1) {
-                const icno = this.carddata.icno;
-                const lengthNum = icno.length;
-                const icon_format = icno.substring(0, lengthNum);
-                const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
-                this.hkic_number_view = icon_format + '(' + last_str + ')';
-                this.name_ccc_view = this.processCCCName(this.carddata.ccc);
-                this.date_of_birth_view = this.dealDate(this.carddata.dob);
-                this.date_of_registration_view = this.dealDate(this.carddata.date_of_registration);
-                this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
-            } else {
-                this.hkic_number_view = this.carddata.hkic_number;
-                this.name_ccc_view = this.carddata.name_ccc;
-                this.date_of_birth_view = this.dealDate(this.carddata.date_of_birth);
-                this.date_of_registration_view = this.dealDate(this.carddata.date_of_ic_registration);
-                this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
-            }
-            this.showdata = true;
-            this.commonService.initTimerSet(this.timer, 1, 30);
-        });
+    startProcess() {
+        this.los = this.carddata.los;
+        this.cos = this.carddata.cos;
+        if (this.los) {
+            this.dealLosData(this.los);
+            this.cosView = this.cos;
+        } else {
+            this.losView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+            this.cosView = 'SCN-GEN-STEPS.NOT-APPLICABLE';
+        }
+        if (this.cardType === 1) {
+            const icno = this.carddata.icno;
+            const lengthNum = icno.length;
+            const icon_format = icno.substring(0, lengthNum);
+            const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
+            this.hkic_number_view = icon_format + '(' + last_str + ')';
+            this.name_ccc_view = this.processCCCName(this.carddata.ccc);
+            this.date_of_birth_view = this.dealDate(this.carddata.dob);
+            this.date_of_registration_view = this.dealDate(this.carddata.date_of_registration);
+            this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
+        } else {
+            this.hkic_number_view = this.carddata.hkic_number;
+            this.name_ccc_view = this.carddata.name_ccc;
+            this.date_of_birth_view = this.dealDate(this.carddata.date_of_birth);
+            this.date_of_registration_view = this.dealDate(this.carddata.date_of_ic_registration);
+            this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
+        }
+        this.showdata = true;
+        //  this.commonService.initTimerSet(this.timer, 1, 30);
     }
     /**
      * nextPage.
@@ -131,9 +154,15 @@ export class StepViewcardComponent  implements OnInit {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
-        this.router.navigate(['/kgen-viewcard/retrievecard'],
-            { queryParams: {'lang': this.translate.currentLang, 'cardType': this.cardType}});
+        this.storeConfigParam();
+        this.router.navigate(['/kgen-viewcard/retrievecard']);
         return;
+    }
+
+    storeConfigParam() {
+        this.localStorages.set('APP_LANG', this.translate.currentLang);
+        this.localStorages.set('cardType', this.cardType.toString());
+        this.localStorages.set('readType', this.readType.toString());
     }
 
     processCCCName(param) {
@@ -189,6 +218,8 @@ export class StepViewcardComponent  implements OnInit {
         if (this.modalPrintBill.visible) {
             this.modalPrintBill.hide();
         }
+        this.commonService.doLightoff('08');
+        this.commonService.doLightoff('07');
         this.commonService.doCloseWindow();
     }
 
@@ -239,7 +270,7 @@ export class StepViewcardComponent  implements OnInit {
             secondStr = '0' + secondStr;
         }
         const datestr = dayStr + '-' + monthStr + '-' + year + '  ' + hourStr + ':' + minuteStr + ':' + secondStr;
-        const billNo = this.deviceId + '_' + year + monthStr + dayStr + hourStr + minuteStr + secondStr;
+        const billNo = this.LOCATION_DEVICE_ID + '_' + year + monthStr + dayStr + hourStr + minuteStr + secondStr;
         const printcontent =
             ' ******************************************** \n' +
             '           香港入境事務處\n' +
@@ -306,15 +337,23 @@ export class StepViewcardComponent  implements OnInit {
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
-                this.nextRoute();
+                this.messageFail = 'SCN-GEN-STEPS.BILL_PRINT_EXCEPTION';
+                this.processing.hide();
+                this.processModalFailShow();
             }
         }, (error) => {
             console.log('printslip ERROR ' + error);
-            this.nextRoute();
+            this.messageFail = 'SCN-GEN-STEPS.BILL_PRINT_EXCEPTION';
+            this.processing.hide();
+            if (this.isAbort || this.timeOutPause) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 
     timeExpire() {
+        this.timer.showTimer = false;
         this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
@@ -336,13 +375,19 @@ export class StepViewcardComponent  implements OnInit {
         this.quitDisabledAll();
         setTimeout(() => {
             this.processTimeoutQuit();
-        }, 5000);
+        }, this.PAGE_VIEW_TIME_EXPIRE_ITEMOUT);
     }
 
     processTimeoutQuit() {
         this.modalTimeout.hide();
         this.doCloseCard();
     }
+    processModalFailShow() {
+        this.quitDisabledAll();
+        this.isAbort = true;
+        this.modalFail.show();
+    }
+
     processFailQuit() {
         this.modalFail.hide();
         this.doCloseCard();
@@ -393,13 +438,17 @@ export class StepViewcardComponent  implements OnInit {
                 this.doReturnDoc();
                 setTimeout(() => {
                     this.backRoute();
-                }, 2000);
+                }, this.PAGE_VIEW_RETURN_CARD_ITEMOUT);
             } else {
                 this.backRoute();
+                setTimeout(() => {
+                }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
-            this.backRoute();
+            setTimeout(() => {
+                this.backRoute();
+            }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
         });
     }
 

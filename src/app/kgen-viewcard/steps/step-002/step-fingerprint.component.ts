@@ -53,27 +53,24 @@ export class StepFingerprintComponent implements OnInit {
     retryVal_01 = 0;
     retryVal_02 = 0;
     retryVal_03 = 0;
-    // fp_tmpl1_in_base64 = 'Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9';
-    // fp_tmpl2_in_base64 = 'AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==';
 
-    // fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
-    //     + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
-    // fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
-    //     `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
     fp_tmpl1_in_base64 = '';
     fp_tmpl2_in_base64 = '';
     fp_tmpl1_fingernum = '';
     fp_tmpl2_fingernum = '';
+    fingerNum = '';
+    PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT = 15000;
+    PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT = 13000;
+    PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT = 15000;
+    PAGE_FINGERPRINT_MATCH_SCORE = 5000;
+    PAGE_FINGERPRINT_MATCH_MAX = 3;
+    PAGE_FINGERPRINT_SCAN_MAX = 3;
+    PAGE_FINGERPRINT_IS_VALIDATION = 0;
+    PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
+    APP_LANG = '';
     carddata: any = {};
     allFingerNum = [];
-    fpTmpl1: string;
-    fpTmpl2: string;
-    fpTmpl2B: string;
 
-    // left fingerprint
-    // fptemp = 'ABA/NMwxQTVBIj83MzEzREE+MDE6Uko5RjQ5OEQxOz0yJTo4NkJEOTY6PzM8UTtBQjhFQkUUPDI9IzE3NDBBMjYIARAAAAsOBAAAAAEIAQALEA8ABAAAAAAAAAAAEARgCAUAAAAIABAAAAEGBAAAAAAIIAACEAcABABDAAAA+gAAEAQBCAwAAAAIABAAAAAwBADSAD0I5ACDEAoABAAAAAAAAAADEVQBCAAAAAAACAAAABEEAQAAAAgAAgARAAQDAAAAAAAACBECAAEEAAQAAAAACAAAABEEBAAAAAgAEAARAAQgAQAAAAAACBEAAAETAAQAAAAACAABABEEYAAAAAgAFAARAAQRAAAAAgAACBEAALASAAQAAAAACAABABEEFAAAAAgAFQARAAQWAAAAAAAACBEAAAAGAAQAAAAACAAAABEE/wAAAAgAIwARAAQkYAAAAQAACBECAAAhAAQAAAAACAAAABEEsAAAAAgAIgARAAQAFAAAAQAACBISAhAEAIAAAAgAAAASAAAFEQAAAAAABAgAAAAEJgAAEgAIAAASACAEAAAAAAgAAAASAAArIQAAAABZBAgCAK0O0T4AUwB7ACDsAb0Kag4AQLpvAAAxACBX1gAAPgCODuIgAH4Ol0AADQBfACA6AOYOkEIAPwqcAAGBACEcIQAAQACgDiYgAMAOfEAAWQDEACDFABgOpJgAQFixAADtABB63wAAPgDHDq8RAEAO1j4AMQDiACF9ALsOx6UAQMfOAAANABCAlwAAQADRCF8QAEkOlEAAngBrACExANYK2SEAPuLiAAAxACBd1gAAPgDlDuIgAJMO2z0ADwBJABB/Af8O6AEAQLHpAAHwABE7IwAAQAD7BhkhAIoJ2z0ADwBJABCnAaUO/g8AQBMEAADsABHSvQEAQAAFDroRAO4OokAAOAEgABBTANEOD3MBPnsaAADsABGrvQEAQAAkDroQAOUMPkAApAG0ABCBACEMJ/MBQCYpAABcABAv4gEAPwArDiMgAJgOvUAA7AG6ABVTANEOLnQBPntBAAATACDWQQEAQABWDqgQAKEOQ0AAggGbACSmAIMLXfABQJ5mAACEABB7hwEAQABrDoUhAO8LVT8AegHoACAVAIUOcsgBQJJ7AACCACDpQwEAQACFDpsgAP4OwkAAygGhABAVAIUOhtsBQJKgAACEABWEhwEAQACnDoUhAPEOhUAAFQGSACDyAGcOyX4BP4PtAAA6ACGL5gEAPwD4CgogALkH3T8AfgE8ACQAEzwxCAAAAAAACAAAABMEkgAAAAgAMwATAAQy2wAAAAAACBMAAJI1AAQAAAAACAC9ABMEngAAQQgAQA0TAAQA/wAAAE1BPT0=';
-    fptemp = '';
-    finger_num = 5;
     constructor(private router: Router,
                 private commonService: CommonService,
                 private route: ActivatedRoute,
@@ -86,41 +83,47 @@ export class StepFingerprintComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('init fun');
-        this.initParam();
-
+        this.initConfigParam();
+        this.initLanguage();
+        this.startBusiness();
+    }
+    initConfigParam() {
+        this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT'));
+        this.PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT'));
+        this.PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT'));
+        this.PAGE_FINGERPRINT_MATCH_SCORE = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_MATCH_SCORE'));
+        this.PAGE_FINGERPRINT_MATCH_MAX = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_MATCH_MAX'));
+        this.PAGE_FINGERPRINT_SCAN_MAX = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_SCAN_MAX'));
+        this.PAGE_FINGERPRINT_IS_VALIDATION = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_IS_VALIDATION'));
+        this.PAGE_FINGERPRINT_FP_TMPL_FORMAT = this.localStorages.get('PAGE_FINGERPRINT_FP_TMPL_FORMAT');
+        this.fp_tmpl1_in_base64 = this.localStorages.get('fp_tmpl1_in_base64');
+        this.fp_tmpl2_in_base64 = this.localStorages.get('fp_tmpl2_in_base64');
+        this.fp_tmpl1_fingernum = this.localStorages.get('fp_tmpl1_fingernum');
+        this.fp_tmpl2_fingernum = this.localStorages.get('fp_tmpl2_fingernum');
     }
 
-    /**
-     * init param data.
-     */
-    initParam() {
-        this.processing.show();
-        this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('en-US' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
-            this.cardType = Number.parseInt(params['cardType']);
-            this.readType = Number.parseInt(this.localStorages.get('readType'));
-            this.initParamData();
+    initLanguage() {
+        if ('en-US' === this.APP_LANG) {
+            this.translate.use('en-US');
+        } else {
+            this.translate.use('zh-HK');
+        }
+        this.translate.currentLang = this.APP_LANG;
+    }
 
-        });
+    startBusiness() {
+        this.processing.show();
+        this.quitDisabledAll();
+        this.startFingerPrint();
     }
 
     /**
      * init param Data.
      */
-    initParamData() {
-        this.fp_tmpl1_in_base64 = this.localStorages.get('fp_tmpl1_in_base64');
-        this.fp_tmpl2_in_base64 = this.localStorages.get('fp_tmpl2_in_base64');
-        this.fp_tmpl1_fingernum = this.localStorages.get('fp_tmpl1_fingernum');
-        this.fp_tmpl2_fingernum = this.localStorages.get('fp_tmpl2_fingernum');
-         // this.fp_tmpl1_fingernum = '0';
-         // this.fp_tmpl2_fingernum = '5';
-        this.fptemp = this.fp_tmpl2_in_base64;
+    startFingerPrint() {
         if (this.commonService.checkFpNull(this.fp_tmpl1_in_base64) && !this.commonService.checkFpNull(this.fp_tmpl2_in_base64)) {
             this.fp_tmpl1_in_base64 = this.fp_tmpl2_in_base64;
             this.maxFingerCount = 1;
@@ -130,18 +133,20 @@ export class StepFingerprintComponent implements OnInit {
         this.getFinger();
     }
 
-    /**
-     * nextPage.
-     */
     nextRoute() {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
-        this.router.navigate(['/kgen-viewcard/viewcard'],
-            { queryParams: {'lang': this.translate.currentLang, 'cardType': this.cardType}});
-         return;
+        this.storeConfigParam();
+        this.router.navigate(['/kgen-viewcard/viewcard']);
+        return;
     }
 
+    storeConfigParam() {
+        this.localStorages.set('APP_LANG', this.translate.currentLang);
+        this.localStorages.set('cardType', this.cardType.toString());
+        this.localStorages.set('readType', this.readType.toString());
+    }
 
     /**
      * backPage.
@@ -157,6 +162,8 @@ export class StepFingerprintComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
+        this.commonService.doLightoff('08');
+        this.commonService.doLightoff('07');
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -171,95 +178,42 @@ export class StepFingerprintComponent implements OnInit {
         }
     }
 
-    startFingerprintScan() {
-        console.log('call startFingerprintScan');
-        if (this.isAbort || this.timeOutPause) {
-            return;
-        }
-        this.startFingerprintScanner();
-    }
-
     getFinger() {
         // this.modalInfo.hide();
         console.log('this.fingerCount: ', this.fingerCount);
         this.fingerCount++;
-        // alert('fp_tmpl1_fingernum=' + this.fp_tmpl1_fingernum + ',fp_tmpl2_fingernum= this.fp_tmpl2_fingernum');
-        if (!this.commonService.checkFpNull(this.fp_tmpl1_fingernum)) {
-            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
-        }
-        if (!this.commonService.checkFpNull(this.fp_tmpl2_fingernum)) {
+        if (this.fingerCount > 1) {
             this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
+            this.fingerNum = this.fp_tmpl2_fingernum;
+        } else {
+            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
+            this.fingerNum = this.fp_tmpl1_fingernum;
         }
-        // this.allFingerNum.push('fp0');
-        // this.allFingerNum.push('fp6');
-        // if (this.allFingerNum.length < 1) {
+        this.processing.hide();
+        this.cancelQuitEnabledAll();
+        this.doScanFingerPrint();
+        // if (this.fingerCount !== this.maxFingerCount || this.maxFingerCount === 1) {
+        //     this.processing.hide();
+        //     this.cancelQuitEnabledAll();
+        //     this.doScanFingerPrint();
         // }
-        // if (this.fingerCount > 1) {
-        //     // this.allFingerNum.push('fp' + this.fp_tmpl2_in_base64);
-        //     this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
-        // } else {
-        //     this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
-        // }
-        if (this.fingerCount !== this.maxFingerCount || this.maxFingerCount === 1) {
-            this.processing.hide();
-            this.startFingerprintScan();
-        }
     }
 
     /**
      *  start scanner fingerprint
      */
-    startFingerprintScanner() {
-        console.log('call : startFingerprintScanner fun.')
+    doScanFingerPrint() {
+        console.log('call : getphoto fun.')
+        if (this.isAbort || this.timeOutPause) {
+            return;
+        }
         this.service.sendRequestWithLog('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
-            // this.service.sendRequest('RR_fptool', 'scanfp', {'arn': '', 'fp_img_format': 'bmp'}).subscribe((resp) => {
             this.processing.show();
+            this.quitDisabledAll();
             if (resp && resp.errorcode === '0') {
-                if (resp.fpdata) {
-                    // change  fingerprint data type
-                    this.extractimgtmpl(resp.fpdata);
-                } else {
-                    if (this.retryVal_01 < 2) {
-                        this.processing.hide();
-                        this.messageRetry = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-FINGER';
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.modalRetry.show();
-                        this.retryVal_01 += 1;
-                    } else {
-                        this.processing.hide();
-                        this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-LIMT-MAX';
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.modalFail.show();
-                    }
-                }
-            } else if (resp && (resp.errorcode === '20002' || resp.errorcode === '20006')) {
-                if (this.retryVal_02 < 2) {
-                    this.processing.hide();
-                    this.messageRetry = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-FINGER';
-                    if (this.isAbort || this.timeOutPause) {
-                        return;
-                    }
-                    this.modalRetry.show();
-                    this.retryVal_02 += 1;
-                } else {
-                    this.processing.hide();
-                    this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-DETECT-LIMT-MAX';
-                    if (this.isAbort || this.timeOutPause) {
-                        return;
-                    }
-                    this.modalFail.show();
-                }
+                this.processExtractImgtmpl(resp.fpdata);
             } else {
-                this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-DEVICE-EXCEPTION';
-                this.processing.hide();
-                if (this.isAbort || this.timeOutPause) {
-                    return;
-                }
-                this.modalFail.show();
+                this.doFailedScan();
             }
         }, (error) => {
             console.log('takephoto ERROR ' + error);
@@ -268,23 +222,62 @@ export class StepFingerprintComponent implements OnInit {
             if (this.isAbort || this.timeOutPause) {
                 return;
             }
-            this.modalFail.show();
+            this.processModalFailShow();
         });
+    }
+
+    /**
+     * faild try again.
+     */
+    doFailedScan() {
+        if (this.isAbort || this.timeOutPause) {
+            return;
+        }
+        this.retryVal += 1;
+        if (this.retryVal < this.PAGE_FINGERPRINT_SCAN_MAX) {
+            console.log(this.retryVal);
+            this.processing.hide();
+            this.quitDisabledAll();
+            this.modalRetry.show();
+        } else {
+            console.log('doFailedScan ' + this.fingerCount);
+            if (this.fingerCount < this.maxFingerCount) {
+                this.retryVal = 0;
+                this.fingerNum = '';
+                this.getFinger();
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
+                this.isAbort = true;
+                this.processing.hide();
+                this.processModalFailShow();
+            }
+        }
+    }
+
+    /**
+     * scan try again.
+     */
+    failTryAgain() {
+        this.modalRetry.hide();
+        this.doScanFingerPrint();
     }
 
     /**
      *  data type change to Morpho_CFV
      * @param fpdata
      */
-    extractimgtmpl (fpdata) {
+    processExtractImgtmpl (fpdata: String) {
         if (this.isAbort || this.timeOutPause) {
             return;
         }
         this.service.sendRequestWithLog('RR_fptool', 'extractimgtmpl',
-            {'finger_num': this.finger_num, 'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_img_in_base64': fpdata}).subscribe((resp) => {
-            if (resp) {
-                console.log(resp);
-                this.verifytempl(this.fptemp, resp.fp_tmpl_in_base64);
+                    {'finger_num': this.fingerNum,
+                        'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
+                        'fp_img_in_base64': fpdata}).subscribe((resp) => {
+                    if (resp.error_info.error_code === '0') {
+                        this.compareFingerPrint( resp.fp_tmpl_in_base64);
+                    } else {
+                        this.doFailedScan();
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
@@ -293,92 +286,48 @@ export class StepFingerprintComponent implements OnInit {
     }
 
     /**
-     * fingerprint compare fun
-     * @param fpdataLeftTemp
-     * @param fpdataCurrentFpdata
+     *
+     * @param fpdataTemp
      */
-    verifytempl(fpdataLeftTemp, fpdataCurrentFpdata) {
-        console.log('call verifytempl');
+    compareFingerPrint(fpdataTemp: String) {
         if (this.isAbort || this.timeOutPause) {
             return;
         }
-        this.service.sendRequestWithLog('RR_fptool', 'verifytmpl',
-            {'fp_tmpl_format': 'Morpho_PkCompV2', 'fp_tmpl1_in_base64': fpdataLeftTemp, 'fp_tmpl2_in_base64': fpdataCurrentFpdata})
-            .subscribe((resp) => {
-                // old ,new pause fingerprint compare.
+        this.service.sendRequest('RR_fptool', 'verifytmpl', {
+            'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
+            'fp_tmpl1_in_base64': fpdataTemp,
+            'fp_tmpl2_in_base64': this.fingerCount === 1 ? this.fp_tmpl1_in_base64 : this.fp_tmpl2_in_base64
+        }).subscribe((resp) => {
+            // is validate
+            if (this.PAGE_FINGERPRINT_IS_VALIDATION === 0 || this.cardType === 1) {
                 this.nextRoute();
-                if (resp.match_score) {
-                    if (this.cardType === 1) {
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.nextRoute();
-                    } else {
-                        console.log(resp);
-                        if (resp.match_score > 5000) {
-                            console.log('compare scuess,pass');
-                            if (this.isAbort || this.timeOutPause) {
-                                return;
-                            }
-                            this.nextRoute();
-                        } else {
-                            console.log('compare ');
-                            // once again.
-                            if (this.retryVal < 2) {
-                                this.processing.hide();
-                                if (this.isAbort || this.timeOutPause) {
-                                    return;
-                                }
-                                this.modalRetry.show();
-                                this.retryVal += 1;
-                            } else {
-                                this.processing.hide();
-                                if (this.isAbort || this.timeOutPause) {
-                                    return;
-                                }
-                                this.modalFail.show();
-                            }
-                        }
-                    }
+            }
+            // resp.match_score = 500;
+            if (resp.match_score !== null) {
+                if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
+                    this.nextRoute();
                 } else {
-                    if (this.cardType === 1) {
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.nextRoute();
-                    }
-                    if (this.retryVal < 2) {
-                        this.processing.hide();
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.modalRetry.show();
-                        this.retryVal += 1;
-                    } else {
-                        this.processing.hide();
-                        if (this.isAbort || this.timeOutPause) {
-                            return;
-                        }
-                        this.modalFail.show();
-                    }
+                    this.doFailedScan()
                 }
-            }, (error) => {
-                console.log('verifytmpl ERROR ' + error);
+            } else {
+                console.log('There\'s an error on comparing fingerprints!');
+                this.isAbort = true;
                 this.doCloseCard();
-            });
-    }
-
-    /**
-     * 重試.
-     */
-    failTryAgain() {
-        this.modalRetry.hide();
-        this.startFingerprintScan();
+            }
+        }, (error) => {
+            console.log('verifytmpl ERROR ' + error);
+            this.isAbort = true;
+            this.doCloseCard();
+        });
     }
 
     // *************************************************************************************************************************************
 
+    /**
+     *  timeout
+     */
     timeExpire() {
+        this.timer.showTimer = false;
         this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
@@ -394,12 +343,17 @@ export class StepFingerprintComponent implements OnInit {
         this.quitDisabledAll();
         setTimeout(() => {
             this.processTimeoutQuit();
-        }, 5000);
+        }, this.PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT);
     }
 
     processTimeoutQuit() {
         this.modalTimeout.hide();
         this.doCloseCard();
+    }
+    processModalFailShow() {
+        this.quitDisabledAll();
+        this.isAbort = true;
+        this.modalFail.show();
     }
 
     processFailQuit() {
@@ -439,25 +393,32 @@ export class StepFingerprintComponent implements OnInit {
     processCancelQuit() {
         this.modalQuit.hide();
         this.isAbort = false;
-        this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
+        } else {
+            this.cancelQuitEnabledAll();
         }
     }
     doCloseCard() {
         this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
-                this.doReturnDoc();
+                setTimeout(() => {
+                    this.doReturnDoc();
+                }, this.PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT);
                 setTimeout(() => {
                     this.backRoute();
-                }, 5000);
+                }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
             } else {
-                this.backRoute();
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
-            this.backRoute();
+            setTimeout(() => {
+                this.backRoute();
+            }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
         });
     }
 

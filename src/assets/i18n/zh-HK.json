@@ -412,6 +412,7 @@
         "COLLECT-CARD-SURE": "請取回你的身份證.",
         "BILL-PRINT-BTN": "打印",
         "BILL-PRINT-MESSAGE": "確認是否要打印？",
+        "BILL_PRINT_EXCEPTION": "打印機出現異常，系統暫停使用",
         "COMFIRM-OCR-READER": "讀卡錯誤，如果你持有新智能身份證，你可以把它放有光學閱讀器以繼續使用服務，你需要繼續嗎？",
         "INSERT_CARD_SCREEN_S1": "",
         "INSERT_CARD_SCREEN_S2": "身份證閱讀器初始化失敗，系統暫停使用",
@@ -428,6 +429,7 @@
         "OCR_READER_SCREEN_S11" : "你所提供的身份證不能夠辦認，請確認後重試",
         "OCR_READER_SCREEN_S11_1" : "已超過3次重試“你所提供的身份證不能夠辦認，請確認後重試”，系統暫停使用",
         "OCR_READER_SCREEN_S12" : "RFID 閱讀錯誤。請取回你的身份證重試。",
-        "OCR_READER_SCREEN_S13" : "讀卡錯誤，服務將會中止"
+        "OCR_READER_SCREEN_S13" : "讀卡錯誤，服務將會中止",
+        "INIT_CONFIG_PARAM_ERROR": "系統初始化異常，服務將會中止"
     }
 }

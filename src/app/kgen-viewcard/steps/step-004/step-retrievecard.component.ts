@@ -34,6 +34,10 @@ export class StepRetrievecardComponent implements OnInit {
     messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+    PAGE_COLLECT_ABORT_QUIT_ITEMOUT = 2000;
+    PAGE_COLLECT__RETURN_CARD_ITEMOUT = 2000;
+    PAGE_COLLECT_TIME_EXPIRE_ITEMOUT = 5000;
+    APP_LANG = '';
     cardType = 1;
     readType = 1;
     sumSeconds: number;
@@ -50,37 +54,44 @@ export class StepRetrievecardComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('init fun');
-        this.initParam();
-
+        this.initConfigParam();
+        this.initLanguage();
+        this.startBusiness();
     }
 
-    /**
-     * init param data.
-     */
-    initParam() {
-        this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('en-US' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
-            this.cardType = Number.parseInt(params['cardType']);
-            this.readType = Number.parseInt(this.localStorages.get('readType'));
-            this.commonService.doLightoff('07');
-            this.commonService.doLightoff('08');
-            setTimeout(() => {
-                this.doCloseCard();
-            }, 2000);
-
-        });
+    initConfigParam() {
+        this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT_ABORT_QUIT_ITEMOUT'));
+        this.PAGE_COLLECT__RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT__RETURN_CARD_ITEMOUT'));
+        this.PAGE_COLLECT_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT_TIME_EXPIRE_ITEMOUT'));
     }
+
+    initLanguage() {
+        if ('en-US' === this.APP_LANG) {
+            this.translate.use('en-US');
+        } else {
+            this.translate.use('zh-HK');
+        }
+        this.translate.currentLang = this.APP_LANG;
+    }
+
+    startBusiness() {
+        this.processing.show();
+        this.commonService.doLightoff('07');
+        this.commonService.doLightoff('08');
+        setTimeout(() => {
+            this.doCloseCard();
+        }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
+    }
+
     // ************************************************************************************************************************************
     /**
      * count time.
      */
     timeExpire() {
+        this.timer.showTimer = false;
         this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
@@ -96,7 +107,7 @@ export class StepRetrievecardComponent implements OnInit {
         this.quitDisabledAll();
         setTimeout(() => {
             this.processTimeoutQuit();
-        }, 5000);
+        }, this.PAGE_COLLECT_TIME_EXPIRE_ITEMOUT);
     }
 
     processTimeoutQuit() {
@@ -153,7 +164,7 @@ export class StepRetrievecardComponent implements OnInit {
                 this.doReturnDoc();
                 setTimeout(() => {
                     this.backRoute();
-                }, 1000);
+                }, this.PAGE_COLLECT__RETURN_CARD_ITEMOUT);
             } else {
                 this.modalCollectShow();
             }
@@ -161,7 +172,7 @@ export class StepRetrievecardComponent implements OnInit {
             console.log('closecard ERROR ' + error);
             setTimeout(() => {
                 this.backRoute();
-            }, 2000);
+            }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
         });
     }
     modalCollectShow() {
@@ -178,7 +189,7 @@ export class StepRetrievecardComponent implements OnInit {
         }
         setTimeout(() => {
             this.backRoute();
-        }, 2000);
+        }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
     }
 
     doReturnDoc() {
@@ -205,6 +216,8 @@ export class StepRetrievecardComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
+        this.commonService.doLightoff('08');
+        this.commonService.doLightoff('07');
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }

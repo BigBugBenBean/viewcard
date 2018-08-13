@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router'
+import {LocalStorageService} from '../../shared/services/common-service/Local-storage.service';
 
 @Component ({
     templateUrl: './start.component.html',
@@ -7,13 +8,23 @@ import { Router } from '@angular/router'
 })
 
 export class StartComponent {
-    constructor(private router: Router) { }
+    APP_LANG = '';
+    constructor(private router: Router,
+                private localStorages: LocalStorageService) { }
 
     startRouteEn() {
-        this.router.navigate(['/kgen-updcsls/privacy'], {queryParams: {'lang': 'EN'}});
+        this.APP_LANG = 'en-US';
+        this.storeConfigParam();
+        this.router.navigate(['/kgen-viewcard/privacy']);
     }
 
     startChRoute() {
-        this.router.navigate(['/kgen-updcsls/privacy'], {queryParams: {'lang': 'CN'}});
+        this.APP_LANG = 'zh-HK';
+        this.storeConfigParam();
+        this.router.navigate(['/kgen-viewcard/privacy']);
+    }
+
+    storeConfigParam() {
+        this.localStorages.set('APP_LANG', this.APP_LANG);
     }
 }

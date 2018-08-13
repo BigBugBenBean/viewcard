@@ -1,21 +1,31 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN } from '../../../shared/var-setting';
+import {PRIV_POL_LBL, HAVE_READ_EN, HAVE_READ_CN, INI_URL} from '../../../shared/var-setting';
 import {MsksService} from '../../../shared/msks';
 import {CommonService} from '../../../shared/services/common-service/common.service';
 import {ConfirmComponent} from '../../../shared/sc2-confirm';
 import {ProcessingComponent} from '../../../shared/processing-component';
+import {LocalStorageService} from '../../../shared/services/common-service/Local-storage.service';
+import {HttpClient} from '../../../../../node_modules/@angular/common/http';
+import {TimerComponent} from '../../../shared/sc2-timer';
 @Component({
     styleUrls: ['./step-privacy.component.scss'],
     templateUrl: './step-privacy.component.html'
 })
 export class StepPrivacyComponent implements OnInit {
+
+    @ViewChild('modalFail')
+    public modalFail: ConfirmComponent;
+
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
     @ViewChild('modalTimeout')
     public modalTimeout: ConfirmComponent;
+
+    @ViewChild('timer')
+    public timer: TimerComponent;
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
@@ -32,10 +42,15 @@ export class StepPrivacyComponent implements OnInit {
     imgChkbox = require('../../../../assets/images/checkbox.png');
     showScrollUp = false;
     showScrollDown = true;
-    timer: any;
+    timer1: any;
+    timeOutPause = false;
+
     lblPRIV_POL_LBL = PRIV_POL_LBL;
     lblHAVE_READ_EN = HAVE_READ_EN;
     lblHAVE_READ_CN = HAVE_READ_CN;
+    PAGE_PRIVACY_QUIT_ITEMOUT = 5000;
+    APP_LANG = 'en-US';
+    IS_DEFAULT_LANG = 0;
 
     @ViewChild('policyBox')
     private policyBox: ElementRef;
@@ -46,32 +61,126 @@ export class StepPrivacyComponent implements OnInit {
                 private commonService: CommonService,
                 private route: ActivatedRoute,
                 private service: MsksService,
+                private httpClient: HttpClient,
+                private localStorages: LocalStorageService,
                 private translate: TranslateService) { }
 
     ngOnInit() {
-        this.initParam();
+        this.initConfigParam();
+    }
+
+    cleanLocalStorages() {
+        this.localStorages.remove('APP_LANG');
+        this.localStorages.remove('IS_DEFAULT_LANG');
+    }
+
+    /**
+     * init Batch Save to local storage.
+     */
+    initConfigParam() {
+        this.quitDisabledAll();
+        this.processing.show();
+        this.httpClient.get(INI_URL).subscribe(data => {
+            this.localStorages.set('LOCATION_IP', data['LOCATION_IP']);
+            this.localStorages.set('LOCATION_PORT', data['LOCATION_PORT']);
+            this.localStorages.set('UPDATE_LOS_COS_WEBSERVICE_IP', data['UPDATE_LOS_COS_WEBSERVICE_IP']);
+            this.localStorages.set('UPDATE_LOL_COS_WEBSERVICE_PORT', data['UPDATE_LOL_COS_WEBSERVICE_PORT']);
+            this.localStorages.set('TERMINAL_ID', data['TERMINAL_ID']);
+            this.localStorages.set('LOCATION_DEVICE_ID', data['LOCATION_DEVICE_ID']);
+            this.localStorages.set('DEVICE_OCR_READER_NAME', data['DEVICE_OCR_READER_NAME']);
+            this.localStorages.set('DEVICE_OCR_READER_CODE', data['DEVICE_OCR_READER_CODE']);
+            this.localStorages.set('DEVICE_EXISTING_IC_READER_NAME', data['DEVICE_EXISTING_IC_READER_NAME']);
+            this.localStorages.set('DEVICE_EXISTING_IC_READER_CODE', data['DEVICE_EXISTING_IC_READER_CODE']);
+            this.localStorages.set('DEVICE_SLIP_PRINTER_NAME', data['DEVICE_SLIP_PRINTER_NAME']);
+            this.localStorages.set('DEVICE_SLIP_PRINTER_CODE', data['DEVICE_SLIP_PRINTER_CODE']);
+            this.localStorages.set('DEVICE_FINGERPRINT_SCANNER_NAME', data['DEVICE_FINGERPRINT_SCANNER_NAME']);
+            this.localStorages.set('DEVICE_FINGERPRINT_SCANNER_CODE', data['DEVICE_FINGERPRINT_SCANNER_CODE']);
+            this.localStorages.set('DEVICE_LIGHT_CODE_OCR_READER', data['DEVICE_LIGHT_CODE_OCR_READER']);
+            this.localStorages.set('DEVICE_LIGHT_CODE_IC_READER', data['DEVICE_LIGHT_CODE_IC_READER']);
+            this.localStorages.set('DEVICE_LIGHT_CODE_PRINTER', data['DEVICE_LIGHT_CODE_PRINTER']);
+            this.localStorages.set('DEVICE_LIGHT_CODE_FINGERPRINT', data['DEVICE_LIGHT_CODE_FINGERPRINT']);
+            this.localStorages.set('DATE_OF_REGISTER', data['DATE_OF_REGISTER']);
+
+            this.localStorages.set('IS_DEFAULT_LANG', data['IS_DEFAULT_LANG']);
+
+            this.localStorages.set('PAGE_PRIVACY_QUIT_ITEMOUT', data['PAGE_PRIVACY_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD', data['PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD']);
+            this.localStorages.set('PAGE_READ_CLOSE_CARD_ITMEOUT_OCR', data['PAGE_READ_CLOSE_CARD_ITMEOUT_OCR']);
+            this.localStorages.set('PAGE_READ_CLOSE_CARD_TIMEOUT_IC', data['PAGE_READ_CLOSE_CARD_TIMEOUT_IC']);
+            this.localStorages.set('PAGE_READ_RETRY_IC_OPEN_GATE_MAX', data['PAGE_READ_RETRY_IC_OPEN_GATE_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_IC_OPEN_CARD_MAX', data['PAGE_READ_RETRY_IC_OPEN_CARD_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_OCR_NO_CARD_MAX', data['PAGE_READ_RETRY_OCR_NO_CARD_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_OCR_NO_IDENTIFY_MAX', data['PAGE_READ_RETRY_OCR_NO_IDENTIFY_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_OCR_OPENCARD_READ_ERROR_MAX', data['PAGE_READ_RETRY_OCR_OPENCARD_READ_ERROR_MAX']);
+        this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY']);
+            this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR']);
+            this.localStorages.set('PAGE_READ_TIME_EXPIRE_ITEMOUT', data['PAGE_READ_TIME_EXPIRE_ITEMOUT']);
+            this.localStorages.set('PAGE_READ_ABORT_QUIT_ITEMOUT', data['PAGE_READ_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_READ_RETURN_CARD_ITEMOUT', data['PAGE_READ_RETURN_CARD_ITEMOUT']);
+
+            this.localStorages.set('PAGE_PROCESSING_ABORT_QUIT_ITEMOUT', data['PAGE_PROCESSING_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_PROCESSING_RETURN_CARD_ITEMOUT', data['PAGE_PROCESSING_RETURN_CARD_ITEMOUT']);
+            this.localStorages.set('PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT', data['PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT']);
+
+            this.localStorages.set('PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT', data['PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT', data['PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT']);
+            this.localStorages.set('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT', data['PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT']);
+            this.localStorages.set('PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD', data['PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD']);
+            this.localStorages.set('PAGE_FINGERPRINT_MATCH_SCORE', data['PAGE_FINGERPRINT_MATCH_SCORE']);
+            this.localStorages.set('PAGE_FINGERPRINT_MATCH_MAX', data['PAGE_FINGERPRINT_MATCH_MAX']);
+            this.localStorages.set('PAGE_FINGERPRINT_SCAN_MAX', data['PAGE_FINGERPRINT_SCAN_MAX']);
+            this.localStorages.set('PAGE_FINGERPRINT_IS_VALIDATION', data['PAGE_FINGERPRINT_IS_VALIDATION']);
+            this.localStorages.set('PAGE_FINGERPRINT_FP_TMPL_FORMAT', data['PAGE_FINGERPRINT_FP_TMPL_FORMAT']);
+
+            this.localStorages.set('PAGE_UPDATE_ABORT_QUIT_ITEMOUT', data['PAGE_UPDATE_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_UPDATE_RETURN_CARD_ITEMOUT', data['PAGE_UPDATE_RETURN_CARD_ITEMOUT']);
+            this.localStorages.set('PAGE_UPDATE_TIME_EXPIRE_ITEMOUT', data['PAGE_UPDATE_TIME_EXPIRE_ITEMOUT']);
+
+            this.localStorages.set('PAGE_VIEW_ABORT_QUIT_ITEMOUT', data['PAGE_VIEW_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_VIEW_RETURN_CARD_ITEMOUT', data['PAGE_VIEW_RETURN_CARD_ITEMOUT']);
+            this.localStorages.set('PAGE_VIEW_TIME_EXPIRE_ITEMOUT', data['PAGE_VIEW_TIME_EXPIRE_ITEMOUT']);
+
+            this.localStorages.set('PAGE_COLLECT_ABORT_QUIT_ITEMOUT', data['PAGE_COLLECT_ABORT_QUIT_ITEMOUT']);
+            this.localStorages.set('PAGE_COLLECT_RETURN_CARD_ITEMOUT', data['PAGE_COLLECT_RETURN_CARD_ITEMOUT']);
+            this.localStorages.set('PAGE_COLLECT_TIME_EXPIRE_ITEMOUT', data['PAGE_COLLECT_TIME_EXPIRE_ITEMOUT']);
+
+            this.PAGE_PRIVACY_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PRIVACY_QUIT_ITEMOUT'));
+
+            this.APP_LANG = this.localStorages.get('APP_LANG');
+            if (this.commonService.checkFpNull(this.APP_LANG)) {
+                this.IS_DEFAULT_LANG = Number.parseInt(this.localStorages.get('IS_DEFAULT_LANG'));
+                if (this.IS_DEFAULT_LANG === 1) {
+                    this.localStorages.set('APP_LANG', data['APP_LANG']);
+                    this.APP_LANG = this.localStorages.get('APP_LANG');
+                } else {
+                    this.APP_LANG = 'en-US'
+                }
+            }
+            this.processing.hide();
+            this.cancelQuitEnabledAll();
+            this.initLanguage();
+        }, (err) => {
+            this.messageFail = 'SCN-GEN-STEPS.INIT_CONFIG_PARAM_ERROR';
+            this.processing.hide();
+            if (this.isAbort || this.timeOutPause) {
+                return;
+            }
+            this.processModalFailShow();
+        });
     }
 
     /**
      *  init param.
      */
-    initParam() {
-        this.route.queryParams.subscribe(params => {
-             let lang = params['lang'];
-            if ('en-US' === lang) {
-                this.translate.use('en-US');
-            } else if ('zh-HK' === lang) {
-                this.translate.use('zh-HK');
-            } else {
-                this.translate.addLangs(['en-US', 'zh-CN', 'zh-HK']);
-                this.translate.setDefaultLang('en-US');
-                const browserLang: string = this.translate.getBrowserLang();
-                this.translate.use(browserLang.match(/en-US|zh-HK/) ? browserLang : 'en-US');
-                lang = browserLang;
-            }
-            this.translate.currentLang = lang;
-            this.showCheckBox = true;
-        });
+
+    initLanguage() {
+        if ('en-US' === this.APP_LANG) {
+            this.translate.use('en-US');
+        } else {
+            this.translate.use('zh-HK');
+        }
+        this.translate.currentLang = this.APP_LANG;
+        this.showCheckBox = true;
     }
 
     onPanStart() {
@@ -129,7 +238,7 @@ export class StepPrivacyComponent implements OnInit {
 
     mouseDown(value: number) {
         this.adjustScroll(value);
-        this.timer = setInterval(() => {
+        this.timer1 = setInterval(() => {
             this.adjustScroll(value);
         }, 50);
     }
@@ -145,13 +254,18 @@ export class StepPrivacyComponent implements OnInit {
     }
 
     stopHold() {
-        clearInterval(this.timer);
+        clearInterval(this.timer1);
     }
 
     nextRoute() {
+        this.storeConfigParam();
         // 修改調整
-        this.router.navigate(['/kgen-viewcard/insertcard'], { queryParams: {'lang': this.translate.currentLang}});
+        this.router.navigate(['/kgen-viewcard/insertcard']);
         return;
+    }
+
+    storeConfigParam() {
+        this.localStorages.set('APP_LANG', this.translate.currentLang);
     }
 
     backRoute() {
@@ -159,6 +273,8 @@ export class StepPrivacyComponent implements OnInit {
     }
 
     timeExpire() {
+        this.timer.showTimer = false;
+        this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
         }
@@ -170,7 +286,7 @@ export class StepPrivacyComponent implements OnInit {
         this.quitDisabledAll();
         setTimeout(() => {
             this.processTimeoutQuit();
-        }, 5000);
+        }, this.PAGE_PRIVACY_QUIT_ITEMOUT);
     }
 
     processTimeoutQuit() {
@@ -178,11 +294,22 @@ export class StepPrivacyComponent implements OnInit {
         this.backRoute();
     }
 
+    processModalFailShow() {
+        this.quitDisabledAll();
+        this.isAbort = true;
+        this.modalFail.show();
+    }
+
+    processFailQuit() {
+        this.modalFail.hide();
+        this.backRoute();
+
+    }
+
     quitDisabledAll() {
         $('#exitBtn').attr('disabled', 'false');
         $('#nextBtn').attr('disabled', 'false');
         $('#checkedBoxBtn').attr('disabled', 'false');
-        //$('#checkbox').unbind('click');
         $('#scrollUpBtn').attr('disabled', 'false');
         $('#scrollDownBtn').attr('disabled', 'false');
         $('#langBtn').attr('disabled', 'false');
@@ -200,7 +327,7 @@ export class StepPrivacyComponent implements OnInit {
     processModalQuitShow() {
         this.modalQuit.show()
         this.isAbort = true;
-       this.quitDisabledAll();
+        this.quitDisabledAll();
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();

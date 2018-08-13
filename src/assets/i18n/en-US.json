@@ -412,6 +412,7 @@
         "COLLECT-CARD-SURE": "Please collect your identity card.",
         "BILL-PRINT-BTN": "PRINT",
         "BILL-PRINT-MESSAGE": "Confirm if you want to print？",
+        "BILL_PRINT_EXCEPTION": "Printer printing fail,System suspended",
         "COMFIRM-OCR-READER": "If you have a new smart ID card, you can put it in an optical reader to continue using the service. Do you need to continue?",
         "INSERT_CARD_SCREEN_S1": "",
         "INSERT_CARD_SCREEN_S2": "Card reader intialization fail. System suspended",
@@ -428,6 +429,7 @@
         "OCR_READER_SCREEN_S11" : "Cannot identify the card provided. Please try again",
         "OCR_READER_SCREEN_S11_1" : "more than 3 times:'Cannot identify the card provided. Please try again'，System suspended",
         "OCR_READER_SCREEN_S12" : "RFID reading fail. Please collect your identity card and retry",
-        "OCR_READER_SCREEN_S13" : "Read card fail. Application will be terminated"
+        "OCR_READER_SCREEN_S13" : "Read card fail. Application will be terminated.",
+        "INIT_CONFIG_PARAM_ERROR": "System initialization failed,Application will be terminated."
     }
 }

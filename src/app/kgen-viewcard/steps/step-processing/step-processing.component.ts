@@ -47,14 +47,16 @@ export class StepProcessingComponent implements OnInit {
     fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
         `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
     // old card info
-    newReader_dor = null;
-    newReader_icno = null;
     carddata: any = {};
     carddataJson = '';
     oldCardNoFlag = false;
     isRestore = false;
     isAbort = false;
     timeOutPause = false;
+    PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = 5000;
+    PAGE_PROCESSING_RETURN_CARD_ITEMOUT = 5000;
+    PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT = 5000;
+    APP_LANG = '';
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -65,30 +67,40 @@ export class StepProcessingComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('init fun');
-        this.initParam();
+        this.initConfigParam();
+        this.initLanguage();
+        this.startBusiness();
     }
-    initParam() {
+
+    initConfigParam() {
+        this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_ABORT_QUIT_ITEMOUT'));
+        this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_RETURN_CARD_ITEMOUT'));
+        this.PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT'));
+    }
+
+    initLanguage() {
+        if ('en-US' === this.APP_LANG) {
+            this.translate.use('en-US');
+        } else {
+            this.translate.use('zh-HK');
+        }
+        this.translate.currentLang = this.APP_LANG;
+    }
+
+    startBusiness() {
+        this.quitDisabledAll();
         this.processing.show();
-        this.route.queryParams.subscribe(params => {
-            const lang = params['lang'];
-            if ('en-US' === lang) {
-                this.translate.use('en-US');
-            } else {
-                this.translate.use('zh-HK');
-            }
-            this.translate.currentLang = lang;
-            this.cardType = Number.parseInt(params['cardType']);
-           this.readType = Number.parseInt(this.localStorages.get('readType'));
-            this.cleanLocalstorageData();
-            this.initPage();
-          //  debugger;
-           // this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
-        });
+        this.cleanLocalstorageData();
+        this.startProcess();
     }
+
     /**
      * init page.
      */
-    initPage() {
+    startProcess() {
         console.log('call init page fun.');
         if (this.cardType === 1) {
             this.readhkicv1()
@@ -113,21 +125,19 @@ export class StepProcessingComponent implements OnInit {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
-        this.localStorages.set('fp_tmpl1_in_base64', this.fp_tmpl1_in_base64);
-        this.localStorages.set('fp_tmpl2_in_base64', this.fp_tmpl2_in_base64);
-        this.localStorages.set('fp_tmpl1_fingernum', '0');
-        this.localStorages.set('fp_tmpl2_fingernum', '5');
-        this.localStorages.set('carddataJson', this.carddataJson);
-        this.router.navigate(['/kgen-viewcard/fingerprint'],
-            {
-                queryParams: {
-                    'lang': this.translate.currentLang, 'cardType': this.cardType
-                }
-            });
+        this.storeConfigParam();
+        this.router.navigate(['/kgen-viewcard/fingerprint']);
         return;
     }
 
-
+    storeConfigParam() {
+        this.localStorages.set('fp_tmpl1_in_base64', this.fp_tmpl1_in_base64);
+        this.localStorages.set('fp_tmpl2_in_base64', this.fp_tmpl2_in_base64);
+        // this.localStorages.set('fp_tmpl1_fingernum', '0');
+        // this.localStorages.set('fp_tmpl2_fingernum', '5');
+        this.localStorages.set('carddataJson', this.carddataJson);
+        this.localStorages.set('APP_LANG', this.translate.currentLang);
+    }
 
     /**
      * backPage.
@@ -145,6 +155,8 @@ export class StepProcessingComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
+        this.commonService.doLightoff('08');
+        this.commonService.doLightoff('07');
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -175,11 +187,13 @@ export class StepProcessingComponent implements OnInit {
                     this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
                         this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
                         this.processing.hide();
+                        this.cancelQuitEnabledAll();
                         this.nextRoute();
                     });
                 } else {
                     this.localStorages.set('fp_tmpl2_fingernum', null);
                     this.processing.hide();
+                    this.cancelQuitEnabledAll();
                     this.nextRoute();
                 }
             });
@@ -189,11 +203,13 @@ export class StepProcessingComponent implements OnInit {
                 this.getFingerNumber(fp_tmpl2_in_base64, (rp2) => {
                     this.localStorages.set('fp_tmpl2_fingernum', rp2.finger_num.toString());
                     this.processing.hide();
+                    this.cancelQuitEnabledAll();
                     this.nextRoute();
                 });
             } else {
                 this.localStorages.set('fp_tmpl2_fingernum', null);
                 this.processing.hide();
+                this.cancelQuitEnabledAll();
                 this.nextRoute();
             }
         }
@@ -214,16 +230,14 @@ export class StepProcessingComponent implements OnInit {
         }
         this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
                 console.log(resp);
-                debugger;
                 if (resp.error_info.error_code === '0') {
-                    // resp.finger_num = Math.floor(Math.random() * Math.floor(10)).toString();
                     callback(resp);
                 } else {
                     this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
                     if (this.isAbort || this.timeOutPause) {
                         return;
                     }
-                    this.modalFail.show();
+                    this.processModalFailShow();
                 }
         }, (error) => {
             console.log('getfingernum ERROR ' + error);
@@ -231,7 +245,7 @@ export class StepProcessingComponent implements OnInit {
             if (this.isAbort || this.timeOutPause) {
                 return;
             }
-            this.modalFail.show();
+            this.processModalFailShow();
         });
     }
 // ====================================================== New Reader Start =================================================================
@@ -244,11 +258,10 @@ export class StepProcessingComponent implements OnInit {
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv2').subscribe((resp) => {
             this.carddata = {...resp};
-            this.fp_tmpl1_in_base64 = resp.fingerprint0;
-            this.fp_tmpl2_in_base64 = resp.fingerprint1;
+            this.fp_tmpl1_in_base64 = resp.morpho_fp_tmpl1_in_base64;
+            this.fp_tmpl2_in_base64 = resp.morpho_fp_tmpl2_in_base64;
             this.carddataJson = JSON.stringify(this.carddata);
-            //this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
-            this.nextRoute();
+             this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
         });
     }
 
@@ -260,16 +273,16 @@ export class StepProcessingComponent implements OnInit {
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
             this.carddata = {...resp};
-            this.fp_tmpl1_in_base64 = resp.fingerprint0;
-            this.fp_tmpl2_in_base64 = resp.fingerprint1;
+            // this.fp_tmpl1_in_base64 = resp.fingerprint0;
+            // this.fp_tmpl2_in_base64 = resp.fingerprint1;
             this.carddataJson = JSON.stringify(this.carddata);
-            //this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
-            this.nextRoute();
+             this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
         });
     }
 // ====================================================== Old Reader End ================================================================
 
     timeExpire() {
+        this.timer.showTimer = false;
         this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
@@ -288,14 +301,24 @@ export class StepProcessingComponent implements OnInit {
         this.quitDisabledAll();
         setTimeout(() => {
             this.processTimeoutQuit();
-        }, 5000);
+        }, this.PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT);
     }
-
 
     processTimeoutQuit() {
         this.modalTimeout.hide();
         this.doCloseCard();
     }
+
+    processModalFailShow() {
+        this.quitDisabledAll();
+        this.isAbort = true;
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalFail.show();
+    }
+
     processFailQuit() {
         this.modalFail.hide();
         this.doCloseCard();
@@ -332,9 +355,10 @@ export class StepProcessingComponent implements OnInit {
     processCancelQuit() {
         this.modalQuit.hide();
         this.isAbort = false;
-        this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
+        } else {
+            this.cancelQuitEnabledAll();
         }
     }
     doCloseCard() {
@@ -344,13 +368,17 @@ export class StepProcessingComponent implements OnInit {
                 this.doReturnDoc();
                 setTimeout(() => {
                     this.backRoute();
-                }, 2000);
+                }, this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT);
             } else {
-                this.backRoute();
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
-            this.backRoute();
+            setTimeout(() => {
+                this.backRoute();
+            }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
         });
     }
 

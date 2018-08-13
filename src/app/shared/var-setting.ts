@@ -1,11 +1,12 @@
 export const READ_ROP140_RETRY: Number = 3;
 export const READ_HKID_RETRY: Number = 3;
 export const RR_FPSCANNERREG_MAX_RETRY: Number = 3;
-export const TIMEOUT_MILLIS = 1000;
-export const TIMER_MILLIS = 30;
-export const TIMEOUT_PAYLOAD = 1000;
-export const INI_URL = '/terminal/kioskini';
-// export const INI_URL = 'http://localhost:8080/terminal/kioskini';
+export const TIMEOUT_MILLIS = 500;
+export const TIMER_MILLIS = 10;
+export const TIMEOUT_PAYLOAD = 5000;
+export const OPENGATE_TIMEOUT_PAYLOAD = 10;
+// export const INI_URL = '/terminal/kioskini';
+ export const INI_URL = 'http://localhost:8080/terminal/mskgenini';
 // DISPLAY EXPORT
 
 export const PRIV_POL_LBL = 'Privacy Policy 隐私政策';
