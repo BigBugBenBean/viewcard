@@ -126,11 +126,18 @@ export class StepFingerprintComponent implements OnInit {
     startFingerPrint() {
         if (this.commonService.checkFpNull(this.fp_tmpl1_in_base64) && !this.commonService.checkFpNull(this.fp_tmpl2_in_base64)) {
             this.fp_tmpl1_in_base64 = this.fp_tmpl2_in_base64;
+            this.fp_tmpl1_fingernum = this.fp_tmpl2_fingernum;
             this.maxFingerCount = 1;
+            this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
         } else if (this.commonService.checkFpNull(this.fp_tmpl2_in_base64)) {
             this.maxFingerCount = 1;
+            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
+        } else {
+            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
+            this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
         }
-        this.getFinger();
+        this.processing.hide();
+        this.doScanFingerPrint();
     }
 
     nextRoute() {
@@ -181,22 +188,9 @@ export class StepFingerprintComponent implements OnInit {
     getFinger() {
         // this.modalInfo.hide();
         console.log('this.fingerCount: ', this.fingerCount);
-        this.fingerCount++;
-        if (this.fingerCount > 1) {
-            this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
-            this.fingerNum = this.fp_tmpl2_fingernum;
-        } else {
-            this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
-            this.fingerNum = this.fp_tmpl1_fingernum;
-        }
         this.processing.hide();
         this.cancelQuitEnabledAll();
         this.doScanFingerPrint();
-        // if (this.fingerCount !== this.maxFingerCount || this.maxFingerCount === 1) {
-        //     this.processing.hide();
-        //     this.cancelQuitEnabledAll();
-        //     this.doScanFingerPrint();
-        // }
     }
 
     /**
@@ -240,17 +234,10 @@ export class StepFingerprintComponent implements OnInit {
             this.quitDisabledAll();
             this.modalRetry.show();
         } else {
-            console.log('doFailedScan ' + this.fingerCount);
-            if (this.fingerCount < this.maxFingerCount) {
-                this.retryVal = 0;
-                this.fingerNum = '';
-                this.getFinger();
-            } else {
-                this.messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
-                this.isAbort = true;
-                this.processing.hide();
-                this.processModalFailShow();
-            }
+            this.messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
+            this.isAbort = true;
+            this.processing.hide();
+            this.processModalFailShow();
         }
     }
 
@@ -271,13 +258,36 @@ export class StepFingerprintComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog('RR_fptool', 'extractimgtmpl',
-                    {'finger_num': this.fingerNum,
+                    {'finger_num': this.fp_tmpl1_fingernum,
                         'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
                         'fp_img_in_base64': fpdata}).subscribe((resp) => {
                     if (resp.error_info.error_code === '0') {
                         this.compareFingerPrint( resp.fp_tmpl_in_base64);
                     } else {
-                        this.doFailedScan();
+                        if (this.maxFingerCount > 1) {
+                            this.processExtractImgtmplTwo(fpdata);
+                        } else {
+                            this.doFailedScan();
+                        }
+            }
+        }, (error) => {
+            console.log('extractimgtmpl ERROR ' + error);
+            this.doCloseCard();
+        });
+    }
+
+    processExtractImgtmplTwo (fpdata: String) {
+        if (this.isAbort || this.timeOutPause) {
+            return;
+        }
+        this.service.sendRequestWithLog('RR_fptool', 'extractimgtmpl',
+            {'finger_num': this.fp_tmpl2_fingernum,
+                'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
+                'fp_img_in_base64': fpdata}).subscribe((resp) => {
+            if (resp.error_info.error_code === '0') {
+                this.compareFingerPrint( resp.fp_tmpl_in_base64);
+            } else {
+                this.doFailedScan();
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
@@ -296,7 +306,44 @@ export class StepFingerprintComponent implements OnInit {
         this.service.sendRequest('RR_fptool', 'verifytmpl', {
             'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
             'fp_tmpl1_in_base64': fpdataTemp,
-            'fp_tmpl2_in_base64': this.fingerCount === 1 ? this.fp_tmpl1_in_base64 : this.fp_tmpl2_in_base64
+            'fp_tmpl2_in_base64': this.fp_tmpl1_in_base64
+        }).subscribe((resp) => {
+            // is validate
+            if (this.PAGE_FINGERPRINT_IS_VALIDATION === 0 || this.cardType === 1) {
+                this.nextRoute();
+            }
+            // resp.match_score = 500;
+            if (resp.match_score !== null) {
+                if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
+                    this.nextRoute();
+                } else {
+                    if (this.maxFingerCount > 1) {
+                        this.compareFingerPrintTwo(fpdataTemp);
+                    } else {
+                        this.doFailedScan();
+                    }
+                }
+            } else {
+                console.log('There\'s an error on comparing fingerprints!');
+                this.isAbort = true;
+                this.doCloseCard();
+            }
+        }, (error) => {
+            console.log('verifytmpl ERROR ' + error);
+            this.isAbort = true;
+            this.doCloseCard();
+        });
+    }
+
+    compareFingerPrintTwo(fpdataTemp: String) {
+        if (this.isAbort || this.timeOutPause) {
+            return;
+        }
+        this.service.sendRequest('RR_fptool', 'verifytmpl', {
+            'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
+            'fp_tmpl1_in_base64': fpdataTemp,
+            // 'fp_tmpl2_in_base64': this.fingerCount === 1 ? this.fp_tmpl1_in_base64 : this.fp_tmpl2_in_base64
+            'fp_tmpl2_in_base64': this.fp_tmpl2_in_base64
         }).subscribe((resp) => {
             // is validate
             if (this.PAGE_FINGERPRINT_IS_VALIDATION === 0 || this.cardType === 1) {
