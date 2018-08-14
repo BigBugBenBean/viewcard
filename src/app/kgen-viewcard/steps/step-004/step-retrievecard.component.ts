@@ -38,6 +38,11 @@ export class StepRetrievecardComponent implements OnInit {
     PAGE_COLLECT__RETURN_CARD_ITEMOUT = 2000;
     PAGE_COLLECT_TIME_EXPIRE_ITEMOUT = 5000;
     APP_LANG = '';
+    DEVICE_LIGHT_CODE_OCR_READER = '08'
+    DEVICE_LIGHT_CODE_IC_READER = '07'
+    DEVICE_LIGHT_CODE_PRINTER = '06'
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+
     cardType = 1;
     readType = 1;
     sumSeconds: number;
@@ -61,11 +66,17 @@ export class StepRetrievecardComponent implements OnInit {
 
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
-        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
-        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
+        this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
+        this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
+        this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
         this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT_ABORT_QUIT_ITEMOUT'));
         this.PAGE_COLLECT__RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT__RETURN_CARD_ITEMOUT'));
         this.PAGE_COLLECT_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT_TIME_EXPIRE_ITEMOUT'));
+
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
     }
 
     initLanguage() {
@@ -176,6 +187,7 @@ export class StepRetrievecardComponent implements OnInit {
         });
     }
     modalCollectShow() {
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
@@ -188,12 +200,16 @@ export class StepRetrievecardComponent implements OnInit {
             this.processing.show();
         }
         setTimeout(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        });
     }
 
     nextRoute() {
@@ -216,8 +232,8 @@ export class StepRetrievecardComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff('08');
-        this.commonService.doLightoff('07');
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }

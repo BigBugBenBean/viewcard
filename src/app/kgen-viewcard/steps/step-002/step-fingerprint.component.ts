@@ -67,6 +67,11 @@ export class StepFingerprintComponent implements OnInit {
     PAGE_FINGERPRINT_IS_VALIDATION = 0;
     PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
     APP_LANG = '';
+    DEVICE_LIGHT_CODE_OCR_READER = '08'
+    DEVICE_LIGHT_CODE_IC_READER = '07'
+    DEVICE_LIGHT_CODE_PRINTER = '06'
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+
     carddata: any = {};
     allFingerNum = [];
 
@@ -87,9 +92,13 @@ export class StepFingerprintComponent implements OnInit {
         this.startBusiness();
     }
     initConfigParam() {
+
         this.APP_LANG = this.localStorages.get('APP_LANG');
-        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
-        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
+        this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
+        this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
+        this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
         this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT'));
         this.PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT'));
         this.PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT'));
@@ -97,6 +106,9 @@ export class StepFingerprintComponent implements OnInit {
         this.PAGE_FINGERPRINT_SCAN_MAX = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_SCAN_MAX'));
         this.PAGE_FINGERPRINT_IS_VALIDATION = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_IS_VALIDATION'));
         this.PAGE_FINGERPRINT_FP_TMPL_FORMAT = this.localStorages.get('PAGE_FINGERPRINT_FP_TMPL_FORMAT');
+
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
         this.fp_tmpl1_in_base64 = this.localStorages.get('fp_tmpl1_in_base64');
         this.fp_tmpl2_in_base64 = this.localStorages.get('fp_tmpl2_in_base64');
         this.fp_tmpl1_fingernum = this.localStorages.get('fp_tmpl1_fingernum');
@@ -167,8 +179,8 @@ export class StepFingerprintComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff('08');
-        this.commonService.doLightoff('07');
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -457,6 +469,7 @@ export class StepFingerprintComponent implements OnInit {
     }
 
     modalCollectShow() {
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
@@ -469,6 +482,7 @@ export class StepFingerprintComponent implements OnInit {
             this.processing.show();
         }
         setTimeout(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
     }
@@ -495,6 +509,9 @@ export class StepFingerprintComponent implements OnInit {
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        });
     }
 }

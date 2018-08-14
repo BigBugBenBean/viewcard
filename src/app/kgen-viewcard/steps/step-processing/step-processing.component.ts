@@ -43,6 +43,7 @@ export class StepProcessingComponent implements OnInit {
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+
     cardType = 1;
     readType = 1;
     fp_tmpl1_in_base64 = `Aiw3KG7NwbXqRIZfgGzzNPVE+k3x18SUlEGwrmhOabMCVmZMUz4nZbFds2f2x/rYkbgH3yeicpe7`
@@ -56,10 +57,15 @@ export class StepProcessingComponent implements OnInit {
     isRestore = false;
     isAbort = false;
     timeOutPause = false;
+
     PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = 5000;
     PAGE_PROCESSING_RETURN_CARD_ITEMOUT = 5000;
     PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT = 5000;
     APP_LANG = '';
+    DEVICE_LIGHT_CODE_OCR_READER = '08'
+    DEVICE_LIGHT_CODE_IC_READER = '07'
+    DEVICE_LIGHT_CODE_PRINTER = '06'
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -77,11 +83,17 @@ export class StepProcessingComponent implements OnInit {
 
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
-        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
-        this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
+        this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
+        this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
+        this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
         this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_ABORT_QUIT_ITEMOUT'));
         this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_RETURN_CARD_ITEMOUT'));
         this.PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT'));
+
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
     }
 
     initLanguage() {
@@ -158,8 +170,8 @@ export class StepProcessingComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff('08');
-        this.commonService.doLightoff('07');
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -403,6 +415,7 @@ export class StepProcessingComponent implements OnInit {
         }
     }
     modalCollectShow() {
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
@@ -416,6 +429,7 @@ export class StepProcessingComponent implements OnInit {
         }
         setTimeout(() => {
             this.backRoute();
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
         }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
     }
     doCloseCard() {
@@ -438,6 +452,9 @@ export class StepProcessingComponent implements OnInit {
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        });
     }
 }

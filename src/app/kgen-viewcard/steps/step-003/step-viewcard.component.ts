@@ -73,6 +73,11 @@ export class StepViewcardComponent  implements OnInit {
     PAGE_VIEW_TIME_EXPIRE_ITEMOUT = 5000;
     LOCATION_DEVICE_ID = 'K1-SCK-01';
     APP_LANG = '';
+    DEVICE_LIGHT_CODE_OCR_READER = '08'
+    DEVICE_LIGHT_CODE_IC_READER = '07'
+    DEVICE_LIGHT_CODE_PRINTER = '06'
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+
     constructor(private router: Router,
                 private httpClient: HttpClient,
                 private commonService: CommonService,
@@ -91,12 +96,18 @@ export class StepViewcardComponent  implements OnInit {
 
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
-        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
-        this.readType = Number.parseInt(this.localStorages.get('readType'));
         this.LOCATION_DEVICE_ID = this.localStorages.get('LOCATION_DEVICE_ID');
+        this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
+        this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
+        this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
+        this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
         this.PAGE_VIEW_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_ABORT_QUIT_ITEMOUT'));
         this.PAGE_VIEW_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_RETURN_CARD_ITEMOUT'));
         this.PAGE_VIEW_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_TIME_EXPIRE_ITEMOUT'));
+
+        this.cardType = Number.parseInt(this.localStorages.get('cardType'));
+        this.readType = Number.parseInt(this.localStorages.get('readType'));
         this.carddataJson = this.localStorages.get('carddataJson');
     }
 
@@ -221,8 +232,8 @@ export class StepViewcardComponent  implements OnInit {
         if (this.modalPrintBill.visible) {
             this.modalPrintBill.hide();
         }
-        this.commonService.doLightoff('08');
-        this.commonService.doLightoff('07');
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
         this.commonService.doCloseWindow();
     }
 
@@ -436,6 +447,7 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     modalCollectShow() {
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
@@ -448,6 +460,7 @@ export class StepViewcardComponent  implements OnInit {
             this.processing.show();
         }
         setTimeout(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
     }
@@ -472,7 +485,10 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     doReturnDoc() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        });
     }
 
     processNextPrint() {
