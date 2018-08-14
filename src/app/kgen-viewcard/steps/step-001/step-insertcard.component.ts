@@ -53,14 +53,17 @@ export class StepInsertcardComponent implements OnInit {
 
     messageRetry = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+    messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
+    messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
+    messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
+
     messageComfirm = '';
     retryOpenGateVal = 0;
     retryOpenGateByTimeoutNocardVal = 0;
     retryReadCv2ocrVal = 0;
     retryReadCv2ocrVal_SN_10 = 0;
     retryReadCv2ocrVal_SN_11 = 0;
-    messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
-    messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
+
     cardType = 1;
     readType = 1;
     newReader_dor = null;
@@ -213,8 +216,6 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openGateFun fun.');
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
-        // this.commonService.initTimerSet(this.timerOpenGate, 15, 0);
-        //  $('#timerOpenGateObj').hide();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': this.PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD})
             .subscribe((resp) => {
                 if (!$.isEmptyObject(resp)) {
@@ -232,7 +233,6 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.processModalFailShow();
                     } else {
-                        alert(456);
                         this.retryReader1Val += 1;
                         if (this.retryReader1Val < this.PAGE_READ_RETRY_READER_1_MAX) {
                             this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
@@ -284,7 +284,6 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openCardFun fun.');
         this.processing.show();
-        // this.commonService.initTimerSet(this.timer, 1, 30)
         const payload = {
             'card_reader_id': null,
             'contactless_password': {
@@ -317,6 +316,7 @@ export class StepInsertcardComponent implements OnInit {
                         this.modalRetryOpenCard.show();
                     } else {
                         this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
+                        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
@@ -326,6 +326,7 @@ export class StepInsertcardComponent implements OnInit {
                 }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
@@ -333,6 +334,7 @@ export class StepInsertcardComponent implements OnInit {
             }
         }, (error) => {
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
             if (this.timeOutPause || this.isAbort) {
                 return;
             }
@@ -373,10 +375,7 @@ export class StepInsertcardComponent implements OnInit {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
-        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
-        });
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {});
     }
 
 // ====================================================== Common End =======================================================================
@@ -440,10 +439,8 @@ export class StepInsertcardComponent implements OnInit {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
-        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
-        // this.commonService.initTimerSet(this.timer, 1, 15)
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
         this.readType = 2;
-        // this.reSetOpencardVal();
         this.readhkicv2ocrdata();
     }
     /**
@@ -565,7 +562,6 @@ export class StepInsertcardComponent implements OnInit {
         console.log('call openCardNewFun fun.');
         this.processing.show();
         this.quitDisabledAll();
-        // this.commonService.initTimerSet(this.timer, 1, 30);
         const payload = {
             'card_reader_id':  null,
             'contactless_password': {

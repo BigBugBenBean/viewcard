@@ -44,7 +44,6 @@ export class StepPrivacyComponent implements OnInit {
     showScrollDown = true;
     timer1: any;
     timeOutPause = false;
-    showdata = false;
 
     lblPRIV_POL_LBL = PRIV_POL_LBL;
     lblHAVE_READ_EN = HAVE_READ_EN;
@@ -174,7 +173,6 @@ export class StepPrivacyComponent implements OnInit {
         }
         this.translate.currentLang = this.APP_LANG;
         this.showCheckBox = true;
-        this.showdata = true;
     }
 
     onPanStart() {

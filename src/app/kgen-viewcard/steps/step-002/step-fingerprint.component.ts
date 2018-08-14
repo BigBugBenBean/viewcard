@@ -41,6 +41,7 @@ export class StepFingerprintComponent implements OnInit {
     messageFail= 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+    messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
     fingerprintInfo = '1313213213';
     fingerCount = 0;
     maxFingerCount = 2;
@@ -147,6 +148,7 @@ export class StepFingerprintComponent implements OnInit {
             this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
         }
         this.processing.hide();
+        this.cancelQuitEnabledAll();
         this.doScanFingerPrint();
     }
 
@@ -193,14 +195,6 @@ export class StepFingerprintComponent implements OnInit {
         } else {
             this.translate.use('zh-HK');
         }
-    }
-
-    getFinger() {
-        // this.modalInfo.hide();
-        console.log('this.fingerCount: ', this.fingerCount);
-        this.processing.hide();
-        this.cancelQuitEnabledAll();
-        this.doScanFingerPrint();
     }
 
     /**
@@ -265,6 +259,7 @@ export class StepFingerprintComponent implements OnInit {
      */
     failTryAgain() {
         this.modalRetry.hide();
+        this.cancelQuitEnabledAll();
         this.doScanFingerPrint();
     }
 
@@ -277,17 +272,17 @@ export class StepFingerprintComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog('RR_fptool', 'extractimgtmpl',
-                    {'finger_num': this.fp_tmpl1_fingernum,
-                        'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
-                        'fp_img_in_base64': fpdata}).subscribe((resp) => {
-                    if (resp.error_info.error_code === '0') {
-                        this.compareFingerPrint( resp.fp_tmpl_in_base64);
-                    } else {
-                        if (this.maxFingerCount > 1) {
-                            this.processExtractImgtmplTwo(fpdata);
-                        } else {
-                            this.doFailedScan();
-                        }
+            {'finger_num': this.fp_tmpl1_fingernum,
+                'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
+                'fp_img_in_base64': fpdata}).subscribe((resp) => {
+            if (resp.error_info.error_code === '0') {
+                this.compareFingerPrint( resp.fp_tmpl_in_base64);
+            } else {
+                if (this.maxFingerCount > 1) {
+                    this.processExtractImgtmplTwo(fpdata);
+                } else {
+                    this.doFailedScan();
+                }
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
@@ -333,7 +328,7 @@ export class StepFingerprintComponent implements OnInit {
             }
             // resp.match_score = 500;
             if (!$.isEmptyObject(resp)) {
-            // if (resp.match_score !== null) {
+                // if (resp.match_score !== null) {
                 if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
                     this.nextRoute();
                 } else {
@@ -370,8 +365,8 @@ export class StepFingerprintComponent implements OnInit {
                 this.nextRoute();
             }
             if (!$.isEmptyObject(resp)) {
-            // resp.match_score = 500;
-            // if (resp.match_score !== null) {
+                // resp.match_score = 500;
+                // if (resp.match_score !== null) {
                 if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
                     this.nextRoute();
                 } else {
@@ -498,7 +493,7 @@ export class StepFingerprintComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
             } else {
-               this.modalCollectShow();
+                this.modalCollectShow();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);

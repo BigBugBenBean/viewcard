@@ -43,6 +43,8 @@ export class StepViewcardComponent  implements OnInit {
     messageAbort= 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messagePrint = 'SCN-GEN-STEPS.BILL-PRINT-MESSAGE';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+    messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
+
     title: string;
     api_path = ''
     img = '../../../../assets/images/photo1.jpg'; // set to '' if no image found or set to the Image path;
@@ -159,6 +161,7 @@ export class StepViewcardComponent  implements OnInit {
             this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
         }
         this.showdata = true;
+        this.cancelQuitEnabledAll();
         //  this.commonService.initTimerSet(this.timer, 1, 30);
     }
     /**

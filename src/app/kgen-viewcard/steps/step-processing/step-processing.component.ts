@@ -43,6 +43,7 @@ export class StepProcessingComponent implements OnInit {
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
     messageAbort = 'SCN-GEN-STEPS.ABORT_CONFIRM';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
+    messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
 
     cardType = 1;
     readType = 1;
