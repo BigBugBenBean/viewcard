@@ -21,6 +21,9 @@ export class StepViewcardComponent  implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modalCollect')
+    public modalCollect: ConfirmComponent;
+
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
@@ -326,12 +329,12 @@ export class StepViewcardComponent  implements OnInit {
         }
         console.log('call : printslip fun.' + JSON.stringify(dataJson))
         this.service.sendRequestWithLog('RR_SLIPPRINTER', 'printslip', {'data': dataJson}).subscribe((resp) => {
-            if (resp.errorcode === '0') {
+            if (!$.isEmptyObject(resp) && resp.errorcode === '0') {
                 console.log('printslip operate success');
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
-              this.nextRoute();
+                this.nextRoute();
             } else {
                 console.log('call printslip fail!');
                 if (this.timeOutPause || this.isAbort) {
@@ -431,6 +434,24 @@ export class StepViewcardComponent  implements OnInit {
             this.processing.show();
         }
     }
+
+    modalCollectShow() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalCollect.show();
+    }
+    processCollectQuit() {
+        this.modalCollect.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+        setTimeout(() => {
+            this.backRoute();
+        }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
+    }
+
     doCloseCard() {
         this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
@@ -440,9 +461,7 @@ export class StepViewcardComponent  implements OnInit {
                     this.backRoute();
                 }, this.PAGE_VIEW_RETURN_CARD_ITEMOUT);
             } else {
-                this.backRoute();
-                setTimeout(() => {
-                }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
+                this.modalCollectShow();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);

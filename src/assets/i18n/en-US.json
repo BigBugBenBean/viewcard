@@ -430,6 +430,7 @@
         "OCR_READER_SCREEN_S11_1" : "more than 3 times:'Cannot identify the card provided. Please try again'，System suspended",
         "OCR_READER_SCREEN_S12" : "RFID reading fail. Please collect your identity card and retry",
         "OCR_READER_SCREEN_S13" : "Read card fail. Application will be terminated.",
+        "PROCESS_SCREEN_S14" : "Card Information reading fail. Please collect your identity card and application will be terminated",
         "INIT_CONFIG_PARAM_ERROR": "System initialization failed,Application will be terminated."
     }
 }

@@ -44,6 +44,7 @@ export class StepPrivacyComponent implements OnInit {
     showScrollDown = true;
     timer1: any;
     timeOutPause = false;
+    showdata = false;
 
     lblPRIV_POL_LBL = PRIV_POL_LBL;
     lblHAVE_READ_EN = HAVE_READ_EN;
@@ -67,11 +68,6 @@ export class StepPrivacyComponent implements OnInit {
 
     ngOnInit() {
         this.initConfigParam();
-    }
-
-    cleanLocalStorages() {
-        this.localStorages.remove('APP_LANG');
-        this.localStorages.remove('IS_DEFAULT_LANG');
     }
 
     /**
@@ -107,11 +103,8 @@ export class StepPrivacyComponent implements OnInit {
             this.localStorages.set('PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD', data['PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD']);
             this.localStorages.set('PAGE_READ_CLOSE_CARD_ITMEOUT_OCR', data['PAGE_READ_CLOSE_CARD_ITMEOUT_OCR']);
             this.localStorages.set('PAGE_READ_CLOSE_CARD_TIMEOUT_IC', data['PAGE_READ_CLOSE_CARD_TIMEOUT_IC']);
-            this.localStorages.set('PAGE_READ_RETRY_IC_OPEN_GATE_MAX', data['PAGE_READ_RETRY_IC_OPEN_GATE_MAX']);
-            this.localStorages.set('PAGE_READ_RETRY_IC_OPEN_CARD_MAX', data['PAGE_READ_RETRY_IC_OPEN_CARD_MAX']);
-            this.localStorages.set('PAGE_READ_RETRY_OCR_NO_CARD_MAX', data['PAGE_READ_RETRY_OCR_NO_CARD_MAX']);
-            this.localStorages.set('PAGE_READ_RETRY_OCR_NO_IDENTIFY_MAX', data['PAGE_READ_RETRY_OCR_NO_IDENTIFY_MAX']);
-            this.localStorages.set('PAGE_READ_RETRY_OCR_OPENCARD_READ_ERROR_MAX', data['PAGE_READ_RETRY_OCR_OPENCARD_READ_ERROR_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_READER_1_MAX', data['PAGE_READ_RETRY_READER_1_MAX']);
+            this.localStorages.set('PAGE_READ_RETRY_READER_2_MAX', data['PAGE_READ_RETRY_READER_2_MAX']);
         this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY']);
             this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR']);
             this.localStorages.set('PAGE_READ_TIME_EXPIRE_ITEMOUT', data['PAGE_READ_TIME_EXPIRE_ITEMOUT']);
@@ -127,7 +120,6 @@ export class StepPrivacyComponent implements OnInit {
             this.localStorages.set('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT', data['PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT']);
             this.localStorages.set('PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD', data['PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD']);
             this.localStorages.set('PAGE_FINGERPRINT_MATCH_SCORE', data['PAGE_FINGERPRINT_MATCH_SCORE']);
-            this.localStorages.set('PAGE_FINGERPRINT_MATCH_MAX', data['PAGE_FINGERPRINT_MATCH_MAX']);
             this.localStorages.set('PAGE_FINGERPRINT_SCAN_MAX', data['PAGE_FINGERPRINT_SCAN_MAX']);
             this.localStorages.set('PAGE_FINGERPRINT_IS_VALIDATION', data['PAGE_FINGERPRINT_IS_VALIDATION']);
             this.localStorages.set('PAGE_FINGERPRINT_FP_TMPL_FORMAT', data['PAGE_FINGERPRINT_FP_TMPL_FORMAT']);
@@ -135,6 +127,7 @@ export class StepPrivacyComponent implements OnInit {
             this.localStorages.set('PAGE_UPDATE_ABORT_QUIT_ITEMOUT', data['PAGE_UPDATE_ABORT_QUIT_ITEMOUT']);
             this.localStorages.set('PAGE_UPDATE_RETURN_CARD_ITEMOUT', data['PAGE_UPDATE_RETURN_CARD_ITEMOUT']);
             this.localStorages.set('PAGE_UPDATE_TIME_EXPIRE_ITEMOUT', data['PAGE_UPDATE_TIME_EXPIRE_ITEMOUT']);
+            this.localStorages.set('PAGE_UPDATE_WEBSERVICE_ITEMOUT', data['PAGE_UPDATE_WEBSERVICE_ITEMOUT']);
 
             this.localStorages.set('PAGE_VIEW_ABORT_QUIT_ITEMOUT', data['PAGE_VIEW_ABORT_QUIT_ITEMOUT']);
             this.localStorages.set('PAGE_VIEW_RETURN_CARD_ITEMOUT', data['PAGE_VIEW_RETURN_CARD_ITEMOUT']);
@@ -181,6 +174,7 @@ export class StepPrivacyComponent implements OnInit {
         }
         this.translate.currentLang = this.APP_LANG;
         this.showCheckBox = true;
+        this.showdata = true;
     }
 
     onPanStart() {

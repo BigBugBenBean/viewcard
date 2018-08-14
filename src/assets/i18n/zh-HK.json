@@ -430,6 +430,7 @@
         "OCR_READER_SCREEN_S11_1" : "已超過3次重試“你所提供的身份證不能夠辦認，請確認後重試”，系統暫停使用",
         "OCR_READER_SCREEN_S12" : "RFID 閱讀錯誤。請取回你的身份證重試。",
         "OCR_READER_SCREEN_S13" : "讀卡錯誤，服務將會中止",
+        "PROCESS_SCREEN_S14" : "身份證資料閱讀錯誤。請取回你的身份證，服務將會中止",
         "INIT_CONFIG_PARAM_ERROR": "系統初始化異常，服務將會中止"
     }
 }

@@ -21,6 +21,9 @@ export class StepProcessingComponent implements OnInit {
     @ViewChild('modalFail')
     public modalFail: ConfirmComponent;
 
+    @ViewChild('modalCollect')
+    public modalCollect: ConfirmComponent;
+
     @ViewChild('modalQuit')
     public modalQuit: ConfirmComponent;
 
@@ -230,6 +233,7 @@ export class StepProcessingComponent implements OnInit {
         }
         this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
                 console.log(resp);
+            if (!$.isEmptyObject(resp)) {
                 if (resp.error_info.error_code === '0') {
                     callback(resp);
                 } else {
@@ -239,6 +243,13 @@ export class StepProcessingComponent implements OnInit {
                     }
                     this.processModalFailShow();
                 }
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
+                if (this.isAbort || this.timeOutPause) {
+                    return;
+                }
+                this.processModalFailShow();
+            }
         }, (error) => {
             console.log('getfingernum ERROR ' + error);
             this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-NOT-MATCH-FINGER';
@@ -257,11 +268,26 @@ export class StepProcessingComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv2').subscribe((resp) => {
-            this.carddata = {...resp};
-            this.fp_tmpl1_in_base64 = resp.morpho_fp_tmpl1_in_base64;
-            this.fp_tmpl2_in_base64 = resp.morpho_fp_tmpl2_in_base64;
-            this.carddataJson = JSON.stringify(this.carddata);
-             this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            if (!$.isEmptyObject(resp)) {
+                this.carddata = {...resp};
+                this.fp_tmpl1_in_base64 = resp.morpho_fp_tmpl1_in_base64;
+                this.fp_tmpl2_in_base64 = resp.morpho_fp_tmpl2_in_base64;
+                this.carddataJson = JSON.stringify(this.carddata);
+                this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+                if (this.isAbort || this.timeOutPause) {
+                    return;
+                }
+                this.processModalFailShow();
+            }
+        }, (error) => {
+            console.log('readhkicv2 ERROR ' + error);
+            this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+            if (this.isAbort || this.timeOutPause) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 
@@ -272,11 +298,26 @@ export class StepProcessingComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
-            this.carddata = {...resp};
-            // this.fp_tmpl1_in_base64 = resp.fingerprint0;
-            // this.fp_tmpl2_in_base64 = resp.fingerprint1;
-            this.carddataJson = JSON.stringify(this.carddata);
-             this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            if (!$.isEmptyObject(resp)) {
+                this.carddata = {...resp};
+                // this.fp_tmpl1_in_base64 = resp.fingerprint0;
+                // this.fp_tmpl2_in_base64 = resp.fingerprint1;
+                this.carddataJson = JSON.stringify(this.carddata);
+                this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+                if (this.isAbort || this.timeOutPause) {
+                    return;
+                }
+                this.processModalFailShow();
+            }
+        }, (error) => {
+            console.log('readhkicv1 ERROR ' + error);
+            this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+            if (this.isAbort || this.timeOutPause) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 // ====================================================== Old Reader End ================================================================
@@ -361,6 +402,22 @@ export class StepProcessingComponent implements OnInit {
             this.cancelQuitEnabledAll();
         }
     }
+    modalCollectShow() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalCollect.show();
+    }
+    processCollectQuit() {
+        this.modalCollect.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+        setTimeout(() => {
+            this.backRoute();
+        }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
+    }
     doCloseCard() {
         this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
@@ -370,9 +427,7 @@ export class StepProcessingComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT);
             } else {
-                setTimeout(() => {
-                    this.backRoute();
-                }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
+              this.modalCollectShow();
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);

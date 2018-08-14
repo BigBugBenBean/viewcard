@@ -29,8 +29,8 @@ export class StepFingerprintComponent implements OnInit {
     @ViewChild('modalTimeout')
     public modalTimeout: ConfirmComponent;
 
-    @ViewChild('modalNoROP')
-    public modalNoROP: ConfirmComponent;
+    @ViewChild('modalCollect')
+    public modalCollect: ConfirmComponent;
 
     @ViewChild('processing')
     public processing: ProcessingComponent;
@@ -63,7 +63,6 @@ export class StepFingerprintComponent implements OnInit {
     PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT = 13000;
     PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT = 15000;
     PAGE_FINGERPRINT_MATCH_SCORE = 5000;
-    PAGE_FINGERPRINT_MATCH_MAX = 3;
     PAGE_FINGERPRINT_SCAN_MAX = 3;
     PAGE_FINGERPRINT_IS_VALIDATION = 0;
     PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
@@ -95,7 +94,6 @@ export class StepFingerprintComponent implements OnInit {
         this.PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT'));
         this.PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT'));
         this.PAGE_FINGERPRINT_MATCH_SCORE = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_MATCH_SCORE'));
-        this.PAGE_FINGERPRINT_MATCH_MAX = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_MATCH_MAX'));
         this.PAGE_FINGERPRINT_SCAN_MAX = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_SCAN_MAX'));
         this.PAGE_FINGERPRINT_IS_VALIDATION = Number.parseInt(this.localStorages.get('PAGE_FINGERPRINT_IS_VALIDATION'));
         this.PAGE_FINGERPRINT_FP_TMPL_FORMAT = this.localStorages.get('PAGE_FINGERPRINT_FP_TMPL_FORMAT');
@@ -204,10 +202,19 @@ export class StepFingerprintComponent implements OnInit {
         this.service.sendRequestWithLog('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
             this.processing.show();
             this.quitDisabledAll();
-            if (resp && resp.errorcode === '0') {
-                this.processExtractImgtmpl(resp.fpdata);
+            if (!$.isEmptyObject(resp)) {
+                if (resp.errorcode === '0') {
+                    this.processExtractImgtmpl(resp.fpdata);
+                } else {
+                    this.doFailedScan();
+                }
             } else {
-                this.doFailedScan();
+                this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-DEVICE-EXCEPTION';
+                this.processing.hide();
+                if (this.isAbort || this.timeOutPause) {
+                    return;
+                }
+                this.processModalFailShow();
             }
         }, (error) => {
             console.log('takephoto ERROR ' + error);
@@ -313,7 +320,8 @@ export class StepFingerprintComponent implements OnInit {
                 this.nextRoute();
             }
             // resp.match_score = 500;
-            if (resp.match_score !== null) {
+            if (!$.isEmptyObject(resp)) {
+            // if (resp.match_score !== null) {
                 if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
                     this.nextRoute();
                 } else {
@@ -349,8 +357,9 @@ export class StepFingerprintComponent implements OnInit {
             if (this.PAGE_FINGERPRINT_IS_VALIDATION === 0 || this.cardType === 1) {
                 this.nextRoute();
             }
+            if (!$.isEmptyObject(resp)) {
             // resp.match_score = 500;
-            if (resp.match_score !== null) {
+            // if (resp.match_score !== null) {
                 if (resp.match_score >= this.PAGE_FINGERPRINT_MATCH_SCORE) {
                     this.nextRoute();
                 } else {
@@ -446,6 +455,24 @@ export class StepFingerprintComponent implements OnInit {
             this.cancelQuitEnabledAll();
         }
     }
+
+    modalCollectShow() {
+        if (this.processing.visible) {
+            this.isRestore = true;
+            this.processing.hide();
+        }
+        this.modalCollect.show();
+    }
+    processCollectQuit() {
+        this.modalCollect.hide();
+        if (this.isRestore) {
+            this.processing.show();
+        }
+        setTimeout(() => {
+            this.backRoute();
+        }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
+    }
+
     doCloseCard() {
         this.processing.show();
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
@@ -457,9 +484,7 @@ export class StepFingerprintComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
             } else {
-                setTimeout(() => {
-                    this.backRoute();
-                }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
+               this.modalCollectShow();
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);
