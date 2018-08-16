@@ -2,7 +2,8 @@
     <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer ></sc2-timer>
     <!--<sc2-timer (timerExpired)="timeExpireOpenGate()" class="timer" #timerOpenGate id="timerOpenGateObj"></sc2-timer>-->
     <input class="buttonTC" id="langBtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
-    <img src="../../../../assets/images/menubar_1.png" class="sideimg" />
+    <img *ngIf="readType === 1" src="../../../../assets/images/menu/menubar_1_insert_card.png" class="sideimg" />
+    <img *ngIf="readType === 2" src="../../../../assets/images/menu/menubar_1_ocr_reader.png" class="sideimg" />
     <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
     <sc2-confirm #modalRetryOCR>
         <div class="app-modal-body">
