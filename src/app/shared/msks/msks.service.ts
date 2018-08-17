@@ -58,6 +58,18 @@ export class MsksService {
         });
     }
 
+    public sendRequestExcptLog(payload) {
+        this.sendRequest('RR_AUDIT', 'excptlg', payload).subscribe(resp => {
+            console.log(`Exception log:${resp}`, resp);
+        });
+    }
+
+    public sendRequestTransLog(payload) {
+        this.sendRequest('RR_AUDIT', 'translg', payload).subscribe(resp => {
+            console.log(`Transcation log:${resp}`, resp);
+        });
+    }
+
     public sendRequestWithLog(channelid: string, functionid: string, payload: any = {}, stub: string = 'HAS'): Observable<any> {
         const obsMain = this.sendRequest(channelid, functionid, payload, stub);
         const head = {'chanlid': channelid, 'funcid': functionid};
