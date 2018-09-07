@@ -28,8 +28,9 @@ import {StepProcessingComponent} from './steps/step-processing/step-processing.c
 import {StepFingerprintComponent} from './steps/step-002/step-fingerprint.component';
 
 const routes: Routes = [
-    // { path: '', redirectTo: 'start', pathMatch: 'full' },
-    { path: '', redirectTo: 'privacy', pathMatch: 'full' },
+     // { path: '', redirectTo: 'start', pathMatch: 'full' },
+   // { path: '', redirectTo: 'privacy', pathMatch: 'full' },
+   { path: '', redirectTo: 'insertcard', pathMatch: 'full' },
     { path: 'start', component: StartComponent },
     { path: 'privacy', component: StepPrivacyComponent },
     { path: 'insertcard', component: StepInsertcardComponent },

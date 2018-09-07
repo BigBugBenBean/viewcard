@@ -38,6 +38,7 @@ export class StepPrivacyComponent implements OnInit {
     isAbort = false;
     isRestore = false;
     isChecked = false;
+    isShow = false;
     checkBox: string;
     imgChkbox = require('../../../../assets/images/checkbox.png');
     showScrollUp = false;
@@ -75,6 +76,7 @@ export class StepPrivacyComponent implements OnInit {
     initConfigParam() {
         this.quitDisabledAll();
         this.processing.show();
+        this.isShow = true;
         this.httpClient.get(INI_URL).subscribe(data => {
             this.localStorages.set('LOCATION_IP', data['LOCATION_IP']);
             this.localStorages.set('LOCATION_PORT', data['LOCATION_PORT']);
@@ -94,7 +96,28 @@ export class StepPrivacyComponent implements OnInit {
             this.localStorages.set('DEVICE_LIGHT_CODE_IC_READER', data['DEVICE_LIGHT_CODE_IC_READER']);
             this.localStorages.set('DEVICE_LIGHT_CODE_PRINTER', data['DEVICE_LIGHT_CODE_PRINTER']);
             this.localStorages.set('DEVICE_LIGHT_CODE_FINGERPRINT', data['DEVICE_LIGHT_CODE_FINGERPRINT']);
-            this.localStorages.set('DATE_OF_REGISTER', data['DATE_OF_REGISTER']);
+
+            this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_1', data['FP_TMPL_FORMAT_CARD_TYPE_1']);
+            this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_2', data['FP_TMPL_FORMAT_CARD_TYPE_2']);
+            this.localStorages.set('FP_MATCH_SCORE_CARD_TYPE_1', data['FP_MATCH_SCORE_CARD_TYPE_1']);
+            this.localStorages.set('FP_MATCH_SCORE_CARD_TYPE_2', data['FP_MATCH_SCORE_CARD_TYPE_2']);
+
+            this.localStorages.set('ACTION_TYPE_IC_OPENGATE', data['ACTION_TYPE_IC_OPENGATE']);
+            this.localStorages.set('ACTION_TYPE_IC_INSERT', data['ACTION_TYPE_IC_INSERT']);
+            this.localStorages.set('ACTION_TYPE_IC_OPENCARD', data['ACTION_TYPE_IC_OPENCARD']);
+            this.localStorages.set('ACTION_TYPE_IC_READING_INFO', data['ACTION_TYPE_IC_READING_INFO']);
+            this.localStorages.set('ACTION_TYPE_IC_CLOSECARD', data['ACTION_TYPE_IC_CLOSECARD']);
+            this.localStorages.set('ACTION_TYPE_IC_RETURN_CARD', data['ACTION_TYPE_IC_RETURN_CARD']);
+            this.localStorages.set('ACTION_TYPE_OCR_INSERT', data['ACTION_TYPE_OCR_INSERT']);
+            this.localStorages.set('ACTION_TYPE_OCR_OPENCARD', data['ACTION_TYPE_OCR_OPENCARD']);
+            this.localStorages.set('ACTION_TYPE_OCR_READING_INFO', data['ACTION_TYPE_OCR_READING_INFO']);
+            this.localStorages.set('ACTION_TYPE_OCR_CLOSECARD', data['ACTION_TYPE_OCR_CLOSECARD']);
+            this.localStorages.set('ACTION_TYPE_OCR_COLLECT_CARD', data['ACTION_TYPE_OCR_COLLECT_CARD']);
+            this.localStorages.set('ACTION_TYPE_FINGER_NUMBER', data['ACTION_TYPE_FINGER_NUMBER']);
+            this.localStorages.set('ACTION_TYPE_FINGER_SCAN', data['ACTION_TYPE_FINGER_SCAN']);
+            this.localStorages.set('ACTION_TYPE_VERIFICATION', data['ACTION_TYPE_VERIFICATION']);
+            this.localStorages.set('ACTION_TYPE_QUERY_COS_LOS', data['ACTION_TYPE_QUERY_COS_LOS']);
+            this.localStorages.set('ACTION_TYPE_UPDATE_COS_LOS', data['ACTION_TYPE_UPDATE_COS_LOS']);
 
             this.localStorages.set('IS_DEFAULT_LANG', data['IS_DEFAULT_LANG']);
 
@@ -104,7 +127,7 @@ export class StepPrivacyComponent implements OnInit {
             this.localStorages.set('PAGE_READ_CLOSE_CARD_TIMEOUT_IC', data['PAGE_READ_CLOSE_CARD_TIMEOUT_IC']);
             this.localStorages.set('PAGE_READ_RETRY_READER_1_MAX', data['PAGE_READ_RETRY_READER_1_MAX']);
             this.localStorages.set('PAGE_READ_RETRY_READER_2_MAX', data['PAGE_READ_RETRY_READER_2_MAX']);
-        this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY']);
+            this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY']);
             this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR']);
             this.localStorages.set('PAGE_READ_TIME_EXPIRE_ITEMOUT', data['PAGE_READ_TIME_EXPIRE_ITEMOUT']);
             this.localStorages.set('PAGE_READ_ABORT_QUIT_ITEMOUT', data['PAGE_READ_ABORT_QUIT_ITEMOUT']);
@@ -149,11 +172,13 @@ export class StepPrivacyComponent implements OnInit {
                 }
             }
             this.processing.hide();
+            this.isShow = false;
             this.cancelQuitEnabledAll();
             this.initLanguage();
         }, (err) => {
             this.messageFail = 'SCN-GEN-STEPS.INIT_CONFIG_PARAM_ERROR';
             this.processing.hide();
+            this.isShow = false;
             if (this.isAbort || this.timeOutPause) {
                 return;
             }
@@ -173,6 +198,18 @@ export class StepPrivacyComponent implements OnInit {
         }
         this.translate.currentLang = this.APP_LANG;
         this.showCheckBox = true;
+    }
+
+    nextRoute() {
+        this.storeConfigParam();
+        // 修改調整
+        this.router.navigate(['/kgen-viewcard/insertcard']);
+        // this.router.navigate(['/kgen-viewcard/processing']);
+        return;
+    }
+
+    storeConfigParam() {
+        this.localStorages.set('APP_LANG', this.translate.currentLang);
     }
 
     onPanStart() {
@@ -249,17 +286,6 @@ export class StepPrivacyComponent implements OnInit {
         clearInterval(this.timer1);
     }
 
-    nextRoute() {
-        this.storeConfigParam();
-        // 修改調整
-        this.router.navigate(['/kgen-viewcard/insertcard']);
-        return;
-    }
-
-    storeConfigParam() {
-        this.localStorages.set('APP_LANG', this.translate.currentLang);
-    }
-
     backRoute() {
         this.commonService.doCloseWindow();
     }
@@ -269,6 +295,7 @@ export class StepPrivacyComponent implements OnInit {
         this.timeOutPause = true;
         if (this.processing.visible) {
             this.processing.hide();
+            this.isShow = false;
         }
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
@@ -323,6 +350,7 @@ export class StepPrivacyComponent implements OnInit {
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
+            this.isShow = false;
         }
     }
 
@@ -330,6 +358,7 @@ export class StepPrivacyComponent implements OnInit {
         this.modalQuit.hide();
         if (this.processing.visible) {
             this.processing.hide();
+            this.isShow = false;
         }
         this.isAbort = true;
         this.backRoute();
@@ -341,6 +370,7 @@ export class StepPrivacyComponent implements OnInit {
         this.cancelQuitEnabledAll();
         if (this.isRestore) {
             this.processing.show();
+            this.isShow = true;
         }
     }
 

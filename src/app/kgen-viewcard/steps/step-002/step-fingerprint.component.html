@@ -53,14 +53,18 @@
             </div>
         </sc2-confirm>
         <sc2-process-comp #processing></sc2-process-comp>
-        <div>
+
+        <div [hidden]="isShow">
             <label class="headerText" >{{'SCN-GEN-STEPS.FINGER-FLAT' | translate}}</label>
             <img src="../../../../assets/videos/insert-left-fingerprint.gif" class="rightimage">
-            <div *ngFor="let finger of allFingerNum">
+            <div [hidden]="isShow" *ngFor="let finger of allFingerNum">
                 <div class="hand-image {{ finger }}"></div>
             </div>
             <img class="content" src="../../../../assets/images/hands-no-circle.png">
         </div>
+        <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
+        <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
+        <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
         <input #imgNext type="hidden" (click)="nextRoute()">
         <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
         <input class="exitButton" id='exitBtn'  type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">

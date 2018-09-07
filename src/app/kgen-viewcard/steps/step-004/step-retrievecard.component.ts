@@ -42,13 +42,19 @@ export class StepRetrievecardComponent implements OnInit {
     DEVICE_LIGHT_CODE_IC_READER = '07'
     DEVICE_LIGHT_CODE_PRINTER = '06'
     DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    LOCATION_DEVICE_ID = 'K1-SCK-01';
+
+    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
+    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
 
     cardType = 1;
     readType = 1;
-    sumSeconds: number;
     isRestore = false;
     isAbort = false;
     timeOutPause = false;
+    isShowCollect = false;
     constructor(private router: Router,
                 private commonService: CommonService,
                 private route: ActivatedRoute,
@@ -66,10 +72,16 @@ export class StepRetrievecardComponent implements OnInit {
 
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.LOCATION_DEVICE_ID = this.localStorages.get('LOCATION_DEVICE_ID');
         this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
+        this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
+        this.ACTION_TYPE_IC_RETURN_CARD = this.localStorages.get('ACTION_TYPE_IC_RETURN_CARD');
+        this.ACTION_TYPE_OCR_CLOSECARD = this.localStorages.get('ACTION_TYPE_OCR_CLOSECARD');
+        this.ACTION_TYPE_OCR_COLLECT_CARD = this.localStorages.get('ACTION_TYPE_OCR_COLLECT_CARD');
 
         this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT_ABORT_QUIT_ITEMOUT'));
         this.PAGE_COLLECT__RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_COLLECT__RETURN_CARD_ITEMOUT'));
@@ -89,7 +101,7 @@ export class StepRetrievecardComponent implements OnInit {
     }
 
     startBusiness() {
-        this.processing.show();
+        // this.processing.show();
         this.commonService.doLightoff('07');
         this.commonService.doLightoff('08');
         setTimeout(() => {
@@ -164,12 +176,12 @@ export class StepRetrievecardComponent implements OnInit {
         this.modalQuit.hide();
         this.isAbort = false;
         this.cancelQuitEnabledAll();
-        if (this.isRestore) {
-            this.processing.show();
-        }
+        // if (this.isRestore) {
+        //     this.processing.show();
+        // }
     }
     doCloseCard() {
-        this.processing.show();
+        this.isShowCollect = false;
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
@@ -177,7 +189,11 @@ export class StepRetrievecardComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_COLLECT__RETURN_CARD_ITEMOUT);
             } else {
-                this.modalCollectShow();
+                // this.modalCollectShow();
+                this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_COLLECT__RETURN_CARD_ITEMOUT);
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);

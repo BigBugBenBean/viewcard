@@ -2,12 +2,13 @@ import {Component,  OnInit, ViewChild} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MsksService } from '../../../shared/msks';
-import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT} from '../../../shared/var-setting';
+import {CHANNEL_ID_RR_CARDREADER, CHANNEL_ID_RR_ICCOLLECT, INI_URL} from '../../../shared/var-setting';
 import { ConfirmComponent } from '../../../shared/sc2-confirm';
 import { LocalStorageService } from '../../../shared/services/common-service/Local-storage.service';
 import {CommonService} from '../../../shared/services/common-service/common.service';
 import {ProcessingComponent} from '../../../shared/processing-component';
 import {TimerComponent} from '../../../shared/sc2-timer';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     templateUrl: './step-insertcard.component.html',
@@ -29,9 +30,6 @@ export class StepInsertcardComponent implements OnInit {
 
     @ViewChild('modalCollect')
     public modalCollect: ConfirmComponent;
-
-    @ViewChild('modalNoROP')
-    public modalNoROP: ConfirmComponent;
 
     @ViewChild('modal1Comfirm')
     public modal1Comfirm: ConfirmComponent;
@@ -58,23 +56,23 @@ export class StepInsertcardComponent implements OnInit {
     messageCollect = 'SCN-GEN-STEPS.COLLECT-CARD-SURE';
 
     messageComfirm = '';
-    retryOpenGateVal = 0;
-    retryOpenGateByTimeoutNocardVal = 0;
-    retryReadCv2ocrVal = 0;
-    retryReadCv2ocrVal_SN_10 = 0;
-    retryReadCv2ocrVal_SN_11 = 0;
 
     cardType = 1;
     readType = 1;
     newReader_dor = null;
     newReader_icno = null;
-    countNum = 30;
     flag = false;
     isAbort = false;
     timeOutPause = false;
     isRestore = false;
     retryReader1Val = 0;
     retryReader2Val = 0;
+    showImage = false;
+    isShow = false;
+    isShowCollect = false;
+    APP_LANG = 'en-US';
+    DEFAULT_LANG = '';
+    IS_DEFAULT_LANG = 0;
 
     PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD = 10
     PAGE_READ_CLOSE_CARD_ITMEOUT_OCR = 2000
@@ -86,33 +84,170 @@ export class StepInsertcardComponent implements OnInit {
     PAGE_READ_ABORT_QUIT_ITEMOUT = 8000
     PAGE_READ_RETURN_CARD_ITEMOUT = 8000
     PAGE_READ_TIME_EXPIRE_ITEMOUT = 8000
-    APP_LANG = '';
     DEVICE_LIGHT_CODE_OCR_READER = '08'
     DEVICE_LIGHT_CODE_IC_READER = '07'
     DEVICE_LIGHT_CODE_PRINTER = '06'
     DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    LOCATION_DEVICE_ID = 'K1-SCK-01';
+
+    ACTION_TYPE_IC_OPENGATE = 'OPENGATE';
+    ACTION_TYPE_IC_INSERT = 'INSTOLDCRD';
+    ACTION_TYPE_IC_OPENCARD = 'OPENCRD';
+    ACTION_TYPE_IC_READING_INFO = 'READINFO';
+    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
+    ACTION_TYPE_OCR_INSERT = 'INSTNEWCRD';
+    ACTION_TYPE_OCR_OPENCARD = 'OPENCRDOCR';
+    ACTION_TYPE_OCR_READING_INFO = 'READINFOOCR';
+    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
 
     constructor(private router: Router,
                 private commonService: CommonService,
                 private route: ActivatedRoute,
                 private service: MsksService,
+                private httpClient: HttpClient,
                 private localStorages: LocalStorageService,
                 private translate: TranslateService) { }
 
     ngOnInit(): void {
         console.log('init fun');
-        this.initConfigParam();
         this.initLanguage();
-        this.startBusiness();
+        this.initGetParam();
+
     }
 
 // ====================================================== Common Start ====================================================================
+
+    initGetParam() {
+        this.quitDisabledAll();
+        // this.processing.show();
+        this.isShowCollect = true;
+        this.httpClient.get(INI_URL).subscribe(data => {
+            // save to local storate param.
+            this.saveLocalStorages(data);
+            // init param.
+            this.initConfigParam();
+            // this.processing.hide();
+            // this.isShow = false;
+            this.cancelQuitEnabledAll();
+            // this.initLanguage();
+            this.startBusiness();
+        }, (err) => {
+            this.messageFail = 'SCN-GEN-STEPS.INIT_CONFIG_PARAM_ERROR';
+            this.processing.hide();
+            this.isShow = false;
+            if (this.isAbort || this.timeOutPause) {
+                return;
+            }
+            this.processModalFailShow();
+        });
+    }
+    saveLocalStorages(data) {
+        this.localStorages.set('LOCATION_IP', data['LOCATION_IP']);
+        this.localStorages.set('LOCATION_PORT', data['LOCATION_PORT']);
+        this.localStorages.set('UPDATE_LOS_COS_WEBSERVICE_IP', data['UPDATE_LOS_COS_WEBSERVICE_IP']);
+        this.localStorages.set('UPDATE_LOL_COS_WEBSERVICE_PORT', data['UPDATE_LOL_COS_WEBSERVICE_PORT']);
+        this.localStorages.set('TERMINAL_ID', data['TERMINAL_ID']);
+        this.localStorages.set('LOCATION_DEVICE_ID', data['LOCATION_DEVICE_ID']);
+        this.localStorages.set('DEVICE_OCR_READER_NAME', data['DEVICE_OCR_READER_NAME']);
+        this.localStorages.set('DEVICE_OCR_READER_CODE', data['DEVICE_OCR_READER_CODE']);
+        this.localStorages.set('DEVICE_EXISTING_IC_READER_NAME', data['DEVICE_EXISTING_IC_READER_NAME']);
+        this.localStorages.set('DEVICE_EXISTING_IC_READER_CODE', data['DEVICE_EXISTING_IC_READER_CODE']);
+        this.localStorages.set('DEVICE_SLIP_PRINTER_NAME', data['DEVICE_SLIP_PRINTER_NAME']);
+        this.localStorages.set('DEVICE_SLIP_PRINTER_CODE', data['DEVICE_SLIP_PRINTER_CODE']);
+        this.localStorages.set('DEVICE_FINGERPRINT_SCANNER_NAME', data['DEVICE_FINGERPRINT_SCANNER_NAME']);
+        this.localStorages.set('DEVICE_FINGERPRINT_SCANNER_CODE', data['DEVICE_FINGERPRINT_SCANNER_CODE']);
+        this.localStorages.set('DEVICE_LIGHT_CODE_OCR_READER', data['DEVICE_LIGHT_CODE_OCR_READER']);
+        this.localStorages.set('DEVICE_LIGHT_CODE_IC_READER', data['DEVICE_LIGHT_CODE_IC_READER']);
+        this.localStorages.set('DEVICE_LIGHT_CODE_PRINTER', data['DEVICE_LIGHT_CODE_PRINTER']);
+        this.localStorages.set('DEVICE_LIGHT_CODE_FINGERPRINT', data['DEVICE_LIGHT_CODE_FINGERPRINT']);
+
+        this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_1', data['FP_TMPL_FORMAT_CARD_TYPE_1']);
+        this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_2', data['FP_TMPL_FORMAT_CARD_TYPE_2']);
+        this.localStorages.set('FP_MATCH_SCORE_CARD_TYPE_1', data['FP_MATCH_SCORE_CARD_TYPE_1']);
+        this.localStorages.set('FP_MATCH_SCORE_CARD_TYPE_2', data['FP_MATCH_SCORE_CARD_TYPE_2']);
+
+        this.localStorages.set('ACTION_TYPE_IC_OPENGATE', data['ACTION_TYPE_IC_OPENGATE']);
+        this.localStorages.set('ACTION_TYPE_IC_INSERT', data['ACTION_TYPE_IC_INSERT']);
+        this.localStorages.set('ACTION_TYPE_IC_OPENCARD', data['ACTION_TYPE_IC_OPENCARD']);
+        this.localStorages.set('ACTION_TYPE_IC_READING_INFO', data['ACTION_TYPE_IC_READING_INFO']);
+        this.localStorages.set('ACTION_TYPE_IC_CLOSECARD', data['ACTION_TYPE_IC_CLOSECARD']);
+        this.localStorages.set('ACTION_TYPE_IC_RETURN_CARD', data['ACTION_TYPE_IC_RETURN_CARD']);
+        this.localStorages.set('ACTION_TYPE_OCR_INSERT', data['ACTION_TYPE_OCR_INSERT']);
+        this.localStorages.set('ACTION_TYPE_OCR_OPENCARD', data['ACTION_TYPE_OCR_OPENCARD']);
+        this.localStorages.set('ACTION_TYPE_OCR_READING_INFO', data['ACTION_TYPE_OCR_READING_INFO']);
+        this.localStorages.set('ACTION_TYPE_OCR_CLOSECARD', data['ACTION_TYPE_OCR_CLOSECARD']);
+        this.localStorages.set('ACTION_TYPE_OCR_COLLECT_CARD', data['ACTION_TYPE_OCR_COLLECT_CARD']);
+        this.localStorages.set('ACTION_TYPE_FINGER_NUMBER', data['ACTION_TYPE_FINGER_NUMBER']);
+        this.localStorages.set('ACTION_TYPE_FINGER_SCAN', data['ACTION_TYPE_FINGER_SCAN']);
+        this.localStorages.set('ACTION_TYPE_VERIFICATION', data['ACTION_TYPE_VERIFICATION']);
+        this.localStorages.set('ACTION_TYPE_QUERY_COS_LOS', data['ACTION_TYPE_QUERY_COS_LOS']);
+        this.localStorages.set('ACTION_TYPE_UPDATE_COS_LOS', data['ACTION_TYPE_UPDATE_COS_LOS']);
+
+        this.localStorages.set('IS_DEFAULT_LANG', data['IS_DEFAULT_LANG']);
+        this.localStorages.set('DEFAULT_LANG', data['APP_LANG']);
+
+        this.localStorages.set('PAGE_PRIVACY_QUIT_ITEMOUT', data['PAGE_PRIVACY_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD', data['PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD']);
+        this.localStorages.set('PAGE_READ_CLOSE_CARD_ITMEOUT_OCR', data['PAGE_READ_CLOSE_CARD_ITMEOUT_OCR']);
+        this.localStorages.set('PAGE_READ_CLOSE_CARD_TIMEOUT_IC', data['PAGE_READ_CLOSE_CARD_TIMEOUT_IC']);
+        this.localStorages.set('PAGE_READ_RETRY_READER_1_MAX', data['PAGE_READ_RETRY_READER_1_MAX']);
+        this.localStorages.set('PAGE_READ_RETRY_READER_2_MAX', data['PAGE_READ_RETRY_READER_2_MAX']);
+        this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY']);
+        this.localStorages.set('PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR', data['PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR']);
+        this.localStorages.set('PAGE_READ_TIME_EXPIRE_ITEMOUT', data['PAGE_READ_TIME_EXPIRE_ITEMOUT']);
+        this.localStorages.set('PAGE_READ_ABORT_QUIT_ITEMOUT', data['PAGE_READ_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_READ_RETURN_CARD_ITEMOUT', data['PAGE_READ_RETURN_CARD_ITEMOUT']);
+
+        this.localStorages.set('PAGE_PROCESSING_ABORT_QUIT_ITEMOUT', data['PAGE_PROCESSING_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_PROCESSING_RETURN_CARD_ITEMOUT', data['PAGE_PROCESSING_RETURN_CARD_ITEMOUT']);
+        this.localStorages.set('PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT', data['PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT']);
+
+        this.localStorages.set('PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT', data['PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT', data['PAGE_FINGERPRINT_RETURN_CARD_ITEMOUT']);
+        this.localStorages.set('PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT', data['PAGE_FINGERPRINT_TIME_EXPIRE_ITEMOUT']);
+        this.localStorages.set('PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD', data['PAGE_FINGERPRINT_SCAN_ITEMOUT_PAYLOAD']);
+        this.localStorages.set('PAGE_FINGERPRINT_MATCH_SCORE', data['PAGE_FINGERPRINT_MATCH_SCORE']);
+        this.localStorages.set('PAGE_FINGERPRINT_SCAN_MAX', data['PAGE_FINGERPRINT_SCAN_MAX']);
+        this.localStorages.set('PAGE_FINGERPRINT_IS_VALIDATION', data['PAGE_FINGERPRINT_IS_VALIDATION']);
+        this.localStorages.set('PAGE_FINGERPRINT_FP_TMPL_FORMAT', data['PAGE_FINGERPRINT_FP_TMPL_FORMAT']);
+
+        this.localStorages.set('PAGE_UPDATE_ABORT_QUIT_ITEMOUT', data['PAGE_UPDATE_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_UPDATE_RETURN_CARD_ITEMOUT', data['PAGE_UPDATE_RETURN_CARD_ITEMOUT']);
+        this.localStorages.set('PAGE_UPDATE_TIME_EXPIRE_ITEMOUT', data['PAGE_UPDATE_TIME_EXPIRE_ITEMOUT']);
+        this.localStorages.set('PAGE_UPDATE_WEBSERVICE_ITEMOUT', data['PAGE_UPDATE_WEBSERVICE_ITEMOUT']);
+
+        this.localStorages.set('PAGE_VIEW_ABORT_QUIT_ITEMOUT', data['PAGE_VIEW_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_VIEW_RETURN_CARD_ITEMOUT', data['PAGE_VIEW_RETURN_CARD_ITEMOUT']);
+        this.localStorages.set('PAGE_VIEW_TIME_EXPIRE_ITEMOUT', data['PAGE_VIEW_TIME_EXPIRE_ITEMOUT']);
+
+        this.localStorages.set('PAGE_COLLECT_ABORT_QUIT_ITEMOUT', data['PAGE_COLLECT_ABORT_QUIT_ITEMOUT']);
+        this.localStorages.set('PAGE_COLLECT_RETURN_CARD_ITEMOUT', data['PAGE_COLLECT_RETURN_CARD_ITEMOUT']);
+        this.localStorages.set('PAGE_COLLECT_TIME_EXPIRE_ITEMOUT', data['PAGE_COLLECT_TIME_EXPIRE_ITEMOUT']);
+    }
+
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.DEFAULT_LANG = this.localStorages.get('DEFAULT_LANG');
+        this.IS_DEFAULT_LANG = Number.parseInt(this.localStorages.get('IS_DEFAULT_LANG'));
+
+        this.LOCATION_DEVICE_ID = this.localStorages.get('LOCATION_DEVICE_ID');
         this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
-        this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
+        this.ACTION_TYPE_IC_OPENGATE = this.localStorages.get('ACTION_TYPE_IC_OPENGATE');
+        this.ACTION_TYPE_IC_INSERT = this.localStorages.get('ACTION_TYPE_IC_INSERT');
+        this.ACTION_TYPE_IC_OPENCARD = this.localStorages.get('ACTION_TYPE_IC_OPENCARD');
+        this.ACTION_TYPE_IC_READING_INFO = this.localStorages.get('ACTION_TYPE_IC_READING_INFO');
+        this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
+        this.ACTION_TYPE_IC_RETURN_CARD = this.localStorages.get('ACTION_TYPE_IC_RETURN_CARD');
+        this.ACTION_TYPE_OCR_INSERT = this.localStorages.get('ACTION_TYPE_OCR_INSERT');
+        this.ACTION_TYPE_OCR_OPENCARD = this.localStorages.get('ACTION_TYPE_OCR_OPENCARD');
+        this.ACTION_TYPE_OCR_READING_INFO = this.localStorages.get('ACTION_TYPE_OCR_READING_INFO');
+        this.ACTION_TYPE_OCR_CLOSECARD = this.localStorages.get('ACTION_TYPE_OCR_CLOSECARD');
+        this.ACTION_TYPE_OCR_COLLECT_CARD = this.localStorages.get('ACTION_TYPE_OCR_COLLECT_CARD');
 
         this.PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD = Number.parseInt(this.localStorages.get('PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD'));
         this.PAGE_READ_CLOSE_CARD_ITMEOUT_OCR = Number.parseInt(this.localStorages.get('PAGE_READ_CLOSE_CARD_ITMEOUT_OCR'));
@@ -130,6 +265,16 @@ export class StepInsertcardComponent implements OnInit {
     }
 
     initLanguage() {
+        // if (this.commonService.checkFpNull(this.APP_LANG)) {
+        //     this.APP_LANG = this.DEFAULT_LANG;
+        //     this.localStorages.set('APP_LANG', this.APP_LANG);
+        // } else {
+        //     if (this.IS_DEFAULT_LANG === 1) {
+        //         this.localStorages.set('APP_LANG', this.DEFAULT_LANG);
+        //     } else {
+        //         this.APP_LANG = 'en-US'
+        //     }
+        // }
         if ('en-US' === this.APP_LANG) {
             this.translate.use('en-US');
         } else {
@@ -165,6 +310,9 @@ export class StepInsertcardComponent implements OnInit {
         this.localStorages.set('APP_LANG', this.translate.currentLang);
         this.localStorages.set('cardType', this.cardType.toString());
         this.localStorages.set('readType', this.readType.toString());
+
+        // this.localStorages.set('cardType', '2');
+        // this.localStorages.set('readType', '2');
     }
 
     /**
@@ -173,6 +321,7 @@ export class StepInsertcardComponent implements OnInit {
     backRoute() {
         if (this.processing.visible) {
             this.processing.hide();
+            this.showImage = false;
         }
         if (this.modalRetryOCR.visible) {
             this.modalRetryOCR.hide();
@@ -216,16 +365,20 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openGateFun fun.');
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': this.PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD})
             .subscribe((resp) => {
+
                 if (!$.isEmptyObject(resp)) {
                     if (resp.errorcode === '0') {
+                        this.commonService.loggerTrans(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call takephoto');
                         this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
                         this.openCardFun();
                     } else if (resp.errorcode === 'D0009') {
+                        this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR030', '', this.newReader_icno, 'opengate exception');
                         // S/N3  have card in reader.
                         this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S3';
                         if (this.timeOutPause || this.isAbort) {
@@ -242,6 +395,7 @@ export class StepInsertcardComponent implements OnInit {
                             this.modalRetryOpenGate.show();
                         } else {
                             // S/N4 f the retry limitexcess?
+                            this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR035', '', this.newReader_icno, 'opengate exception');
                             this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
                             this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
                             if (this.timeOutPause || this.isAbort) {
@@ -252,6 +406,7 @@ export class StepInsertcardComponent implements OnInit {
                         }
                     }
                 } else {
+                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR030', '', this.newReader_icno, 'opengate exception');
                     this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                     if (this.timeOutPause || this.isAbort) {
                         return;
@@ -260,7 +415,7 @@ export class StepInsertcardComponent implements OnInit {
                 }
 
             }, (error) => {
-                alert(123);
+                this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR030', '', this.newReader_icno, 'opengate exception');
                 console.log('**********opengate:' + error);
                 this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                 if (this.timeOutPause || this.isAbort) {
@@ -284,6 +439,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openCardFun fun.');
         this.processing.show();
+        this.showImage = true;
         const payload = {
             'card_reader_id': null,
             'contactless_password': {
@@ -296,6 +452,7 @@ export class StepInsertcardComponent implements OnInit {
                 return;
             }
             this.processing.hide();
+            this.showImage = false;
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
@@ -304,6 +461,7 @@ export class StepInsertcardComponent implements OnInit {
                     if (this.timeOutPause || this.isAbort) {
                         return;
                     }
+                    this.commonService.loggerTrans(this.ACTION_TYPE_IC_OPENCARD, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call opencard');
                     this.nextRoute();
                 } else {
                     // open card failed S/N7
@@ -333,6 +491,7 @@ export class StepInsertcardComponent implements OnInit {
                 this.processModalFailShow();
             }
         }, (error) => {
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR036', '', this.newReader_icno, 'opengate exception');
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
             this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
             if (this.timeOutPause || this.isAbort) {
@@ -399,6 +558,7 @@ export class StepInsertcardComponent implements OnInit {
         this.quitDisabledAll();
         this.modal1Comfirm.hide();
         if (this.processing.visible) {
+            this.showImage = false;
             this.processing.hide();
         }
         this.doCloseCard();
@@ -465,6 +625,7 @@ export class StepInsertcardComponent implements OnInit {
                         this.modalRetryOCR.show();
                     } else {
                         this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
                         this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
@@ -483,6 +644,7 @@ export class StepInsertcardComponent implements OnInit {
                         this.modalRetryOCR.show();
                     } else {
                         this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
                         this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
                         if (this.timeOutPause || this.isAbort) {
                             return;
@@ -499,6 +661,7 @@ export class StepInsertcardComponent implements OnInit {
                     this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
                     // *************************************開始調用光學閱讀器的開卡服務opencard*****************************************
                     console.log('*************************************開始調用光學閱讀器的開卡服務opencard*****************************************');
+                    this.commonService.loggerTrans(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call readhkicv2ocrdata');
                     this.openCardNewFun();
                 }
             } else {
@@ -510,6 +673,7 @@ export class StepInsertcardComponent implements OnInit {
                 this.processModalFailShow();
             }
         }, (error) => {
+            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR037', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S8';
             if (this.timeOutPause || this.isAbort) {
                 return;
@@ -561,6 +725,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openCardNewFun fun.');
         this.processing.show();
+        this.showImage = true;
         this.quitDisabledAll();
         const payload = {
             'card_reader_id':  null,
@@ -571,6 +736,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payload).subscribe((resp) => {
             this.processing.hide();
+            this.showImage = false
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
@@ -579,6 +745,7 @@ export class StepInsertcardComponent implements OnInit {
                     if (this.timeOutPause || this.isAbort) {
                         return;
                     }
+                    this.commonService.loggerTrans(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call opencard');
                     this.nextRoute();
                 } else {
                     // open card failed S/N12
@@ -590,6 +757,7 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.modalRetryOCR.show();
                     } else {
+                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR040', '', this.newReader_icno, 'call opencard');
                         this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
                         if (this.timeOutPause || this.isAbort) {
                             return;
@@ -599,6 +767,7 @@ export class StepInsertcardComponent implements OnInit {
                 }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR037', '', this.newReader_icno, 'call opencard');
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
@@ -607,6 +776,7 @@ export class StepInsertcardComponent implements OnInit {
 
         }, (error) => {
             console.log('opencard ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR037', '', this.newReader_icno, 'call opencard');
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
             if (this.timeOutPause || this.isAbort) {
                 return;
@@ -624,6 +794,7 @@ export class StepInsertcardComponent implements OnInit {
         this.timer.showTimer = false;
         this.timeOutPause = true;
         if (this.processing.visible) {
+            this.showImage = false;
             this.processing.hide();
         }
         if (this.modalRetryOCR.visible) {
@@ -690,6 +861,7 @@ export class StepInsertcardComponent implements OnInit {
         this.quitDisabledAll();
         if (this.processing.visible) {
             this.isRestore = true;
+            this.showImage = false;
             this.processing.hide();
         }
     }
@@ -700,6 +872,7 @@ export class StepInsertcardComponent implements OnInit {
     processConfirmQuit() {
         this.modalQuit.hide();
         if (this.processing.visible) {
+            this.showImage = false;
             this.processing.hide();
         }
         this.doCloseCard();
@@ -713,6 +886,7 @@ export class StepInsertcardComponent implements OnInit {
         this.isAbort = false;
         if (this.isRestore) {
             this.processing.show();
+            this.showImage = true;
         } else {
             this.cancelQuitEnabledAll();
         }
@@ -723,6 +897,7 @@ export class StepInsertcardComponent implements OnInit {
         if (this.processing.visible) {
             this.isRestore = true;
             this.processing.hide();
+            this.showImage = false;
         }
         this.modalCollect.show();
     }
@@ -730,6 +905,7 @@ export class StepInsertcardComponent implements OnInit {
         this.modalCollect.hide();
         if (this.isRestore) {
             this.processing.show();
+            this.showImage = true;
         }
         setTimeout(() => {
             this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
@@ -741,7 +917,8 @@ export class StepInsertcardComponent implements OnInit {
      * close card function.
      */
     doCloseCard() {
-        this.processing.show();
+        this.showImage = true;
+        this.isShowCollect = false;
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
@@ -749,7 +926,11 @@ export class StepInsertcardComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_READ_RETURN_CARD_ITEMOUT);
             } else {
-                this.modalCollectShow();
+                // this.modalCollectShow();
+                this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_READ_RETURN_CARD_ITEMOUT);
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);

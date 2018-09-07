@@ -52,7 +52,9 @@
         </div>
     </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
-
+    <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
+    <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
+    <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="hidden" (click)="nextRoute()">
     <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalQuitShow()">
 </div>

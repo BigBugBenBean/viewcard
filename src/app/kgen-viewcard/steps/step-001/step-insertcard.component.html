@@ -84,13 +84,17 @@
             </div>
         </div>
     </sc2-confirm>
-    <label class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
+    <label class="labelStay" >{{'SCN-GEN-STEPS.VIEW_INFO_CARD' | translate}}</label>
+    <label [hidden]="!isShowCollect" class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
+    <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
     <sc2-process-comp #processing></sc2-process-comp>
     <!--   (click)="nextRoute()" -->
-    <img id="oldCard" *ngIf="readType === 1" src="../../../../assets/images/insert-old-hkid.gif" class="main-image">
-    <img id="newCard" *ngIf="readType === 2" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image">
+    <img id="oldCard" *ngIf="readType === 1" [hidden]="showImage" src="../../../../assets/images/insert-old-hkid.gif" class="main-image">
+    <img id="newCard" *ngIf="readType === 2" [hidden]="showImage" src="../../../../assets/images/insert-new-hkid.gif" width="928" height="522" class="main-image">
+    <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
+    <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="button" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
     <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
-    <label class="footerSteps">Insert Card</label>
+    <label class="footerSteps"></label>
 </div>

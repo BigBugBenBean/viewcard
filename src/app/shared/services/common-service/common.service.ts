@@ -15,7 +15,7 @@ export class CommonService {
                 private httpClient: HttpClient,
                 private translate: TranslateService) {}
     doCloseWindow() {
-       // this.router.navigate(['/kgen-viewcard/start']);
+         // this.router.navigate(['/kgen-viewcard/start']);
         const remote = require('electron').remote;
         const window = remote.getCurrentWindow();
         window.close();
@@ -67,5 +67,90 @@ export class CommonService {
         }
         timer.displayTime = numToString;
         timer.initInterval();
+    }
+
+    /**
+     * Exception log.
+     * @param actiontype
+     * @param kskid
+     * @param excptcd
+     * @param lstupid
+     * @param mcdno
+     * @param remk
+     */
+    loggerExcp(actiontype, kskid, excptcd, lstupid, mcdno, remk) {
+        const time = this.getCurrentTime();
+        const payload = {
+            'actiontype': actiontype,
+            'kskid': kskid,
+            'dtaction': time,
+            'dtlstupd': time,
+            'dtual': time,
+            'excptcd': excptcd,
+            'lstupid': lstupid,
+            'mcdno': mcdno,
+            'remk': remk
+        };
+        this.service.sendRequestExcptLog(payload);
+    }
+
+    /**
+     *  trans log.
+     * @param actiontype
+     * @param kskid
+     * @param result
+     * @param lstupid
+     * @param mcdno
+     * @param remk
+     */
+    loggerTrans(actiontype, kskid, result, lstupid, mcdno, remk) {
+        const time = this.getCurrentTime();
+        const payload = {
+            'actiontype': actiontype,
+            'kskid': kskid,
+            'dtaction': time,
+            'dtlstupd': time,
+            'dtual': time,
+            'result': result,
+            'lstupid': lstupid,
+            'mcdno': mcdno,
+            'remk': remk
+        };
+        this.service.sendRequestTransLog(payload);
+    }
+
+    /**
+     * getTime.
+     */
+    getCurrentTime() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        let monthStr = month + '';
+        if (month < 10) {
+            monthStr = '0' + month;
+        }
+        const day = date.getDate();
+        let dayStr = day + '';
+        if (day < 10) {
+            dayStr = '0' + dayStr;
+        }
+        const hour = date.getHours();
+        let hourStr = hour + '';
+        if (hour < 10) {
+            hourStr = '0' + hourStr;
+        }
+        const minute = date.getMinutes();
+        let minuteStr  = minute + '';
+        if (minute < 10) {
+            minuteStr =  '0' + minuteStr;
+        }
+        const second = date.getSeconds();
+        let secondStr = second + '';
+        if (second < 10) {
+            secondStr = '0' + secondStr;
+        }
+        const datestr = year + '-' + monthStr + '-' + dayStr + '  ' + hourStr + ':' + minuteStr + ':' + secondStr;
+        return datestr;
     }
 }

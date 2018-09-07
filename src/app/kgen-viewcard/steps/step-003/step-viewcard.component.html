@@ -64,8 +64,9 @@
         </div>
     </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
-    <label class="label1" >{{'SCN-GEN-STEPS.CONFIRM-INFO' | translate}}</label>
-    <div class="information" [hidden]="!showdata">
+    <label [hidden]="!isShowCollect" class="label1" >{{'SCN-GEN-STEPS.CONFIRM-INFO' | translate}}</label>
+    <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
+    <div class="information" [hidden]="!isShowCollect">
         <div class="row1 col1">
             <label>{{'SCN-GEN-VIEWCARD.NAME-IN-CHINESE' | translate}}</label>
             <p *ngIf="cardType === 2">{{carddata.name_chinese}}</p>
@@ -110,7 +111,10 @@
             <label>{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</label>
             <p>{{carddata.indicators}}</p>
         </div>
-        <div class="image" *ngIf="cardType === 2">
+        <div class="image" *ngIf="cardType === 1" [hidden]="!showdata">
+            <img *ngIf="cardType === 1" src="data:image/png;base64,{{carddata.photo_bmp}}" height="300" width="220">
+        </div>
+        <div class="image" *ngIf="cardType === 2" [hidden]="!showdata">
             <img *ngIf="cardType === 2" src="data:image/png;base64,{{carddata.photo_jpg_in_base64}}" height="300" width="220">
         </div>
         <div class="row4 col2">
@@ -121,6 +125,7 @@
         </div>
         <div class="row4 col3"> <!--registration-->
             <label>{{'SCN-GEN-STEPS.COND-STAY' | translate}}</label>
+
             <p>{{cosView | translate}}</p>
 
         </div>
@@ -134,8 +139,10 @@
 
         </div>
     </div>
+    <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
+    <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input type="button" [hidden]="!showdata" class="confirmButton" id="confirmBtn" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="processNextPrint()">
+    <input type="button" [hidden]="!showdata" class="confirmButton" id="confirmBtn" value="{{'SCN-GEN-STEPS.NEXT' | translate}}" (click)="nextRoute()">
     <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
     <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
 </div>

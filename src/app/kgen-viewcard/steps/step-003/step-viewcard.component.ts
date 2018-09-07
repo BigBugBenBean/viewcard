@@ -55,6 +55,7 @@ export class StepViewcardComponent  implements OnInit {
     imges_base64 = '';
     carddata: any = {};
     showdata = false;
+    isShowCollect = false;
     isQuit = false;
     isRestore = false;
     isAbort = false;
@@ -80,6 +81,14 @@ export class StepViewcardComponent  implements OnInit {
     DEVICE_LIGHT_CODE_PRINTER = '06'
     DEVICE_LIGHT_CODE_FINGERPRINT = '06'
 
+    ACTION_TYPE_IC_READING_INFO = 'READINFO';
+    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
+    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
+    ACTION_TYPE_QUERY_COS_LOS = 'CSLSQUERY';
+    ACTION_TYPE_UPDATE_COS_LOS = 'UPDTCSLS';
+
     constructor(private router: Router,
                 private httpClient: HttpClient,
                 private commonService: CommonService,
@@ -104,6 +113,14 @@ export class StepViewcardComponent  implements OnInit {
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
 
+        this.ACTION_TYPE_IC_READING_INFO = this.localStorages.get('ACTION_TYPE_IC_READING_INFO');
+        this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
+        this.ACTION_TYPE_IC_RETURN_CARD = this.localStorages.get('ACTION_TYPE_IC_RETURN_CARD');
+        this.ACTION_TYPE_OCR_CLOSECARD = this.localStorages.get('ACTION_TYPE_OCR_CLOSECARD');
+        this.ACTION_TYPE_OCR_COLLECT_CARD = this.localStorages.get('ACTION_TYPE_OCR_COLLECT_CARD');
+        this.ACTION_TYPE_QUERY_COS_LOS = this.localStorages.get('ACTION_TYPE_QUERY_COS_LOS');
+        this.ACTION_TYPE_UPDATE_COS_LOS = this.localStorages.get('ACTION_TYPE_UPDATE_COS_LOS');
+
         this.PAGE_VIEW_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_ABORT_QUIT_ITEMOUT'));
         this.PAGE_VIEW_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_RETURN_CARD_ITEMOUT'));
         this.PAGE_VIEW_TIME_EXPIRE_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_VIEW_TIME_EXPIRE_ITEMOUT'));
@@ -124,6 +141,7 @@ export class StepViewcardComponent  implements OnInit {
 
     startBusiness() {
        // this.processing.show();
+        this.isShowCollect = true;
         if (this.carddataJson) {
             this.carddata = JSON.parse(this.carddataJson);
             this.startProcess();
@@ -146,8 +164,8 @@ export class StepViewcardComponent  implements OnInit {
         if (this.cardType === 1) {
             const icno = this.carddata.icno;
             const lengthNum = icno.length;
-            const icon_format = icno.substring(0, lengthNum);
-            const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
+            const icon_format = icno.substring(0, lengthNum - 1);
+            const last_str = icno.substring(lengthNum - 1, lengthNum);
             this.hkic_number_view = icon_format + '(' + last_str + ')';
             this.name_ccc_view = this.processCCCName(this.carddata.ccc);
             this.date_of_birth_view = this.dealDate(this.carddata.dob);
@@ -469,7 +487,8 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     doCloseCard() {
-        this.processing.show();
+        // this.processing.show();
+        this.isShowCollect = false;
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
@@ -477,7 +496,11 @@ export class StepViewcardComponent  implements OnInit {
                     this.backRoute();
                 }, this.PAGE_VIEW_RETURN_CARD_ITEMOUT);
             } else {
-                this.modalCollectShow();
+                // this.modalCollectShow();
+                this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_VIEW_RETURN_CARD_ITEMOUT);
             }
         }, (error) => {
             console.log('closecard ERROR ' + error);

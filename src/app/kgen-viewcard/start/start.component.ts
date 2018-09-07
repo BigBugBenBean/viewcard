@@ -15,13 +15,13 @@ export class StartComponent {
     startRouteEn() {
         this.APP_LANG = 'en-US';
         this.storeConfigParam();
-        this.router.navigate(['/kgen-viewcard/privacy']);
+        this.router.navigate(['/kgen-viewcard/insertcard']);
     }
 
     startChRoute() {
         this.APP_LANG = 'zh-HK';
         this.storeConfigParam();
-        this.router.navigate(['/kgen-viewcard/privacy']);
+        this.router.navigate(['/kgen-viewcard/insertcard']);
     }
 
     storeConfigParam() {

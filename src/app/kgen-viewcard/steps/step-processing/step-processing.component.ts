@@ -51,14 +51,18 @@ export class StepProcessingComponent implements OnInit {
         + `kgi6Vac2prtPJ2xgdZA9MHOCeX5uYDGDb1mMkWBWf3NtiWytbnhtoZ6Bxlz//2YSRmjWbf9NREE9`;
     fp_tmpl2_in_base64 = `AiQ3JVXNwbWLr4agnL6QMt2uTZSlPcypGKVSvMNGrVJDT75VBcg1X2tMUGy5DxkneF4PHy53haC7` +
         `nJupvpAMR22yaWKDYX/Rw2SSi8aes8t5ler6In5P/FT/20/7TURVPQ==`;
+    // fp_tmpl1_in_base64 = 'BAADIxYCAwEMXQAxDAEAIgJoAgATfgAzzcUAyAIDBDdYczlSD1VnA0QSd3xqA2xoRgwAAw0NdAOQbwMkUwAHWgMCgjxXZUNOjGZoBHDtizZkAkg3ToYAA/jySY7xOAJfWQACcgADD3qpTEdW7mt/BJIVFLOKAoGCYBoCAhMVTY6PmgJMLQACkQADk3SFqFhell+MAJGQk6k6Anl4uGACACU1pBo9eAO7uwQDcwYDFd5dWeqKGpqvAHIPFWhvAGs7iCMDAg7gz++iUALVzgIGegYGmdtUUuSlnsfQAFWe5F9eAHI/25sDBIKo0ZOaSwbq4QMGYQIAQZqkitiNJaCsAoGomYmtAKSr2aoAALG9wtabpwKC5QIAkgIAuYORi7i7mcfaAIK9w5uSAEYAAsoAAAIMAetAzjEAG+hgADtZe3kJAGxjSQAHdwJCNwAAZgAChSp0UTFO9VR3Aj3v6VRaB0JUO+MCA9vyee4VmwAiawACawACDia8kTk+EkVGApsTEq6XAqGKZBEAAxUNUBoQhQI1bwACqQMAFVaUiXwaDjY7Aq6MkLu3AoyQTJADA4yOP4eWxQJjWQMAgQACk32hoUhNmU9yAK2QksXFAqt4zJwAAJocdCQWeQbYzwMDXgMA2dxIbICbHKHEAELMz0xvA3t4lqIGBI7p4+GefwC3pQQCfgMAqsBcfsfIm9DRBG2VoX9aBG9n16QEApyd0iURigOLlQIAmwIDI4uRq6KpJL/JApgQMYrBA6vMnkQAAKWskKa6sACqqAQAgAAEsLTcwrS+ts3WAJrU8q2uBKK7uNoDAsbArYK/xgDKwQIAkgLFtN+jn5LW9xpeTec8+CtvCbP35oDVkcQIokyQfxluKl2hO+UpGLIHw/Y61H7CsUugXI/TbRdbSuQ59ShsBrD0433SjsEFn0mNfBZrJ1qeOOImFa8EwPM30Xu/rkidWYzQahRYR+E28iVpA63x4HrPi74CnEaKeRNoJFebNd8jEqwBvfA0zni8q0WaVonNZxFVRN4z7yJmAKru3XfMiLv/mUOHdhBlIVSYMtwgD6n+uu0xy3W5qEKXU4bKZA5SQdsw7B9j/afr2nTJhbj8lkCEcw1iHlGVL9kdDKb7t+ouyHK2pT+UUIPHYQtPPtgt6Rxg+qTo13HGgrX5kz2BcApfG06SLNYaCaP4tOcrxW+zojyRTYDEXghMO9Uq5hld96Hl1G7Df7L2kDp+bQdcGEuPKdMXBqD1seQowmywnzmOSn3BWwVJONIn4xZa9J7i0WvAfK/zjTd7agRZFUiMJtAUA53yruElv2mtnDaLR3q+WAJGNc8k4BNX8Zvfzmi9eazwijR4ZwFWEkWJI5qrvM3e7w==';
+    // fp_tmpl2_in_base64 = 'BAADVxYCAwYM1gAxDAEAVgKpAgBobgAn79IA6QIEVD07amw2YmB4AFpnYXt5Bn9iF0YHAlDufe7kZgcnGgkAXgkA5CtuTSwx7jpACVbi4UlDCllBVOYCCtraRMTqWgcgegAKRgoJ40ZAPUto6nokBDzH0zuSBIGGVXcAAm93SfaCngA1FAAElgAAh02ZqE5nkmlsAKedm56UAIGEdJwHAtK7dKWAqQcVdAQAhwAChV+Gi2pygnh+ArO2oozXAKZ3haIAAq9Sfx8IWAnUuQYAVgQEBYFyb56sNMyBAmwSCVI1AjIvmMUGBsjAhK+SSgLUsAMHPQIHyIQrao2YsaGkAG2mnF9qBlpq05YEBKF+sFhbtgDOwwIEpQQGXc/Bk9DaXtuHA49iaae2BNGxjqwAAqi2idezzgCbjwIAiQAA4KSEkaqw07+BA4bT2siXAKGUlrsAAL/OjdfNnAKnmQIAiwAxDAEABgLAAgBrdAAj/b4A+wACazd0UztaZG8/AnpjaWlWAFBsMWUAAl/mVevhVgBINQADfQMA4XBsYnR34B0vADBx24+mBqqOaHsAAARyTXLrggAdLgAChgAA9XqYnUpNf052AIR+66LIAFg5lZIAAFxWgU1PQAC4tgQDNAYHNdN6fdSMSq3IAmplXn59AEVYjkQAAtjXiMbSNQCf0gQAMQQAxcVIPsXGx8jSBjUozdmABIKHoVEAA2txk46BmgCXkgAAqQACnrCiqra6mMLfB5jOm4iNA9eX5NcJBLfO4dx/jQes6wcAjwkAobi2ibvLfs7OAKq6r5u7ALel2akAArO/1+gsGwAKxvk914HFtE6jX5LWcBpeTec8+CtvCbP35oDVkcQIokyQfxluKl2hO+UpGLIHw/Y61H7CsUugXI/TbRdbSuQ59ShsBrD0433SjsEFn0mNfBZrJ1qeOOImFa8EwPM30Xu/rkidWYzQahRYR+E28iVpA63x4HrPi74CnEaKeRNoJFebNd8jEqwBvfA0zni8q0WaVonNZxFVRN4z7yJmAKru3XfMiLv/mUOHdhBlIVSYMtwgD6n+uu0xy3W5qEKXU4bKZA5SQdsw7B9j/afr2nTJhbj8lkCEcw1iHlGVL9kdDKb7t+ouyHK2pT+UUIPHYQtPPtgt6Rxg+qTo13HGgrX5kz2BcApfG06SLNYaCaP4tOcrxW+zojyRTYDEXghMO9Uq5hld96Hl1G7Df7L2kDp+bQdcGEuPKdMXBqD1seQowmywnzmOSn3BWwVJONIn4xZa9J7i0WvAfK/zjTd7agRZFUiMJtAUA53yruElv2mtnDaLR3q+WAJGNc8k4BNX8Zvfzmi9eazwijR4ZwFWEkWJI5qrvM3e7w==';
+
     // old card info
     carddata: any = {};
     carddataJson = '';
     oldCardNoFlag = false;
     isRestore = false;
     isAbort = false;
+    isShowCollect = false;
     timeOutPause = false;
-
+    hkic_number_view = '';
     PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = 5000;
     PAGE_PROCESSING_RETURN_CARD_ITEMOUT = 5000;
     PAGE_PROCESSING_TIME_EXPIRE_ITEMOUT = 5000;
@@ -67,6 +71,19 @@ export class StepProcessingComponent implements OnInit {
     DEVICE_LIGHT_CODE_IC_READER = '07'
     DEVICE_LIGHT_CODE_PRINTER = '06'
     DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    LOCATION_DEVICE_ID = 'K1-SCK-01';
+
+    FP_TMPL_FORMAT_CARD_TYPE_1 = 'Cogent';
+    FP_TMPL_FORMAT_CARD_TYPE_2 = 'Morpho_PkCompV2';
+    PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
+
+    ACTION_TYPE_IC_READING_INFO = 'READINFO';
+    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
+    ACTION_TYPE_OCR_READING_INFO = 'READINFOOCR';
+    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
+    ACTION_TYPE_FINGER_NUMBER = 'FINGER_NUMBER';
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -78,16 +95,29 @@ export class StepProcessingComponent implements OnInit {
     ngOnInit(): void {
         console.log('init fun');
         this.initConfigParam();
+        this.initFingerTempFormat();
         this.initLanguage();
         this.startBusiness();
     }
 
     initConfigParam() {
         this.APP_LANG = this.localStorages.get('APP_LANG');
+        this.LOCATION_DEVICE_ID = this.localStorages.get('LOCATION_DEVICE_ID');
         this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+
+        this.FP_TMPL_FORMAT_CARD_TYPE_1 = this.localStorages.get('FP_TMPL_FORMAT_CARD_TYPE_1');
+        this.FP_TMPL_FORMAT_CARD_TYPE_2 = this.localStorages.get('FP_TMPL_FORMAT_CARD_TYPE_2');
+
+        this.ACTION_TYPE_IC_READING_INFO = this.localStorages.get('ACTION_TYPE_IC_READING_INFO');
+        this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
+        this.ACTION_TYPE_IC_RETURN_CARD = this.localStorages.get('ACTION_TYPE_IC_RETURN_CARD');
+        this.ACTION_TYPE_OCR_READING_INFO = this.localStorages.get('ACTION_TYPE_OCR_READING_INFO');
+        this.ACTION_TYPE_OCR_CLOSECARD = this.localStorages.get('ACTION_TYPE_OCR_CLOSECARD');
+        this.ACTION_TYPE_OCR_COLLECT_CARD = this.localStorages.get('ACTION_TYPE_OCR_COLLECT_CARD');
+        this.ACTION_TYPE_FINGER_NUMBER = this.localStorages.get('ACTION_TYPE_FINGER_NUMBER');
 
         this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_ABORT_QUIT_ITEMOUT'));
         this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT = Number.parseInt(this.localStorages.get('PAGE_PROCESSING_RETURN_CARD_ITEMOUT'));
@@ -95,6 +125,13 @@ export class StepProcessingComponent implements OnInit {
 
         this.cardType = Number.parseInt(this.localStorages.get('cardType'));
         this.readType = Number.parseInt(this.localStorages.get('readType'));
+    }
+
+    initFingerTempFormat() {
+        this.PAGE_FINGERPRINT_FP_TMPL_FORMAT = this.FP_TMPL_FORMAT_CARD_TYPE_2;
+        if (this.cardType === 1) {
+            this.PAGE_FINGERPRINT_FP_TMPL_FORMAT = this.FP_TMPL_FORMAT_CARD_TYPE_1;
+        }
     }
 
     initLanguage() {
@@ -108,6 +145,7 @@ export class StepProcessingComponent implements OnInit {
 
     startBusiness() {
         this.quitDisabledAll();
+        this.isShowCollect = true;
         this.processing.show();
         this.cleanLocalstorageData();
         this.startProcess();
@@ -123,6 +161,7 @@ export class StepProcessingComponent implements OnInit {
         } else {  // show new card
             this.readhkicv2();
         }
+        // this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
     }
 
     /**
@@ -149,10 +188,11 @@ export class StepProcessingComponent implements OnInit {
     storeConfigParam() {
         this.localStorages.set('fp_tmpl1_in_base64', this.fp_tmpl1_in_base64);
         this.localStorages.set('fp_tmpl2_in_base64', this.fp_tmpl2_in_base64);
-        // this.localStorages.set('fp_tmpl1_fingernum', '0');
-        // this.localStorages.set('fp_tmpl2_fingernum', '5');
         this.localStorages.set('carddataJson', this.carddataJson);
         this.localStorages.set('APP_LANG', this.translate.currentLang);
+
+        // this.localStorages.set('cardType', '2');
+        // this.localStorages.set('readType', '2');
     }
 
     /**
@@ -241,7 +281,7 @@ export class StepProcessingComponent implements OnInit {
         }
         const playloadParam =  {
             'arn': '',
-            'fp_tmpl_format': 'Morpho_PkCompV2',
+            'fp_tmpl_format': this.PAGE_FINGERPRINT_FP_TMPL_FORMAT,
             'fp_tmpl_in_base64':  '' +  fp_tmpl_in_base64
         }
         this.service.sendRequestWithLog('RR_fptool', 'getfingernum', playloadParam).subscribe((resp) => {
@@ -285,9 +325,22 @@ export class StepProcessingComponent implements OnInit {
                 this.carddata = {...resp};
                 this.fp_tmpl1_in_base64 = resp.morpho_fp_tmpl1_in_base64;
                 this.fp_tmpl2_in_base64 = resp.morpho_fp_tmpl2_in_base64;
-                this.carddataJson = JSON.stringify(this.carddata);
-                this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+                if ($.isEmptyObject(this.fp_tmpl1_in_base64) && $.isEmptyObject(this.fp_tmpl2_in_base64)) {
+                    this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+                    if (this.isAbort || this.timeOutPause) {
+                        return;
+                    }
+                    this.processModalFailShow();
+                } else {
+                    this.carddataJson = JSON.stringify(this.carddata);
+                    this.initHKICNumber();
+                    this.commonService.loggerTrans(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'S', '', this.hkic_number_view, 'call readhkicv2');
+                    this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+                }
+
             } else {
+                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR044', '', this.hkic_number_view, 'readhkicv2 exception');
                 this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
                 if (this.isAbort || this.timeOutPause) {
                     return;
@@ -296,6 +349,7 @@ export class StepProcessingComponent implements OnInit {
             }
         }, (error) => {
             console.log('readhkicv2 ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR044', '', this.hkic_number_view, 'readhkicv2 exception');
             this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
             if (this.isAbort || this.timeOutPause) {
                 return;
@@ -313,12 +367,24 @@ export class StepProcessingComponent implements OnInit {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv1').subscribe((resp) => {
             if (!$.isEmptyObject(resp)) {
                 this.carddata = {...resp};
-                // this.fp_tmpl1_in_base64 = resp.fingerprint0;
-                // this.fp_tmpl2_in_base64 = resp.fingerprint1;
-                this.carddataJson = JSON.stringify(this.carddata);
-                this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+                this.fp_tmpl1_in_base64 = resp.fingerprint0;
+                this.fp_tmpl2_in_base64 = resp.fingerprint1;
+                if ($.isEmptyObject(this.fp_tmpl1_in_base64) && $.isEmptyObject(this.fp_tmpl2_in_base64)) {
+                    this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+                    if (this.isAbort || this.timeOutPause) {
+                        return;
+                    }
+                    this.processModalFailShow();
+                } else {
+                    this.carddataJson = JSON.stringify(this.carddata);
+                    this.initHKICNumber();
+                    this.commonService.loggerTrans(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'S', '', this.hkic_number_view, 'call readhkicv1');
+                    this.handleFingerNumber(this.fp_tmpl1_in_base64, this.fp_tmpl2_in_base64);
+                }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
+                this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
                 if (this.isAbort || this.timeOutPause) {
                     return;
                 }
@@ -326,6 +392,7 @@ export class StepProcessingComponent implements OnInit {
             }
         }, (error) => {
             console.log('readhkicv1 ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
             this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
             if (this.isAbort || this.timeOutPause) {
                 return;
@@ -334,6 +401,18 @@ export class StepProcessingComponent implements OnInit {
         });
     }
 // ====================================================== Old Reader End ================================================================
+
+    initHKICNumber() {
+        if (this.cardType === 1) {
+            const icno = this.carddata.icno;
+            const lengthNum = icno.length;
+            const icon_format = icno.substring(0, lengthNum);
+            const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
+            this.hkic_number_view = icon_format + '(' + last_str + ')';
+        } else {
+            this.hkic_number_view = this.carddata.hkic_number;
+        }
+    }
 
     timeExpire() {
         this.timer.showTimer = false;
@@ -434,7 +513,8 @@ export class StepProcessingComponent implements OnInit {
         }, this.PAGE_PROCESSING_ABORT_QUIT_ITEMOUT);
     }
     doCloseCard() {
-        this.processing.show();
+        // this.processing.show();
+        this.isShowCollect = false;
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
             if (this.readType === 1) {
                 this.doReturnDoc();
@@ -442,7 +522,11 @@ export class StepProcessingComponent implements OnInit {
                     this.backRoute();
                 }, this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT);
             } else {
-              this.modalCollectShow();
+              // this.modalCollectShow();
+                this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_OCR_READER);
+                setTimeout(() => {
+                    this.backRoute();
+                }, this.PAGE_PROCESSING_RETURN_CARD_ITEMOUT);
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
