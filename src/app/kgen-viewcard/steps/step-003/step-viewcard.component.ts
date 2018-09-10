@@ -76,10 +76,13 @@ export class StepViewcardComponent  implements OnInit {
     PAGE_VIEW_TIME_EXPIRE_ITEMOUT = 5000;
     LOCATION_DEVICE_ID = 'K1-SCK-01';
     APP_LANG = '';
-    DEVICE_LIGHT_CODE_OCR_READER = '08'
-    DEVICE_LIGHT_CODE_IC_READER = '07'
-    DEVICE_LIGHT_CODE_PRINTER = '06'
-    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    DEVICE_LIGHT_CODE_OCR_READER = '08';
+    DEVICE_LIGHT_CODE_IC_READER = '07';
+    DEVICE_LIGHT_CODE_PRINTER = '06';
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06';
+    DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = '11';
+    DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
+    DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
 
     ACTION_TYPE_IC_READING_INFO = 'READINFO';
     ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
@@ -112,6 +115,9 @@ export class StepViewcardComponent  implements OnInit {
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+        this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_BLUE_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_GREEN_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_RED_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_RED_CODE');
 
         this.ACTION_TYPE_IC_READING_INFO = this.localStorages.get('ACTION_TYPE_IC_READING_INFO');
         this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
@@ -253,8 +259,11 @@ export class StepViewcardComponent  implements OnInit {
         if (this.modalPrintBill.visible) {
             this.modalPrintBill.hide();
         }
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.commonService.doCloseWindow();
     }
 
@@ -418,6 +427,8 @@ export class StepViewcardComponent  implements OnInit {
         this.doCloseCard();
     }
     processModalFailShow() {
+        this.commonService.doLightOn(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.quitDisabledAll();
         this.isAbort = true;
         this.modalFail.show();
@@ -481,7 +492,7 @@ export class StepViewcardComponent  implements OnInit {
             this.processing.show();
         }
         setTimeout(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_VIEW_ABORT_QUIT_ITEMOUT);
     }
@@ -513,7 +524,7 @@ export class StepViewcardComponent  implements OnInit {
     doReturnDoc() {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         });
     }
 

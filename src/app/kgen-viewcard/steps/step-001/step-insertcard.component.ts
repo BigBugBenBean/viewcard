@@ -74,20 +74,23 @@ export class StepInsertcardComponent implements OnInit {
     DEFAULT_LANG = '';
     IS_DEFAULT_LANG = 0;
 
-    PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD = 10
-    PAGE_READ_CLOSE_CARD_ITMEOUT_OCR = 2000
-    PAGE_READ_CLOSE_CARD_TIMEOUT_IC = 2000
-    PAGE_READ_RETRY_READER_1_MAX = 3
-    PAGE_READ_RETRY_READER_2_MAX = 3
-    PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY = 5
-    PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR = 5
-    PAGE_READ_ABORT_QUIT_ITEMOUT = 8000
-    PAGE_READ_RETURN_CARD_ITEMOUT = 8000
-    PAGE_READ_TIME_EXPIRE_ITEMOUT = 8000
-    DEVICE_LIGHT_CODE_OCR_READER = '08'
-    DEVICE_LIGHT_CODE_IC_READER = '07'
-    DEVICE_LIGHT_CODE_PRINTER = '06'
-    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    PAGE_READ_OPENGATE_TIMEOUT_PAYLOAD = 10;
+    PAGE_READ_CLOSE_CARD_ITMEOUT_OCR = 2000;
+    PAGE_READ_CLOSE_CARD_TIMEOUT_IC = 2000;
+    PAGE_READ_RETRY_READER_1_MAX = 3;
+    PAGE_READ_RETRY_READER_2_MAX = 3;
+    PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_RETRY = 5;
+    PAGE_READ_RETURN_CARD_TIMEOUT_PAYLOAD_BY_OCR = 5;
+    PAGE_READ_ABORT_QUIT_ITEMOUT = 8000;
+    PAGE_READ_RETURN_CARD_ITEMOUT = 8000;
+    PAGE_READ_TIME_EXPIRE_ITEMOUT = 8000;
+    DEVICE_LIGHT_CODE_OCR_READER = '08';
+    DEVICE_LIGHT_CODE_IC_READER = '07';
+    DEVICE_LIGHT_CODE_PRINTER = '06';
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06';
+    DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = '11';
+    DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
+    DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
     LOCATION_DEVICE_ID = 'K1-SCK-01';
 
     ACTION_TYPE_IC_OPENGATE = 'OPENGATE';
@@ -162,6 +165,9 @@ export class StepInsertcardComponent implements OnInit {
         this.localStorages.set('DEVICE_LIGHT_CODE_IC_READER', data['DEVICE_LIGHT_CODE_IC_READER']);
         this.localStorages.set('DEVICE_LIGHT_CODE_PRINTER', data['DEVICE_LIGHT_CODE_PRINTER']);
         this.localStorages.set('DEVICE_LIGHT_CODE_FINGERPRINT', data['DEVICE_LIGHT_CODE_FINGERPRINT']);
+        this.localStorages.set('DEVICE_LIGHT_ALERT_BAR_BLUE_CODE', data['DEVICE_LIGHT_ALERT_BAR_BLUE_CODE']);
+        this.localStorages.set('DEVICE_LIGHT_ALERT_BAR_GREEN_CODE', data['DEVICE_LIGHT_ALERT_BAR_GREEN_CODE']);
+        this.localStorages.set('DEVICE_LIGHT_ALERT_BAR_RED_CODE', data['DEVICE_LIGHT_ALERT_BAR_RED_CODE']);
 
         this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_1', data['FP_TMPL_FORMAT_CARD_TYPE_1']);
         this.localStorages.set('FP_TMPL_FORMAT_CARD_TYPE_2', data['FP_TMPL_FORMAT_CARD_TYPE_2']);
@@ -236,6 +242,9 @@ export class StepInsertcardComponent implements OnInit {
         this.DEVICE_LIGHT_CODE_OCR_READER = this.localStorages.get('DEVICE_LIGHT_CODE_OCR_READER');
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
+        this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_BLUE_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_GREEN_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_RED_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_RED_CODE');
 
         this.ACTION_TYPE_IC_OPENGATE = this.localStorages.get('ACTION_TYPE_IC_OPENGATE');
         this.ACTION_TYPE_IC_INSERT = this.localStorages.get('ACTION_TYPE_IC_INSERT');
@@ -341,8 +350,11 @@ export class StepInsertcardComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -372,7 +384,7 @@ export class StepInsertcardComponent implements OnInit {
                 if (!$.isEmptyObject(resp)) {
                     if (resp.errorcode === '0') {
                         this.commonService.loggerTrans(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call takephoto');
-                        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
@@ -396,7 +408,7 @@ export class StepInsertcardComponent implements OnInit {
                         } else {
                             // S/N4 f the retry limitexcess?
                             this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR035', '', this.newReader_icno, 'opengate exception');
-                            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                             this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
                             if (this.timeOutPause || this.isAbort) {
                                 return;
@@ -456,7 +468,7 @@ export class StepInsertcardComponent implements OnInit {
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
-                    this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                     this.cardType = resp.card_version;
                     if (this.timeOutPause || this.isAbort) {
                         return;
@@ -474,7 +486,7 @@ export class StepInsertcardComponent implements OnInit {
                         this.modalRetryOpenCard.show();
                     } else {
                         this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
-                        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
@@ -484,7 +496,7 @@ export class StepInsertcardComponent implements OnInit {
                 }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-                this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+                this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
@@ -493,7 +505,7 @@ export class StepInsertcardComponent implements OnInit {
         }, (error) => {
             this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR036', '', this.newReader_icno, 'opengate exception');
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
             if (this.timeOutPause || this.isAbort) {
                 return;
             }
@@ -588,7 +600,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         });
     }
 
@@ -626,7 +638,7 @@ export class StepInsertcardComponent implements OnInit {
                     } else {
                         this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
                         this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
-                        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
@@ -643,7 +655,7 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.modalRetryOCR.show();
                     } else {
-                        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
                         this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
                         this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
                         if (this.timeOutPause || this.isAbort) {
@@ -658,14 +670,14 @@ export class StepInsertcardComponent implements OnInit {
                     // this.newReader_dor = '20180531';
                     // this.newReader_icno = 'M002981(0)';
                     this.processNewReaderData(resp.ocr_data);
-                    this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
                     // *************************************開始調用光學閱讀器的開卡服務opencard*****************************************
                     console.log('*************************************開始調用光學閱讀器的開卡服務opencard*****************************************');
                     this.commonService.loggerTrans(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call readhkicv2ocrdata');
                     this.openCardNewFun();
                 }
             } else {
-                this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
                 this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S8';
                 if (this.timeOutPause || this.isAbort) {
                     return;
@@ -740,7 +752,7 @@ export class StepInsertcardComponent implements OnInit {
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
-                    this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
                     this.cardType = 2;
                     if (this.timeOutPause || this.isAbort) {
                         return;
@@ -829,6 +841,8 @@ export class StepInsertcardComponent implements OnInit {
     }
 
     processModalFailShow() {
+        this.commonService.doLightOn(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.quitDisabledAll();
         this.isAbort = true;
         this.modalFail.show();
@@ -908,7 +922,7 @@ export class StepInsertcardComponent implements OnInit {
             this.showImage = true;
         }
         setTimeout(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_READ_ABORT_QUIT_ITEMOUT);
     }
@@ -946,7 +960,7 @@ export class StepInsertcardComponent implements OnInit {
     doReturnDoc() {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         });
     }
 }

@@ -38,10 +38,13 @@ export class StepRetrievecardComponent implements OnInit {
     PAGE_COLLECT__RETURN_CARD_ITEMOUT = 2000;
     PAGE_COLLECT_TIME_EXPIRE_ITEMOUT = 5000;
     APP_LANG = '';
-    DEVICE_LIGHT_CODE_OCR_READER = '08'
-    DEVICE_LIGHT_CODE_IC_READER = '07'
-    DEVICE_LIGHT_CODE_PRINTER = '06'
-    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    DEVICE_LIGHT_CODE_OCR_READER = '08';
+    DEVICE_LIGHT_CODE_IC_READER = '07';
+    DEVICE_LIGHT_CODE_PRINTER = '06';
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06';
+    DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = '11';
+    DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
+    DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
     LOCATION_DEVICE_ID = 'K1-SCK-01';
 
     ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
@@ -77,6 +80,9 @@ export class StepRetrievecardComponent implements OnInit {
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+        this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_BLUE_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_GREEN_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_RED_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_RED_CODE');
 
         this.ACTION_TYPE_IC_CLOSECARD = this.localStorages.get('ACTION_TYPE_IC_CLOSECARD');
         this.ACTION_TYPE_IC_RETURN_CARD = this.localStorages.get('ACTION_TYPE_IC_RETURN_CARD');
@@ -102,8 +108,8 @@ export class StepRetrievecardComponent implements OnInit {
 
     startBusiness() {
         // this.processing.show();
-        this.commonService.doLightoff('07');
-        this.commonService.doLightoff('08');
+        this.commonService.doLightOff('07');
+        this.commonService.doLightOff('08');
         setTimeout(() => {
             this.doCloseCard();
         }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
@@ -136,6 +142,14 @@ export class StepRetrievecardComponent implements OnInit {
     processTimeoutQuit() {
         this.modalTimeout.hide();
         this.doCloseCard();
+    }
+
+    processModalFailShow() {
+        this.commonService.doLightOn(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
+        this.quitDisabledAll();
+        this.isAbort = true;
+        this.modalFail.show();
     }
 
     processFailQuit() {
@@ -216,7 +230,7 @@ export class StepRetrievecardComponent implements OnInit {
             this.processing.show();
         }
         setTimeout(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_COLLECT_ABORT_QUIT_ITEMOUT);
     }
@@ -224,7 +238,7 @@ export class StepRetrievecardComponent implements OnInit {
     doReturnDoc() {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         });
     }
 
@@ -248,8 +262,11 @@ export class StepRetrievecardComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }

@@ -68,10 +68,13 @@ export class StepFingerprintComponent implements OnInit {
     PAGE_FINGERPRINT_IS_VALIDATION = 0;
     PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
     APP_LANG = '';
-    DEVICE_LIGHT_CODE_OCR_READER = '08'
-    DEVICE_LIGHT_CODE_IC_READER = '07'
-    DEVICE_LIGHT_CODE_PRINTER = '06'
-    DEVICE_LIGHT_CODE_FINGERPRINT = '06'
+    DEVICE_LIGHT_CODE_OCR_READER = '08';
+    DEVICE_LIGHT_CODE_IC_READER = '07';
+    DEVICE_LIGHT_CODE_PRINTER = '06';
+    DEVICE_LIGHT_CODE_FINGERPRINT = '06';
+    DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = '11';
+    DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
+    DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
     LOCATION_DEVICE_ID = 'K1-SCK-01';
 
     FP_TMPL_FORMAT_CARD_TYPE_1 = 'Cogent';
@@ -116,6 +119,9 @@ export class StepFingerprintComponent implements OnInit {
         this.DEVICE_LIGHT_CODE_IC_READER = this.localStorages.get('DEVICE_LIGHT_CODE_IC_READER');
         this.DEVICE_LIGHT_CODE_PRINTER = this.localStorages.get('DEVICE_LIGHT_CODE_PRINTER');
         this.DEVICE_LIGHT_CODE_FINGERPRINT = this.localStorages.get('DEVICE_LIGHT_CODE_FINGERPRINT');
+        this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_BLUE_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_GREEN_CODE');
+        this.DEVICE_LIGHT_ALERT_BAR_RED_CODE = this.localStorages.get('DEVICE_LIGHT_ALERT_BAR_RED_CODE');
 
         this.FP_TMPL_FORMAT_CARD_TYPE_1 = this.localStorages.get('FP_TMPL_FORMAT_CARD_TYPE_1');
         this.FP_TMPL_FORMAT_CARD_TYPE_2 = this.localStorages.get('FP_TMPL_FORMAT_CARD_TYPE_2');
@@ -188,7 +194,7 @@ export class StepFingerprintComponent implements OnInit {
     }
 
     /**
-     * init param Data.
+     * init param Data.r
      */
     startFingerPrint() {
         if (this.commonService.checkFpNull(this.fp_tmpl1_in_base64) && !this.commonService.checkFpNull(this.fp_tmpl2_in_base64)) {
@@ -239,8 +245,11 @@ export class StepFingerprintComponent implements OnInit {
         if (this.modalQuit.visible) {
             this.modalQuit.hide();
         }
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
-        this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_BLUE_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_GREEN_CODE);
+        this.commonService.doLightOff(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.timer.ngOnDestroy();
         this.commonService.doCloseWindow();
     }
@@ -489,6 +498,8 @@ export class StepFingerprintComponent implements OnInit {
         this.doCloseCard();
     }
     processModalFailShow() {
+        this.commonService.doLightOn(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_ALERT_BAR_RED_CODE);
         this.quitDisabledAll();
         this.isAbort = true;
         this.modalFail.show();
@@ -557,7 +568,7 @@ export class StepFingerprintComponent implements OnInit {
             this.isShow = true;
         }
         setTimeout(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_OCR_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
             this.backRoute();
         }, this.PAGE_FINGERPRINT_ABORT_QUIT_ITEMOUT);
     }
@@ -592,7 +603,7 @@ export class StepFingerprintComponent implements OnInit {
     doReturnDoc() {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
-            this.commonService.doLightoff(this.DEVICE_LIGHT_CODE_IC_READER);
+            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         });
     }
 }

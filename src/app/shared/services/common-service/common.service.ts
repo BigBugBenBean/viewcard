@@ -36,7 +36,20 @@ export class CommonService {
         });
     }
 
-    doLightoff(deviceCode: string) {
+    /**
+     *  open light on
+     * @param deviceCode
+     */
+    doLightOn(deviceCode: string) {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_NOTICELIGHT, 'lighton', {'device': deviceCode}).subscribe((resp) => {
+        });
+    }
+
+    /**
+     * close light.
+     * @param deviceCode
+     */
+    doLightOff(deviceCode: string) {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_NOTICELIGHT, 'lightoff', {'device': deviceCode}).subscribe((resp) => {
         });
     }
