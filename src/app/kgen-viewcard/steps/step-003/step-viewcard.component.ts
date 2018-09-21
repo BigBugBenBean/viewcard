@@ -195,6 +195,7 @@ export class StepViewcardComponent  implements OnInit {
         if (this.timeOutPause || this.isAbort) {
             return;
         }
+        this.quitDisabledAll();
         this.storeConfigParam();
         this.router.navigate(['/kgen-viewcard/retrievecard']);
         return;

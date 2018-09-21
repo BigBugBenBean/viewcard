@@ -70,7 +70,7 @@ export class StepInsertcardComponent implements OnInit {
     showImage = false;
     isShow = false;
     isShowCollect = false;
-    APP_LANG = 'en-US';
+    APP_LANG = 'zh-HK';
     DEFAULT_LANG = '';
     IS_DEFAULT_LANG = 0;
 

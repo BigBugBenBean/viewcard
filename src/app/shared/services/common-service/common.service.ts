@@ -163,7 +163,9 @@ export class CommonService {
         if (second < 10) {
             secondStr = '0' + secondStr;
         }
-        const datestr = year + '-' + monthStr + '-' + dayStr + '  ' + hourStr + ':' + minuteStr + ':' + secondStr;
+        // yyyy-MM-dd'T'HH:mm:ss.SSSZ
+        const ms = date.getMilliseconds();
+        const datestr = year + '-' + monthStr + '-' + dayStr + 'T' + hourStr + ':' + minuteStr + ':' + secondStr + '.' + ms  + 'Z';
         return datestr;
     }
 }
