@@ -329,20 +329,20 @@
         "OCR-FAIL": "OCR设备读卡失败,请重试."
     },
     "SCN-GEN-STEPS": {
-        "INSERT-HKID": "請插入你現有的香港身份證。",
+        "INSERT-HKID": "請插入你的智能身份證 (晶片向上)。",
         "PLACE-RIGHT-FP": "請將你已登記的右手指紋放\n於掃描器上。",
         "PLACE-LEFT-FP": "請將你已登記的左手指紋放於\n掃描器上。",
         "ABORT": "退出",
         "TIMMER": "剩餘時間",
         "LANGUAGE": "English",
         "NAVIGATION": "步驟",
-        "VIEW_INFO_CARD": "查詢個人信息",
+        "VIEW_INFO_CARD": "讀取身份證晶片內的個人資料",
         "UPDATE-CONDITION-STAY": "更新晶片中的逗留條件入逗留限制",
         "TYPE-OF-HKID-CARD": "請注明您持有的香港身份的證類型",
         "COLLECT-HKID-CARD": "請取回你的香港身份證。",
         "UPDATE-STAY-CONDITION-INFO": "更新逗留條件和逗留限制信息如下：",
         "CONDITION-OF-STAY": "逗留條件：",
-        "LIMIT-OF-STAY": "逗留限制(DD-MM-YYYY)：",
+        "LIMIT-OF-STAY": "逗留限制\n(DD-MM-YYYY)：",
         "PROCESSING-READ": "正在讀卡，請稍等...",
         "ABORT_CONFIRM": "你確定要中止？",
         "YES": "是",
@@ -367,7 +367,7 @@
         "TIMMER": "剩餘時間",
         "LANGUAGE": "English",
         "NAVIGATION": "步驟",
-        "CONFIRM-INFO": "你的晶片卡上的信息如下：",
+        "CONFIRM-INFO": "身份證上晶片內的個人資料如下：",
         "CONFIRM": "確認",
         "RE-SCANER-FINGER": "掃描指紋與原指紋不匹配，請重新掃描！",
         "RE-SCANER-MAX": "掃描指紋與原指紋不匹配，已超過最大次數",
@@ -398,7 +398,7 @@
         "CARD-ABNORMAL-NO-READ-DATA": "卡片有異常，無法取卡片信息，請聯系工作人員！",
         "UNREAD-CARD-BAD-TRY":"讀卡器無法讀取或卡片有問題，請重试！",
         "READ-DATA-MAX": "读卡失敗次数已超过3次，請檢查！",
-        "FINGER-FLAT": "手指平放指紋掃描器上。",
+        "FINGER-FLAT": "請將已登記手指平放於指紋掃描器上。",
         "MESSAGE-TIMEOUT": "系統操作超時，系統5秒後自動退出.",
         "FINGERPRINT-NOT-MATCH-FINGER": "指紋沒有匹配到哪個手指,請檢查！",
         "FINGERPRINT-NOT-DETECT-FINGER": "指纹器没有检测到手指，请放手指到指纹器重试",
@@ -432,6 +432,8 @@
         "OCR_READER_SCREEN_S12" : "RFID 閱讀錯誤。請取回你的身份證重試。",
         "OCR_READER_SCREEN_S13" : "讀卡錯誤，服務將會中止",
         "PROCESS_SCREEN_S14" : "身份證資料閱讀錯誤。請取回你的身份證，服務將會中止",
-        "INIT_CONFIG_PARAM_ERROR": "系統初始化異常，服務將會中止"
+        "INIT_CONFIG_PARAM_ERROR": "系統初始化異常，服務將會中止",
+        "TAKE_CARD_BTN" : "取回身份證",
+        "PUT_CARD_TRY_MAX": "已經超過3次沒有檢測到身份證，請確認後重試， 系統將中止退出！"
     }
 }

@@ -63,7 +63,7 @@ export class CommonService {
     }
 
     checkFpNull(fpObj: any) {
-        return fpObj === null || fpObj === 'null' || fpObj === '';
+        return fpObj === null || fpObj === 'null' || fpObj === '' || fpObj === false || fpObj === 'false';
     }
 
     /**

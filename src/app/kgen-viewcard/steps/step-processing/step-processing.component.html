@@ -52,6 +52,7 @@
         </div>
     </sc2-confirm>
     <sc2-process-comp #processing></sc2-process-comp>
+    <label class="labelStay" >{{'SCN-GEN-STEPS.VIEW_INFO_CARD' | translate}}</label>
     <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
     <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
     <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">

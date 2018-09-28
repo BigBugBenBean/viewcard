@@ -197,6 +197,8 @@ export class StepFingerprintComponent implements OnInit {
      * init param Data.r
      */
     startFingerPrint() {
+        // alert('fp_tmpl1_fingernum=' + this.fp_tmpl1_fingernum + 'fp_tmpl1_in_base64=' + this.fp_tmpl1_in_base64);
+        // alert('fp_tmpl2_fingernum=' + this.fp_tmpl2_fingernum + 'fp_tmpl2_in_base64=' + this.fp_tmpl2_in_base64);
         if (this.commonService.checkFpNull(this.fp_tmpl1_in_base64) && !this.commonService.checkFpNull(this.fp_tmpl2_in_base64)) {
             this.fp_tmpl1_in_base64 = this.fp_tmpl2_in_base64;
             this.fp_tmpl1_fingernum = this.fp_tmpl2_fingernum;
@@ -206,6 +208,7 @@ export class StepFingerprintComponent implements OnInit {
             this.maxFingerCount = 1;
             this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
         } else {
+            // alert(666);
             this.allFingerNum.push('fp' + this.fp_tmpl1_fingernum);
             this.allFingerNum.push('fp' + this.fp_tmpl2_fingernum);
         }
