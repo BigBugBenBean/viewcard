@@ -73,7 +73,11 @@ export class MsksService {
     public sendRequestWithLog(channelid: string, functionid: string, payload: any = {}, stub: string = 'HAS'): Observable<any> {
         const obsMain = this.sendRequest(channelid, functionid, payload, stub);
         const head = {'chanlid': channelid, 'funcid': functionid};
+
+        const start = new Date().getTime();
         return obsMain.map((resp) => {
+            const end = new Date().getTime();
+            payload.times = end - start;
             // let response = JSON.stringify(resp);
             this.sendRequest('RR_AUDIT', 'tracklg', {'head': head, 'resq': payload, 'resp': resp}).subscribe((resp4) => {
             });
