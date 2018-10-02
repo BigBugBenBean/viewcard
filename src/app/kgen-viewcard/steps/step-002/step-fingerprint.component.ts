@@ -607,6 +607,14 @@ export class StepFingerprintComponent implements OnInit {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        }, (error) => {
+            console.log('opencard ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
+            if (this.timeOutPause || this.isAbort) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 }

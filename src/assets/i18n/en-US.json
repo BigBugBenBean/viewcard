@@ -425,7 +425,7 @@
         "INSERT_CARD_SCREEN_S7_1": "Clip reading fail  more than 3 times. System suspended",
         "OCR_READER_SCREEN_S8" : "Optical character reader initialization fail. System suspended",
         "OCR_READER_SCREEN_S9" : "Card reader intialization fail. Please request officers for assistance.",
-        "OCR_READER_SCREEN_S10" : "Please place your card on the optical character reader",
+        "OCR_READER_SCREEN_S10" : "Cannot identify the card provided,Please place your card on the optical character reader",
         "OCR_READER_SCREEN_S10_1" : "more than 3 times: 'Please place your card on the optical character reader'. System suspended",
         "OCR_READER_SCREEN_S11" : "Cannot identify the card provided. Please try again",
         "OCR_READER_SCREEN_S11_1" : "more than 3 times:'Cannot identify the card provided. Please try again'，System suspended",
@@ -434,6 +434,7 @@
         "PROCESS_SCREEN_S14" : "Card Information reading fail. Please collect your identity card and application will be terminated",
         "INIT_CONFIG_PARAM_ERROR": "System initialization failed,Application will be terminated.",
         "TAKE_CARD_BTN" : "Take Card",
-        "PUT_CARD_TRY_MAX": "No id card has been detected for more than 3 times. Please try again after confirmation, and the system will stop quitting！"
+        "PUT_CARD_TRY_MAX": "No id card has been detected for more than 3 times. Please try again after confirmation, and the system will stop quitting！",
+        "OCR_READER_SCREEN_S16" : "more than 3 times:'Cannot identify the card provided.please put right Reader again”"
     }
 }

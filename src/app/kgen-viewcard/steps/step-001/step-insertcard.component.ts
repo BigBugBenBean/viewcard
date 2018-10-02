@@ -401,28 +401,30 @@ export class StepInsertcardComponent implements OnInit {
                             return;
                         }
                         this.processModalFailShow();
-                    } else {
+                    } else if (resp.errorcode === 'D0006') {
                         this.retryReaderVal += 1;
-                        // this.retryReader1Val += 1;
-                        // if (this.retryReader1Val < this.PAGE_READ_RETRY_READER_1_MAX) {
-                        //     this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
-                        //     if (this.timeOutPause || this.isAbort) {
-                        //         return;
-                        //     }
-                        //     this.modalRetryOpenGate.show();
-                        // } else {
-                        //     // S/N4 f the retry limitexcess?
-                        //     this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR035', '', this.newReader_icno, 'opengate exception');
-                        //     this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
-                        //     this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
-                        //     if (this.timeOutPause || this.isAbort) {
-                        //         return;
-                        //     }
-                        //     this.quitDisabledAll();
-                        //     this.modal1Comfirm.show();
-                        // }
                         this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                         this.processNewReader();
+                    } else {
+                        this.retryReader1Val += 1;
+                        if (this.retryReader1Val < this.PAGE_READ_RETRY_READER_1_MAX) {
+                            this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.modalRetryOpenGate.show();
+                        } else {
+                            // S/N4 f the retry limitexcess?
+                            this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR035', '', this.newReader_icno, 'opengate exception');
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                            this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.quitDisabledAll();
+                            this.modal1Comfirm.show();
+                        }
+
                     }
                 } else {
                     this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR030', '', this.newReader_icno, 'opengate exception');
@@ -660,16 +662,39 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.modalRetryOCR.show();
                     } else {
-                        this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
                         this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
-                        if (this.timeOutPause || this.isAbort) {
-                            return;
+                        if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_1_MAX) {
+                            this.messageRetry = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S16';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.modalRetryOpenGate.show();
+                        } else {
+                            // S/N4 f the retry limitexcess?
+                            // this.messageFail = 'SCN-GEN-STEPS.PUT_CARD_TRY_MAX';
+                            // this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                            // if (this.timeOutPause || this.isAbort) {
+                            //     return;
+                            // }
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                            this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.processModalFailShow();
                         }
-                        this.processModalFailShow();
+                        // this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                        // this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                        // this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        // if (this.timeOutPause || this.isAbort) {
+                        //     return;
+                        // }
+                        // this.processModalFailShow();
                     }
 
                 } else if (resp.ocr_data.length === 2) {
+                    // 无法识别卡时，重试3次，
                     // S/N11
                     this.retryReader2Val += 1;
                     if (this.retryReader2Val < this.PAGE_READ_RETRY_READER_2_MAX) {
@@ -679,13 +704,36 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.modalRetryOCR.show();
                     } else {
+                        // 超过3次后提示放到ICReader 提示.
                         this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
-                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
-                        this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-                        if (this.timeOutPause || this.isAbort) {
-                            return;
+                        if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_1_MAX) {
+                            this.messageRetry = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S16';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.modalRetryOpenGate.show();
+                        } else {
+                            // S/N4 f the retry limitexcess?
+                            // this.messageFail = 'SCN-GEN-STEPS.PUT_CARD_TRY_MAX';
+                            // this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR039', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                            // if (this.timeOutPause || this.isAbort) {
+                            //     return;
+                            // }
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                            this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.processModalFailShow();
                         }
-                        this.processModalFailShow();
+                        // this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        // this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                        // this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                        // if (this.timeOutPause || this.isAbort) {
+                        //     return;
+                        // }
+                        // this.processModalFailShow();
                     }
                 } else {
                     if (this.timeOutPause || this.isAbort) {
@@ -793,12 +841,28 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.modalRetryOCR.show();
                     } else {
-                        this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR040', '', this.newReader_icno, 'call opencard');
-                        this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-                        if (this.timeOutPause || this.isAbort) {
-                            return;
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                        if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_1_MAX) {
+                            this.messageRetry = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S16';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.modalRetryOpenGate.show();
+                        } else {
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR040', '', this.newReader_icno, 'call opencard');
+                            this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.processModalFailShow();
                         }
-                        this.processModalFailShow();
+                        // this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR040', '', this.newReader_icno, 'call opencard');
+                        // this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                        // if (this.timeOutPause || this.isAbort) {
+                        //     return;
+                        // }
+                        // this.processModalFailShow();
                     }
                 }
             } else {
@@ -985,6 +1049,14 @@ export class StepInsertcardComponent implements OnInit {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe((resp) => {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        }, (error) => {
+            console.log('opencard ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.newReader_icno, 'call returndoc');
+            this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
+            if (this.timeOutPause || this.isAbort) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 }

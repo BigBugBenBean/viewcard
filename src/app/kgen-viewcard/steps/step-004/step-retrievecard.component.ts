@@ -46,6 +46,7 @@ export class StepRetrievecardComponent implements OnInit {
     DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
     DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
     LOCATION_DEVICE_ID = 'K1-SCK-01';
+    hkic_number_view = '';
 
     ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
     ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
@@ -95,6 +96,7 @@ export class StepRetrievecardComponent implements OnInit {
 
         this.cardType = Number.parseInt(this.localStorages.get('cardType'));
         this.readType = Number.parseInt(this.localStorages.get('readType'));
+        this.hkic_number_view = this.localStorages.get('hkic_number_view');
     }
 
     initLanguage() {
@@ -239,6 +241,14 @@ export class StepRetrievecardComponent implements OnInit {
         this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+        }, (error) => {
+            console.log('opencard ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
+            if (this.timeOutPause || this.isAbort) {
+                return;
+            }
+            this.processModalFailShow();
         });
     }
 
