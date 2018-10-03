@@ -402,10 +402,34 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.processModalFailShow();
                     } else if (resp.errorcode === 'D0006') {
+                        // this.checkCardExist();
+                       // no card in reader timeout.
                         this.retryReaderVal += 1;
-                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
-                        this.processNewReader();
+                        // 判断OCR的读卡次数是否大于最大次数.
+                        if (this.retryReader2Val < this.PAGE_READ_RETRY_READER_2_MAX) {
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                            this.processNewReader();
+                        } else {
+                            // 判断超时最大次数.
+                            if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_2_MAX) {
+                                this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
+                                if (this.timeOutPause || this.isAbort) {
+                                    return;
+                                }
+                                this.modalRetryOpenGate.show();
+                            } else {
+                                // 处理超过最大次数提示.
+                                this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                                this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                                if (this.timeOutPause || this.isAbort) {
+                                    return;
+                                }
+                                this.processModalFailShow();
+                            }
+                        }
                     } else {
+                        // reading fail rereading,try again 3 times
                         this.retryReader1Val += 1;
                         if (this.retryReader1Val < this.PAGE_READ_RETRY_READER_1_MAX) {
                             this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
@@ -427,6 +451,7 @@ export class StepInsertcardComponent implements OnInit {
 
                     }
                 } else {
+                    // read card  no success .
                     this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'GENERR030', '', this.newReader_icno, 'opengate exception');
                     this.messageFail = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
                     if (this.timeOutPause || this.isAbort) {
@@ -444,6 +469,49 @@ export class StepInsertcardComponent implements OnInit {
                 }
                 this.processModalFailShow();
             });
+    }
+
+    /**
+     *  检查是否有卡.
+     */
+    checkCardExist() {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'checkcardexit').subscribe((resp) => {
+            if (!$.isEmptyObject(resp)) {
+                if (resp.errorcode === '0') {
+                    this.retryReaderVal += 1;
+                    // 判断OCR的读卡次数是否大于最大次数.
+                    if (this.retryReader2Val < this.PAGE_READ_RETRY_READER_2_MAX) {
+                        this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                        this.processNewReader();
+                    } else {
+                        // 判断超时最大次数.
+                        if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_2_MAX) {
+                            this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.modalRetryOpenGate.show();
+                        } else {
+                            // 处理超过最大次数提示.
+                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                            this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                            if (this.timeOutPause || this.isAbort) {
+                                return;
+                            }
+                            this.processModalFailShow();
+                        }
+                    }
+                } else {
+                    this.commonService.loggerTrans(this.ACTION_TYPE_IC_OPENGATE, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call takephoto');
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                    if (this.timeOutPause || this.isAbort) {
+                        return;
+                    }
+                    this.openCardFun();
+                }
+            }
+        });
     }
 
     failTryAgainOpengate() {
@@ -475,9 +543,12 @@ export class StepInsertcardComponent implements OnInit {
             this.processing.hide();
             this.showImage = false;
             this.cancelQuitEnabledAll();
+            // return result not Empty.
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
+                    // turn off light.
                     this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                    // get card type,
                     this.cardType = resp.card_version;
                     if (this.timeOutPause || this.isAbort) {
                         return;
@@ -488,12 +559,14 @@ export class StepInsertcardComponent implements OnInit {
                     // open card failed S/N7
                     this.retryReader1Val += 1;
                     if (this.retryReader1Val < this.PAGE_READ_RETRY_READER_1_MAX) {
+                        // Clip reading fail. Please retry
                         this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S7';
                         if (this.timeOutPause || this.isAbort) {
                             return;
                         }
                         this.modalRetryOpenCard.show();
                     } else {
+                        // Card reading fail. If you are the holder of new HKIC, you can continue the application by presenting your card on the optical character reader. Do you want to continue?
                         this.messageComfirm = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
                         this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                         if (this.timeOutPause || this.isAbort) {
@@ -503,7 +576,9 @@ export class StepInsertcardComponent implements OnInit {
                         this.modal1Comfirm.show();
                     }
                 }
+            // return result is Empty.
             } else {
+                // Read card fail. Application will be terminated.
                 this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
                 this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
                 if (this.timeOutPause || this.isAbort) {
@@ -513,6 +588,7 @@ export class StepInsertcardComponent implements OnInit {
             }
         }, (error) => {
             this.commonService.loggerExcp(this.ACTION_TYPE_IC_OPENCARD, this.LOCATION_DEVICE_ID, 'GENERR036', '', this.newReader_icno, 'opengate exception');
+            // Read card fail. Application will be terminated.
             this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
             if (this.timeOutPause || this.isAbort) {
@@ -527,6 +603,7 @@ export class StepInsertcardComponent implements OnInit {
      */
     failTryAgainOpenCard() {
         this.modalRetryOpenCard.hide();
+        // colse  card.
         this.doCloseCardByTryagain();
     }
 
@@ -538,11 +615,13 @@ export class StepInsertcardComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'closecard').subscribe((resp) => {
+            // return card.
             this.doReturnDocByTryagain();
             setTimeout(() => {
                 if (this.timeOutPause || this.isAbort) {
                     return;
                 }
+                // call opengate fun.
                 this.openGateFun();
             }, 500);
         });
