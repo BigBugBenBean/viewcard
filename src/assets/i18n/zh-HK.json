@@ -342,7 +342,7 @@
         "COLLECT-HKID-CARD": "請取回你的香港身份證。",
         "UPDATE-STAY-CONDITION-INFO": "更新逗留條件和逗留限制信息如下：",
         "CONDITION-OF-STAY": "逗留條件：",
-        "LIMIT-OF-STAY": "逗留限制\n(DD-MM-YYYY)：",
+        "LIMIT-OF-STAY": "逗留限制：",
         "PROCESSING-READ": "正在讀卡，請稍等...",
         "ABORT_CONFIRM": "你確定要中止？",
         "YES": "是",

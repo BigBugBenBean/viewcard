@@ -402,32 +402,34 @@ export class StepInsertcardComponent implements OnInit {
                         }
                         this.processModalFailShow();
                     } else if (resp.errorcode === 'D0006') {
-                        // this.checkCardExist();
+                        setTimeout(() => {
+                            this.checkCardExist();
+                        }, 1000);
                        // no card in reader timeout.
-                        this.retryReaderVal += 1;
-                        // 判断OCR的读卡次数是否大于最大次数.
-                        if (this.retryReader2Val < this.PAGE_READ_RETRY_READER_2_MAX) {
-                            this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
-                            this.processNewReader();
-                        } else {
-                            // 判断超时最大次数.
-                            if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_2_MAX) {
-                                this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
-                                if (this.timeOutPause || this.isAbort) {
-                                    return;
-                                }
-                                this.modalRetryOpenGate.show();
-                            } else {
-                                // 处理超过最大次数提示.
-                                this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
-                                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
-                                this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
-                                if (this.timeOutPause || this.isAbort) {
-                                    return;
-                                }
-                                this.processModalFailShow();
-                            }
-                        }
+                       //  this.retryReaderVal += 1;
+                       //  // 判断OCR的读卡次数是否大于最大次数.
+                       //  if (this.retryReader2Val < this.PAGE_READ_RETRY_READER_2_MAX) {
+                       //      this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                       //      this.processNewReader();
+                       //  } else {
+                       //      // 判断超时最大次数.
+                       //      if (this.retryReaderVal < this.PAGE_READ_RETRY_READER_2_MAX) {
+                       //          this.messageRetry = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S4';
+                       //          if (this.timeOutPause || this.isAbort) {
+                       //              return;
+                       //          }
+                       //          this.modalRetryOpenGate.show();
+                       //      } else {
+                       //          // 处理超过最大次数提示.
+                       //          this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                       //          this.commonService.loggerExcp(this.ACTION_TYPE_OCR_INSERT, this.LOCATION_DEVICE_ID, 'GENERR042', '', this.newReader_icno, 'opengate readhkicv2ocrdata');
+                       //          this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                       //          if (this.timeOutPause || this.isAbort) {
+                       //              return;
+                       //          }
+                       //          this.processModalFailShow();
+                       //      }
+                       //  }
                     } else {
                         // reading fail rereading,try again 3 times
                         this.retryReader1Val += 1;
@@ -475,7 +477,7 @@ export class StepInsertcardComponent implements OnInit {
      *  检查是否有卡.
      */
     checkCardExist() {
-        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'checkcardexit').subscribe((resp) => {
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'checkcardexist').subscribe((resp) => {
             if (!$.isEmptyObject(resp)) {
                 if (resp.errorcode === '0') {
                     this.retryReaderVal += 1;

@@ -152,15 +152,6 @@ body {
   width: 240px;
 }
 
-.information label {
-  opacity: 100%;
-  color: #7d7d7d;
-  //font-family
-  font-size: 24px;
-  line-height: 28px;
-  margin-bottom: 12px;
-}
-
 .information p {
   font-weight: bold; //Removed this. replace with real font-face
   opacity: 1;
@@ -174,43 +165,41 @@ body {
   font-family: 'ImmD-Font', 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
   line-height: 37px;
 }
-
-.information .col1 {
-  left: 91px;
+.infoTableClass {
+  font-family: 'ImmD-Font', 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+  line-height: 37px;
+  border-width: 0px;
 }
 
-.information .col2 {
-  left: 348px;
+.firstColumn {
+  opacity: 100%;
+  color: #7d7d7d;
+  font-size: 24px;
+  text-align: left;
+  vertical-align: center;
+  padding-left:30px;
+  height: 55px;
+  width: 380px;
+  line-height: 55px;
+  text-align: left;
+  //background-color: #673ab7;
+  vertical-align: middle;
 }
 
-.information .col3 {
-  left: 645px;
-}
-
-.information .row1 {
-  top: 50px;
-}
-
-.information .row2 {
-  top: 110px;
-  margin-top: 74px;
-}
-
-.information .row3 {
-  top: 210px;
-  margin-top: 74px;
-}
-
-.information .row4 {
-  // top: 303px;
-  top: 300px;
-  // margin-top: 88px;
-  margin-top: 74px;
-}
-
-.information .row5 {
-  top: 420px;
-  margin-top: 67.5px;
+.SecondColumn {
+  opacity: 100%;
+  color: #7d7d7d;
+  font-size: 24px;
+  text-align: left;
+  vertical-align: center;
+  padding-left:30px;
+  height: 55px;
+  width: 580px;
+  line-height: 55px;
+  text-align: left;
+  font-size: 26px;
+  //background-color : #3BABA5;
+  vertical-align: middle;
 }
 
 .information .registration {
@@ -221,8 +210,8 @@ body {
   position: absolute;
   height: 300px;
   width: 200px;
-  left: 89px;
-  bottom: 40px;
+  left: 689px;
+  bottom: 30px;
   background-color: #ffffff;
 }
 

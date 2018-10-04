@@ -340,7 +340,7 @@
         "COLLECT-HKID-CARD": "Please collect your Smart ID Card.",
         "UPDATE-STAY-CONDITION-INFO": "The updated Condition of Stay and Limit of Stay is  as follow：",
         "CONDITION-OF-STAY": "Condition of Stay：",
-        "LIMIT-OF-STAY": "Limit of Stay\n(DD-MM-YYYY)：",
+        "LIMIT-OF-STAY": "Limit of Stay",
         "PROCESSING-READ": "Processing...",
         "ABORT_CONFIRM": "Are you sure you want to abort?",
         "YES": "Yes",
@@ -435,6 +435,6 @@
         "INIT_CONFIG_PARAM_ERROR": "System initialization failed,Application will be terminated.",
         "TAKE_CARD_BTN" : "Take Card",
         "PUT_CARD_TRY_MAX": "No id card has been detected for more than 3 times. Please try again after confirmation, and the system will stop quitting！",
-        "OCR_READER_SCREEN_S16" : "more than 3 times:'Cannot identify the card provided.please put right Reader again”"
+        "OCR_READER_SCREEN_S16" : "Your card cann't be for 3 attempts  recognized ,please your card insert into the card reader on the right."
     }
 }
