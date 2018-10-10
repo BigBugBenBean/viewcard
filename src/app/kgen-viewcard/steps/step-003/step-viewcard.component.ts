@@ -92,6 +92,24 @@ export class StepViewcardComponent  implements OnInit {
     ACTION_TYPE_QUERY_COS_LOS = 'CSLSQUERY';
     ACTION_TYPE_UPDATE_COS_LOS = 'UPDTCSLS';
 
+    N2E = 'N2E';
+    R2E = 'R2E';
+    N2H = 'N2H';
+    R2H = 'R2H';
+    N2S = 'N2S';
+    R2S= 'R2S';
+    N2W = 'N2W';
+    R2W = 'R2W';
+    N2X = 'N2X';
+    R2X = 'R2X';
+    N2Y = 'N2Y';
+    R2Y = 'R2Y';
+    N2 = 'N2';
+    R2 = 'R2';
+    V3T = 'V3T';
+    V3 = 'V3';
+    CN_COS = '不適用';
+    EN_COS = 'Not applicable';
     constructor(private router: Router,
                 private httpClient: HttpClient,
                 private commonService: CommonService,

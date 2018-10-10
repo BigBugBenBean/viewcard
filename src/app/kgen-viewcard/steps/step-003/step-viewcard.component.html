@@ -112,13 +112,34 @@
                 <td class="SecondColumn">{{date_of_first_registration_view}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-STEPS.LIMIT-OF-STAY' | translate}}</td>
-                <td class="SecondColumn">{{losView | translate}}</td>
+                <!--<td class="firstColumn">{{'SCN-GEN-STEPS.LIMIT-OF-STAY' | translate}}</td>-->
+                <td class="firstColumn">{{'SCN-GEN-STEPS.COS_LOS' | translate}}</td>
+                <td class="SecondColumn">
+                    <p *ngIf="cosView === N2E">{{'SCN-GEN-STEPS.N2E' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2E">{{'SCN-GEN-STEPS.R2E' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2H">{{'SCN-GEN-STEPS.N2H' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2H">{{'SCN-GEN-STEPS.R2H' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2S">{{'SCN-GEN-STEPS.N2S' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2S">{{'SCN-GEN-STEPS.R2S' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2W">{{'SCN-GEN-STEPS.N2W' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2W">{{'SCN-GEN-STEPS.R2W' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2X">{{'SCN-GEN-STEPS.N2X' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2X">{{'SCN-GEN-STEPS.R2X' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2Y">{{'SCN-GEN-STEPS.N2Y' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2Y">{{'SCN-GEN-STEPS.R2Y' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === N2">{{'SCN-GEN-STEPS.N2' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === R2">{{'SCN-GEN-STEPS.R2' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === V3T">{{'SCN-GEN-STEPS.V3T' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === V3">{{'SCN-GEN-STEPS.V3' | translate}}{{losView | translate}}</p>
+                    <p *ngIf="cosView === CN_COS">{{losView | translate}}</p>
+                    <p *ngIf="cosView === EN_COS">{{losView | translate}}</p>
+
+                </td>
             </tr>
-            <tr>
-                <td class="firstColumn">{{'SCN-GEN-STEPS.COND-STAY' | translate}}</td>
-                <td class="SecondColumn">{{cosView | translate}}</td>
-            </tr>
+            <!--<tr>-->
+                <!--<td class="firstColumn">{{'SCN-GEN-STEPS.COND-STAY' | translate}}</td>-->
+                <!--<td class="SecondColumn">{{cosView | translate}}</td>-->
+            <!--</tr>-->
         </table>
 
         <div class="image" *ngIf="cardType === 1" [hidden]="!showdata">

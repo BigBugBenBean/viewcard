@@ -435,6 +435,23 @@
         "INIT_CONFIG_PARAM_ERROR": "System initialization failed,Application will be terminated.",
         "TAKE_CARD_BTN" : "Take Card",
         "PUT_CARD_TRY_MAX": "No id card has been detected for more than 3 times. Please try again after confirmation, and the system will stop quitting！",
-        "OCR_READER_SCREEN_S16" : "Your card cann't be for 3 attempts  recognized ,please your card insert into the card reader on the right."
+        "OCR_READER_SCREEN_S16" : "Your card cann't be for 3 attempts  recognized ,please your card insert into the card reader on the right.",
+        "N2E": "Employment - Permitted to remain until",
+        "R2E": "Employment - Permitted to remain until",
+        "N2H": "Employment - Permitted to remain until.Change of employer is not permitted",
+        "R2H": "Employment - Permitted to remain until.Change of employer is not permitted",
+        "N2S": "Student - Permitted to remain until",
+        "R2S": "Student - Permitted to remain until",
+        "N2W": "Employment - Permitted to remain until.Change of employer is not permitted",
+        "R2W": "Employment - Permitted to remain until.Change of employer is not permitted",
+        "N2X": "Student - Permitted to remain until",
+        "R2X": "Student - Permitted to remain until",
+        "N2Y": "Student - Permitted to remain until",
+        "R2Y": "Student - Permitted to remain until",
+        "N2": "Permitted to remain until",
+        "R2": "Permitted to remain until",
+        "V3T": "Permitted to remain until",
+        "V3": "Visitor - Permitted to remain until",
+        "COS_LOS": "Condition of Stay and Limit of Stay"
     }
 }
