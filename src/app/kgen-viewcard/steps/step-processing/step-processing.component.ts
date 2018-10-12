@@ -81,13 +81,22 @@ export class StepProcessingComponent implements OnInit {
     FP_TMPL_FORMAT_CARD_TYPE_2 = 'Morpho_PkCompV2';
     PAGE_FINGERPRINT_FP_TMPL_FORMAT = 'Morpho_PkCompV2';
 
-    ACTION_TYPE_IC_READING_INFO = 'READINFO';
-    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
-    ACTION_TYPE_OCR_READING_INFO = 'READINFOOCR';
-    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
-    ACTION_TYPE_FINGER_NUMBER = 'FINGER_NUMBER';
+    ACTION_TYPE_IC_OPENGATE = 'GA01';
+    ACTION_TYPE_IC_OPENCARD = 'GA02';
+    ACTION_TYPE_IC_READING_INFO = 'GA04';
+    ACTION_TYPE_IC_CLOSECARD = 'GA12';
+    ACTION_TYPE_IC_RETURN_CARD = 'GA11';
+    ACTION_TYPE_OCR_INSERT = 'GA06';
+    ACTION_TYPE_OCR_OPENCARD = 'GA07';
+    ACTION_TYPE_OCR_READING_INFO = 'GA08';
+    ACTION_TYPE_OCR_CLOSECARD = 'GA13';
+    ACTION_TYPE_FINGER_NUMBER = 'GA0A';
+    ACTION_TYPE_FINGER_SCAN = 'GA09';
+    ACTION_TYPE_VERIFICATION = 'GA0A';
+    ACTION_TYPE_QUERY_COS_LOS = 'GA0B';
+    ACTION_TYPE_UPDATE_COS_LOS = 'GA0C';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'GA0D';
+    ACTION_TYPE_IC_INSERT = 'GA0E';
 
     constructor(private router: Router,
                 private commonService: CommonService,
@@ -337,7 +346,7 @@ export class StepProcessingComponent implements OnInit {
                 this.fp_tmpl2_in_base64 = resp.morpho_fp_tmpl2_in_base64;
                 if ($.isEmptyObject(this.fp_tmpl1_in_base64) && $.isEmptyObject(this.fp_tmpl2_in_base64)) {
                     this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
-                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GE07', '', this.hkic_number_view, 'readhkicv1 exception');
                     if (this.isAbort || this.timeOutPause) {
                         return;
                     }
@@ -350,7 +359,7 @@ export class StepProcessingComponent implements OnInit {
                 }
 
             } else {
-                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR044', '', this.hkic_number_view, 'readhkicv2 exception');
+                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GE07', '', this.hkic_number_view, 'readhkicv2 exception');
                 this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
                 if (this.isAbort || this.timeOutPause) {
                     return;
@@ -359,7 +368,7 @@ export class StepProcessingComponent implements OnInit {
             }
         }, (error) => {
             console.log('readhkicv2 ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR044', '', this.hkic_number_view, 'readhkicv2 exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_READING_INFO, this.LOCATION_DEVICE_ID, 'GE07', '', this.hkic_number_view, 'readhkicv2 exception');
             this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
             if (this.isAbort || this.timeOutPause) {
                 return;
@@ -381,7 +390,7 @@ export class StepProcessingComponent implements OnInit {
                 this.fp_tmpl2_in_base64 = resp.fingerprint1;
                 if ($.isEmptyObject(this.fp_tmpl1_in_base64) && $.isEmptyObject(this.fp_tmpl2_in_base64)) {
                     this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
-                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+                    this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GE06', '', this.hkic_number_view, 'readhkicv1 exception');
                     if (this.isAbort || this.timeOutPause) {
                         return;
                     }
@@ -394,7 +403,7 @@ export class StepProcessingComponent implements OnInit {
                 }
             } else {
                 this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
-                this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+                this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GE06', '', this.hkic_number_view, 'readhkicv1 exception');
                 if (this.isAbort || this.timeOutPause) {
                     return;
                 }
@@ -402,7 +411,7 @@ export class StepProcessingComponent implements OnInit {
             }
         }, (error) => {
             console.log('readhkicv1 ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GENERR043', '', this.hkic_number_view, 'readhkicv1 exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_READING_INFO, this.LOCATION_DEVICE_ID, 'GE06', '', this.hkic_number_view, 'readhkicv1 exception');
             this.messageFail = 'SCN-GEN-STEPS.PROCESS_SCREEN_S14';
             if (this.isAbort || this.timeOutPause) {
                 return;
@@ -416,8 +425,8 @@ export class StepProcessingComponent implements OnInit {
         if (this.cardType === 1) {
             const icno = this.carddata.icno;
             const lengthNum = icno.length;
-            const icon_format = icno.substring(0, lengthNum);
-            const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
+            const icon_format = icno.substring(0, lengthNum - 1);
+            const last_str = icno.substring(lengthNum - 1, lengthNum);
             this.hkic_number_view = icon_format + '(' + last_str + ')';
         } else {
             this.hkic_number_view = this.carddata.hkic_number;
@@ -554,7 +563,7 @@ export class StepProcessingComponent implements OnInit {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         }, (error) => {
             console.log('opencard ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GE0F', '', this.hkic_number_view, 'call returndoc');
             this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
             if (this.timeOutPause || this.isAbort) {
                 return;

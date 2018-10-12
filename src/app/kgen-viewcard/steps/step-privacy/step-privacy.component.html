@@ -1,6 +1,6 @@
 <div>
     <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer ></sc2-timer>
-    <input class="chbtn" id="langBtn" type="button" value="{{'SCN-SRK-001-3.LANGUAGE' | translate}}" (click) = "langButton()">
+    <input class="chbtn" id="langBtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <sc2-confirm #modalFail>
         <div class="app-modal-body">
             <div class="modal-message">
@@ -32,21 +32,21 @@
     <sc2-process-comp #processing></sc2-process-comp>
 
     <label class="head1">
-        {{'SCN-SRK-001-4.PRIV-POLICY-HEADER' | translate}}
+        {{'SCN-GEN-STEPS.PRIV-POLICY-HEADER' | translate}}
     </label>
     <div [hidden]="isShow" class="policyBox"   #policyBox (scroll)="onScroll($event)"  (panstart)="onPanStart()" (panup)="onPanUp($event.deltaY)" (pandown)="onPanDown($event.deltaY)">
-        <label class="firstWord">{{'SCN-SRK-001-4.PRIV-POLICY' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.PRIV-POLICY-PAR' | translate}}</p><br><br>
-        <label class="firstWord">{{'SCN-SRK-001-4.COLLECTION-INFO' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.COLLECTION-INFO-PAR' | translate}}</p><br>
-        <label class="firstWord-italic">{{'SCN-SRK-001-4.COOKIES' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.COOKIES-PAR' | translate}}</p><br>
-        <label class="firstWord-italic">{{'SCN-SRK-001-4.PAGE-TAGGING' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.PAGE-TAGGING-PAR' | translate}}</p><br>
-        <label class="firstWord">{{'SCN-SRK-001-4.PROVISION-PERSONAL-DATA' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.PROVISION-PERSONAL-DATA-PAR' | translate}}</p><br>
-        <label class="firstWord">{{'SCN-SRK-001-4.SEARCH-SERVICE' | translate}}</label><br><br>
-        <p class="long-text">{{'SCN-SRK-001-4.SEARCH-SERVICE-PAR' | translate}}</p><br>
+        <label class="firstWord">{{'SCN-GEN-STEPS.PRIV-POLICY' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.PRIV-POLICY-PAR' | translate}}</p><br><br>
+        <label class="firstWord">{{'SCN-GEN-STEPS.COLLECTION-INFO' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.COLLECTION-INFO-PAR' | translate}}</p><br>
+        <label class="firstWord-italic">{{'SCN-GEN-STEPS.COOKIES' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.COOKIES-PAR' | translate}}</p><br>
+        <label class="firstWord-italic">{{'SCN-GEN-STEPS.PAGE-TAGGING' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.PAGE-TAGGING-PAR' | translate}}</p><br>
+        <label class="firstWord">{{'SCN-GEN-STEPS.PROVISION-PERSONAL-DATA' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.PROVISION-PERSONAL-DATA-PAR' | translate}}</p><br>
+        <label class="firstWord">{{'SCN-GEN-STEPS.SEARCH-SERVICE' | translate}}</label><br><br>
+        <p class="long-text">{{'SCN-GEN-STEPS.SEARCH-SERVICE-PAR' | translate}}</p><br>
 
     </div>
 
@@ -55,9 +55,9 @@
 
     <div *ngIf="showCheckBox">
         <input type="image" id="checkedBoxBtn" class="checkbox" [src]="imgChkbox" (click)="checked()" />
-        <label class="checkBoxLabel1">{{'SCN-SRK-001-4.PRIV-POLICY-AGREE' | translate}}</label>
+        <label class="checkBoxLabel1">{{'SCN-GEN-STEPS.PRIV-POLICY-AGREE' | translate}}</label>
         <!-- <label class="checkBoxLabel1">{{lblHAVE_READ_EN}}</label> -->
     </div>
-    <input class="exitButton" type="button" id='exitBtn' value="{{'SCN-SRK-001-1.EXIT'|translate}}" (click) = "processModalQuitShow()">
-    <input *ngIf="enableButton" class="conBtn" id="nextBtn" type="button" value="{{'SCN-SRK-001-4.CONFIRM' | translate}}" (click) = "nextRoute()">
+    <input class="exitButton" type="button" id='exitBtn' value="{{'SCN-GEN-STEPS.EXIT'|translate}}" (click) = "processModalQuitShow()">
+    <input *ngIf="enableButton" class="conBtn" id="nextBtn" type="button" value="{{'SCN-GEN-STEPS.CONFIRM' | translate}}" (click) = "nextRoute()">
 </div>

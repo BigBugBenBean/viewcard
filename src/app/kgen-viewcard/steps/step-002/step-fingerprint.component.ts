@@ -82,13 +82,22 @@ export class StepFingerprintComponent implements OnInit {
     FP_MATCH_SCORE_CARD_TYPE_1 = 0;
     FP_MATCH_SCORE_CARD_TYPE_2 = 3500;
 
-    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
-    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
-    ACTION_TYPE_FINGER_NUMBER = 'FINGER_NUMBER';
-    ACTION_TYPE_FINGER_SCAN = 'FINCAP';
-    ACTION_TYPE_VERIFICATION = 'FINGERVER';
+    ACTION_TYPE_IC_OPENGATE = 'GA01';
+    ACTION_TYPE_IC_OPENCARD = 'GA02';
+    ACTION_TYPE_IC_READING_INFO = 'GA04';
+    ACTION_TYPE_IC_CLOSECARD = 'GA12';
+    ACTION_TYPE_IC_RETURN_CARD = 'GA11';
+    ACTION_TYPE_OCR_INSERT = 'GA06';
+    ACTION_TYPE_OCR_OPENCARD = 'GA07';
+    ACTION_TYPE_OCR_READING_INFO = 'GA08';
+    ACTION_TYPE_OCR_CLOSECARD = 'GA13';
+    ACTION_TYPE_FINGER_NUMBER = 'GA0A';
+    ACTION_TYPE_FINGER_SCAN = 'GA09';
+    ACTION_TYPE_VERIFICATION = 'GA0A';
+    ACTION_TYPE_QUERY_COS_LOS = 'GA0B';
+    ACTION_TYPE_UPDATE_COS_LOS = 'GA0C';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'GA0D';
+    ACTION_TYPE_IC_INSERT = 'GA0E';
 
     carddata: any = {};
     allFingerNum = [];
@@ -177,8 +186,8 @@ export class StepFingerprintComponent implements OnInit {
         if (this.cardType === 1) {
             const icno = this.carddata.icno;
             const lengthNum = icno.length;
-            const icon_format = icno.substring(0, lengthNum);
-            const last_str = icno.substring(lengthNum - 1, lengthNum - 1);
+            const icon_format = icno.substring(0, lengthNum - 1);
+            const last_str = icno.substring(lengthNum - 1, lengthNum);
             this.hkic_number_view = icon_format + '(' + last_str + ')';
         } else {
             this.hkic_number_view = this.carddata.hkic_number;
@@ -298,7 +307,7 @@ export class StepFingerprintComponent implements OnInit {
             }
         }, (error) => {
             console.log('takephoto ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, '', '', this.hkic_number_view, 'takephoto exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, 'GE08', '', this.hkic_number_view, 'takephoto exception');
             this.messageFail = 'SCN-GEN-STEPS.FINGERPRINT-DEVICE-EXCEPTION';
             this.processing.hide();
             this.isShow = false;
@@ -324,7 +333,7 @@ export class StepFingerprintComponent implements OnInit {
             this.quitDisabledAll();
             this.modalRetry.show();
         } else {
-            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'SCKERR027', '', this.hkic_number_view, 'fingerprint exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'GE08', '', this.hkic_number_view, 'fingerprint exception');
             this.messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
             this.isAbort = true;
             this.processing.hide();
@@ -366,7 +375,7 @@ export class StepFingerprintComponent implements OnInit {
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, '', '', this.hkic_number_view, 'extractimgtmpl exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, 'GE08', '', this.hkic_number_view, 'extractimgtmpl exception');
             this.doCloseCard();
         });
     }
@@ -387,7 +396,7 @@ export class StepFingerprintComponent implements OnInit {
             }
         }, (error) => {
             console.log('extractimgtmpl ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, '', '', this.hkic_number_view, 'extractimgtmpl exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_FINGER_SCAN, this.LOCATION_DEVICE_ID, 'GE08', '', this.hkic_number_view, 'extractimgtmpl exception');
             this.doCloseCard();
         });
     }
@@ -429,7 +438,7 @@ export class StepFingerprintComponent implements OnInit {
             }
         }, (error) => {
             console.log('verifytmpl ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'GENERR045', 'KSK_AUD', this.hkic_number_view, 'verifytmpl exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'GE09', 'KSK_AUD', this.hkic_number_view, 'verifytmpl exception');
             this.isAbort = true;
             this.doCloseCard();
         });
@@ -463,7 +472,7 @@ export class StepFingerprintComponent implements OnInit {
             }
         }, (error) => {
             console.log('verifytmpl ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'GENERR045', 'KSK_AUD', this.hkic_number_view, 'verifytmpl exception');
+            this.commonService.loggerExcp(this.ACTION_TYPE_VERIFICATION, this.LOCATION_DEVICE_ID, 'GE09', 'KSK_AUD', this.hkic_number_view, 'verifytmpl exception');
 
             this.isAbort = true;
             this.doCloseCard();
@@ -609,7 +618,7 @@ export class StepFingerprintComponent implements OnInit {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         }, (error) => {
             console.log('opencard ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GE0F', '', this.hkic_number_view, 'call returndoc');
             this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
             if (this.timeOutPause || this.isAbort) {
                 return;

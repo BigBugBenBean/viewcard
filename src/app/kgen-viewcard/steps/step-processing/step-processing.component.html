@@ -3,6 +3,7 @@
     <input class="chbtn" type="button" id="langBtn" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img *ngIf="readType === 1" src="../../../../assets/images/menu/menubar_1_insert_card.png" class="sideimg" />
     <img *ngIf="readType === 2" src="../../../../assets/images/menu/menubar_1_ocr_reader.png" class="sideimg" />
+    <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
     <sc2-confirm #modalRetry>
         <div class="app-modal-body">
             <div class="modal-message">
@@ -57,5 +58,5 @@
     <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
     <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="hidden" (click)="nextRoute()">
-    <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalQuitShow()">
+    <!--<input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate }}" (click) = "processModalQuitShow()">-->
 </div>

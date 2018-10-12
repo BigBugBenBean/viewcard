@@ -1,6 +1,5 @@
 <div class="mainPanel">
     <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer ></sc2-timer>
-    <!--<sc2-timer (timerExpired)="timeExpireOpenGate()" class="timer" #timerOpenGate id="timerOpenGateObj"></sc2-timer>-->
     <input class="buttonTC" id="langBtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
     <img *ngIf="readType === 1" src="../../../../assets/images/menu/menubar_1_insert_card.png" class="sideimg" />
     <img *ngIf="readType === 2" src="../../../../assets/images/menu/menubar_1_ocr_reader.png" class="sideimg" />
@@ -94,7 +93,7 @@
     <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
     <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="button" (click)="nextRoute()">
-    <input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
-    <input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
+    <input  type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
+    <input  class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
     <label class="footerSteps"></label>
 </div>

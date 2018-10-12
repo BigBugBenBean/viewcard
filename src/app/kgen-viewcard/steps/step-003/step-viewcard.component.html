@@ -70,45 +70,45 @@
     <div class="information" [hidden]="!isShowCollect">
         <table class="infoTableClass">
             <tr >
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.ID-CARD-NO' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.ID-CARD-NO' | translate}}</td>
                 <td class="SecondColumn">{{hkic_number_view}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.NAME-IN-ENGLISH' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.NAME-IN-ENGLISH' | translate}}</td>
                 <td class="SecondColumn">
                     <p *ngIf="cardType === 2">{{carddata.name_english}}</p>
                     <p *ngIf="cardType === 1">{{carddata.english_name}}</p>
                 </td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.NAME-IN-CHINESE' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.NAME-IN-CHINESE' | translate}}</td>
                 <td class="SecondColumn">
                     <p *ngIf="cardType === 2">{{carddata.name_chinese}}</p>
                     <p *ngIf="cardType === 1">{{carddata.chinese_name}}</p>
                 </td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.NAME-IN-CCC' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.NAME-IN-CCC' | translate}}</td>
                 <td class="SecondColumn">{{name_ccc_view}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.SEX' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.SEX' | translate}}</td>
                 <td class="SecondColumn">{{carddata.gender}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.DATE-OF-BIRTH' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.DATE-OF-BIRTH' | translate}}</td>
                 <td class="SecondColumn">{{date_of_birth_view}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.SYMBOLS' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.SYMBOLS' | translate}}</td>
                 <td class="SecondColumn">{{carddata.indicators}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.MONTH-YEAR-REGISTRATION' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.MONTH-YEAR-REGISTRATION' | translate}}</td>
                 <td class="SecondColumn">{{date_of_registration_view}}</td>
             </tr>
             <tr>
-                <td class="firstColumn">{{'SCN-GEN-VIEWCARD.DATE-OF-ISSUE' | translate}}</td>
+                <td class="firstColumn">{{'SCN-GEN-STEPS.DATE-OF-ISSUE' | translate}}</td>
                 <td class="SecondColumn">{{date_of_first_registration_view}}</td>
             </tr>
             <tr>
@@ -154,6 +154,7 @@
     <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="hidden" (click)="nextRoute()">
     <input type="button" [hidden]="!showdata" class="confirmButton" id="confirmBtn" value="{{'SCN-GEN-STEPS.TAKE_CARD_BTN' | translate}}" (click)="nextRoute()">
+    <!--<input type="button" [hidden]="!showdata" class="printButton" id="print" value="{{'SCN-GEN-STEPS.TAKE_CARD_BTN' | translate}}" (click)="printBill()">-->
     <!--<input type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />-->
     <!--<input class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">-->
 </div>

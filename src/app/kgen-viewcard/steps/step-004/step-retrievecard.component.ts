@@ -48,10 +48,22 @@ export class StepRetrievecardComponent implements OnInit {
     LOCATION_DEVICE_ID = 'K1-SCK-01';
     hkic_number_view = '';
 
-    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
-    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
+    ACTION_TYPE_IC_OPENGATE = 'GA01';
+    ACTION_TYPE_IC_OPENCARD = 'GA02';
+    ACTION_TYPE_IC_READING_INFO = 'GA04';
+    ACTION_TYPE_IC_CLOSECARD = 'GA12';
+    ACTION_TYPE_IC_RETURN_CARD = 'GA11';
+    ACTION_TYPE_OCR_INSERT = 'GA06';
+    ACTION_TYPE_OCR_OPENCARD = 'GA07';
+    ACTION_TYPE_OCR_READING_INFO = 'GA08';
+    ACTION_TYPE_OCR_CLOSECARD = 'GA13';
+    ACTION_TYPE_FINGER_NUMBER = 'GA0A';
+    ACTION_TYPE_FINGER_SCAN = 'GA09';
+    ACTION_TYPE_VERIFICATION = 'GA0A';
+    ACTION_TYPE_QUERY_COS_LOS = 'GA0B';
+    ACTION_TYPE_UPDATE_COS_LOS = 'GA0C';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'GA0D';
+    ACTION_TYPE_IC_INSERT = 'GA0E';
 
     cardType = 1;
     readType = 1;
@@ -243,7 +255,7 @@ export class StepRetrievecardComponent implements OnInit {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         }, (error) => {
             console.log('opencard ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GE0F', '', this.hkic_number_view, 'call returndoc');
             this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
             if (this.timeOutPause || this.isAbort) {
                 return;

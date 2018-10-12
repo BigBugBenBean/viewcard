@@ -1,5 +1,6 @@
 <div class="kgen-fingerprint">
     <div class="mainPanel">
+        <p class="steps-div">{{'SCN-GEN-STEPS.NAVIGATION' | translate}}</p>
         <sc2-timer (timerExpired)="timeExpire()" class="timer" #timer></sc2-timer>
         <input class="buttonTC" id="langBtn" type="button" value="{{'SCN-GEN-STEPS.LANGUAGE' | translate}}" (click) = "langButton()">
         <img *ngIf="readType === 1" src="../../../../assets/images/menu/menubar_2_insert_card.png" class="sideimg" />

@@ -84,13 +84,22 @@ export class StepViewcardComponent  implements OnInit {
     DEVICE_LIGHT_ALERT_BAR_GREEN_CODE = '12';
     DEVICE_LIGHT_ALERT_BAR_RED_CODE = '13';
 
-    ACTION_TYPE_IC_READING_INFO = 'READINFO';
-    ACTION_TYPE_IC_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_IC_RETURN_CARD = 'RETNCRD';
-    ACTION_TYPE_OCR_CLOSECARD = 'CLOSECARD_IC';
-    ACTION_TYPE_OCR_COLLECT_CARD = 'COLLECT_CARD';
-    ACTION_TYPE_QUERY_COS_LOS = 'CSLSQUERY';
-    ACTION_TYPE_UPDATE_COS_LOS = 'UPDTCSLS';
+    ACTION_TYPE_IC_OPENGATE = 'GA01';
+    ACTION_TYPE_IC_OPENCARD = 'GA02';
+    ACTION_TYPE_IC_READING_INFO = 'GA04';
+    ACTION_TYPE_IC_CLOSECARD = 'GA12';
+    ACTION_TYPE_IC_RETURN_CARD = 'GA11';
+    ACTION_TYPE_OCR_INSERT = 'GA06';
+    ACTION_TYPE_OCR_OPENCARD = 'GA07';
+    ACTION_TYPE_OCR_READING_INFO = 'GA08';
+    ACTION_TYPE_OCR_CLOSECARD = 'GA13';
+    ACTION_TYPE_FINGER_NUMBER = 'GA0A';
+    ACTION_TYPE_FINGER_SCAN = 'GA09';
+    ACTION_TYPE_VERIFICATION = 'GA0A';
+    ACTION_TYPE_QUERY_COS_LOS = 'GA0B';
+    ACTION_TYPE_UPDATE_COS_LOS = 'GA0C';
+    ACTION_TYPE_OCR_COLLECT_CARD = 'GA0D';
+    ACTION_TYPE_IC_INSERT = 'GA0E';
 
     N2E = 'N2E';
     R2E = 'R2E';
@@ -164,7 +173,6 @@ export class StepViewcardComponent  implements OnInit {
     }
 
     startBusiness() {
-       // this.processing.show();
         this.isShowCollect = true;
         if (this.carddataJson) {
             this.carddata = JSON.parse(this.carddataJson);
@@ -547,7 +555,7 @@ export class StepViewcardComponent  implements OnInit {
             this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
         }, (error) => {
             console.log('opencard ERROR ' + error);
-            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GENERR048', '', this.hkic_number_view, 'call returndoc');
+            this.commonService.loggerExcp(this.ACTION_TYPE_IC_RETURN_CARD, this.LOCATION_DEVICE_ID, 'GE0F', '', this.hkic_number_view, 'call returndoc');
             this.messageFail = 'SCN-GEN-STEPS.READER-COLLECT-FAIL';
             if (this.timeOutPause || this.isAbort) {
                 return;
