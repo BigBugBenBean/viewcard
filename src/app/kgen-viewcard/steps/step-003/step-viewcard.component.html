@@ -93,7 +93,10 @@
             </tr>
             <tr>
                 <td class="firstColumn">{{'SCN-GEN-STEPS.SEX' | translate}}</td>
-                <td class="SecondColumn">{{carddata.gender}}</td>
+                <td class="SecondColumn">
+                    <p *ngIf="carddata.gender === 'M'">{{'SCN-GEN-STEPS.SEX-M' | translate}}</p>
+                    <p *ngIf="carddata.gender === 'F'">{{'SCN-GEN-STEPS.SEX-F' | translate}}</p>
+                </td>
             </tr>
             <tr>
                 <td class="firstColumn">{{'SCN-GEN-STEPS.DATE-OF-BIRTH' | translate}}</td>

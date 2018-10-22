@@ -42,6 +42,8 @@
         "DATE-OF-ISSUE": "簽發日期",
         "OTHER-APPLICATIONS": "其他申請",
         "SEX": "性別",
+        "SEX-M": "男",
+        "SEX-F": "女",
         "MONTH-YEAR-REGISTRATION": "首次登記日期",
         "ID-CARD-NO": "身份證號碼",
         "COND-STAY": "逗留條件",

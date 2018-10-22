@@ -75,6 +75,7 @@ export class StepInsertcardComponent implements OnInit {
     showImage = false;
     isShow = false;
     isShowCollect = false;
+    isProcessing = false;
     isExit = true;
     APP_LANG = 'zh-HK';
     DEFAULT_LANG = '';
@@ -846,7 +847,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payload).subscribe((resp) => {
             this.processing.hide();
-            this.showImage = false
+            this.showImage = false;
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
@@ -911,6 +912,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         console.log('call openCardNewFun fun.');
         this.processing.show();
+        this.isProcessing = true;
         this.showImage = true;
         this.quitDisabledAll();
         const payload = {
@@ -922,7 +924,7 @@ export class StepInsertcardComponent implements OnInit {
         }
         this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payload).subscribe((resp) => {
             this.processing.hide();
-            this.showImage = false
+            this.showImage = false;
             this.cancelQuitEnabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.result === true) {
@@ -936,8 +938,10 @@ export class StepInsertcardComponent implements OnInit {
                 } else {
                     this.messagePrompt = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S12';
                     this.modalPrompt.show();
+                    this.isProcessing = false;
                     setTimeout(() => {
                         this.modalPrompt.hide();
+                        this.startInsertCardListener('30');
                     }, 4000);
                 }
             } else {

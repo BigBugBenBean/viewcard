@@ -91,7 +91,7 @@
         </div>
     </sc2-confirm>
     <label class="labelStay" >{{'SCN-GEN-STEPS.VIEW_INFO_CARD' | translate}}</label>
-    <label [hidden]="!isShowCollect" class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
+    <label [hidden]="!isShowCollect || isProcessing" class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
     <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>
     <sc2-process-comp #processing></sc2-process-comp>
     <!--   (click)="nextRoute()" -->
@@ -100,7 +100,7 @@
     <img *ngIf="readType === 1" [hidden]="isShowCollect" src="../../../../assets/images/collect-old-hkid.gif" class="main-image">
     <img *ngIf="readType === 2" [hidden]="isShowCollect" src="../../../../assets/images/collect-new-hkid.gif" width="928" height="522" class="main-image">
     <input #imgNext type="button" (click)="nextRoute()">
-    <input  type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
-    <input  class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()">
+    <input [hidden]="isProcessing" type="image" src="../../../../assets/images/button_Abort.png" class="exitButton" (click)="processModalQuitShow()" />
+    <input [hidden]="isProcessing" class="exitButton" id='exitBtn' type="button" value="{{'SCN-GEN-STEPS.ABORT' | translate}}" (click) = "processModalQuitShow()" />
     <label class="footerSteps"></label>
 </div>
