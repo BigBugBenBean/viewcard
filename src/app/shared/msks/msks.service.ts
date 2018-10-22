@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 
 import { Observable } from 'rxjs/Observable';
+import { retryWhen } from 'rxjs/add/operator';
+
 import { Observer } from 'rxjs/Observer';
 
 @Injectable()
@@ -67,6 +69,12 @@ export class MsksService {
     public sendRequestTransLog(payload) {
         this.sendRequest('RR_AUDIT', 'translg', payload).subscribe(resp => {
             console.log(`Transcation log:${resp}`, resp);
+        });
+    }
+
+    public sendTrackLog(message) {
+        this.sendRequest('RR_AUDIT', 'tracklg', {'message': message}).subscribe(resp => {
+            // console.log(`Transcation log:${resp}`, resp);
         });
     }
 

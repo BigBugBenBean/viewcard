@@ -49,6 +49,9 @@ export class StepInsertcardComponent implements OnInit {
     @ViewChild('timer')
     public timer: TimerComponent;
 
+    @ViewChild('modalPrompt')
+    public modalPrompt: ConfirmComponent;
+
     messageRetry = 'SCN-GEN-STEPS.RE-SCANER-FINGER';
     messageTimeout = 'SCN-GEN-STEPS.MESSAGE-TIMEOUT';
     messageFail = 'SCN-GEN-STEPS.RE-SCANER-MAX';
@@ -57,6 +60,7 @@ export class StepInsertcardComponent implements OnInit {
 
     messageComfirm = '';
 
+    messagePrompt = '';
     cardType = 1;
     readType = 1;
     newReader_dor = null;
@@ -287,12 +291,15 @@ export class StepInsertcardComponent implements OnInit {
 
     startBusiness() {
         this.commonService.doCloseCard();
-        this.openGateFun();
+        // this.openGateFun();
         // *****************a later call openGate function *************************************************
         // setTimeout(() => {
         //     console.log('*******start call openGate function *********');
         //     this.openGateFun();
         // }, 1000);
+
+        this.startInsertCardListener('30');
+
     }
 
     /**
@@ -898,6 +905,61 @@ export class StepInsertcardComponent implements OnInit {
         });
     }
 
+    openCardNewFunChen() {
+        if (this.timeOutPause || this.isAbort) {
+            return;
+        }
+        console.log('call openCardNewFun fun.');
+        this.processing.show();
+        this.showImage = true;
+        this.quitDisabledAll();
+        const payload = {
+            'card_reader_id':  null,
+            'contactless_password': {
+                'date_of_registration': this.newReader_dor,
+                'hkic_no':  this.newReader_icno
+            }
+        }
+        this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'opencard', payload).subscribe((resp) => {
+            this.processing.hide();
+            this.showImage = false
+            this.cancelQuitEnabledAll();
+            if (!$.isEmptyObject(resp)) {
+                if (resp.result === true) {
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_OCR_READER);
+                    this.cardType = 2;
+                    if (this.timeOutPause || this.isAbort) {
+                        return;
+                    }
+                    this.commonService.loggerTrans(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'S', '', this.newReader_icno, 'call opencard');
+                    this.nextRoute();
+                } else {
+                    this.messagePrompt = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S12';
+                    this.modalPrompt.show();
+                    setTimeout(() => {
+                        this.modalPrompt.hide();
+                    }, 4000);
+                }
+            } else {
+                this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GE05', '', this.newReader_icno, 'call opencard');
+                if (this.timeOutPause || this.isAbort) {
+                    return;
+                }
+                this.processModalFailShow();
+            }
+
+        }, (error) => {
+            console.log('opencard ERROR ' + error);
+            this.commonService.loggerExcp(this.ACTION_TYPE_OCR_OPENCARD, this.LOCATION_DEVICE_ID, 'GE05', '', this.newReader_icno, 'call opencard');
+            this.messageFail = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+            if (this.timeOutPause || this.isAbort) {
+                return;
+            }
+            this.processModalFailShow();
+        });
+    }
+
     failTryAgainOCR() {
         this.modalRetryOCR.hide();
         this.processNewReader();
@@ -1076,4 +1138,128 @@ export class StepInsertcardComponent implements OnInit {
             this.processModalFailShow();
         });
     }
+
+    processOCRReaderData(datas, resultObj) {
+        let dor = null, icno = null;
+        for (const i in datas) {
+            if ('VizIssueDate' === datas[i].field_id) {
+                const dor_temp = datas[i].field_value;
+                const year = this.commonService.changeDor(dor_temp);
+                dor = `${year}${dor_temp.substr(3, 2)}${dor_temp.substr(0, 2)}`;
+            } else if ('VizDocumentNumber' === datas[i].field_id) {
+                icno = datas[i].field_value;
+            }
+        }
+        resultObj.ocr_data = { 'dor': dor, 'icno': icno };
+        // resultObj.ocr_data.dor = dor;
+        // resultObj.ocr_data.icno = icno;
+    }
+
+    startInsertCardListener(openGateTime) {
+        this.commonService.doFlashLight(this.DEVICE_LIGHT_CODE_IC_READER);
+        // this.doLightOff('08');
+        const ATTEMPT_COUNT = 5;
+        let num = 0;
+        const DELAY	=	3000;
+        const IC = this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'opengate', { 'timeout': openGateTime }).map((resp) => {
+            const result = { type: 'ICCOLLECT', status: null };
+            if ($.isEmptyObject(resp)) {
+                result.status = 'CRASH';
+            } else if (resp.errorcode === '0') {
+                result.status = 'SUCCESS';
+                return result;
+            } else if (resp.errorcode === 'D0009') {
+                result.status = 'EXIST';
+            } else if (resp.errorcode === 'D0006') {
+                result.status = 'TIMEOUT';
+            } else {
+                result.status = 'ERROR';
+            }
+            throw new Error(result.status);
+        }).retryWhen(stream => stream.scan((count, err) => {
+            if (num >= ATTEMPT_COUNT) {
+                this.messagePrompt = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                this.modalPrompt.show();
+                setTimeout(() => {
+                    this.modalPrompt.hide();
+                }, 4000);
+                throw err;
+            } else {
+                if (err.message === 'CRASH' ) {
+                    this.messagePrompt = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S2';
+                }else if (err.message === 'TIMEOUT') {
+                    this.messagePrompt = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S5';
+                }else if (err.message === 'ERROR') {
+                    this.messagePrompt = 'SCN-GEN-STEPS.INSERT_CARD_SCREEN_S6';
+                }
+                this.modalPrompt.show();
+                setTimeout(() => {
+                    this.modalPrompt.hide();
+                }, 4000);
+            }
+            num++;
+            return count + 1;
+        }, 0).delay(DELAY));
+
+// 5 X 3
+        let ocrNum = 0;
+        const payloadParam = {'ocr_reader_name' : 'ARH ComboSmart'};
+        const OCR = this.service.sendRequestWithLog(CHANNEL_ID_RR_CARDREADER, 'readhkicv2ocrdata', payloadParam).map((resp) => {
+            const result = { type: 'OCR', status: null, ocr_data: null };
+            const temp = $.isEmptyObject(resp) || resp.error_info.error_code !== '0';
+            if ($.isEmptyObject(resp) || resp.error_info.error_code !== '0') {
+                result.status = 'CRASH';
+            } else if (resp.ocr_data.length === 0) {
+                result.status = 'NOCARD';
+            } else if (resp.ocr_data.length <= 2) {
+                result.status = 'ERROR';
+            } else {
+                result.status = 'SUCCESS';
+                this.processOCRReaderData(resp.ocr_data, result);
+                return result;
+            }
+            throw new Error(result.status);
+        }).retryWhen(stream => stream.scan((count, err) => {
+            if (ocrNum >= ATTEMPT_COUNT) {
+                this.messagePrompt = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S13';
+                this.modalPrompt.show();
+                setTimeout(() => {
+                    this.modalPrompt.hide();
+                }, 4000);
+                throw err;
+            } else {
+                if (err.message === 'CRASH' || err.message === 'ERROR') {
+                    this.messagePrompt = 'SCN-GEN-STEPS.OCR_READER_SCREEN_S10';
+                    this.modalPrompt.show();
+                    setTimeout(() => {
+                        this.modalPrompt.hide();
+                    }, 4000);
+                }
+                ocrNum++;
+                return count + 1;
+            }
+        }, 0).delay(DELAY));
+
+        const subscription = IC.merge(OCR).subscribe((resp: any) => {
+            if (resp.status === 'SUCCESS') {
+                subscription.unsubscribe();
+                if (resp.type === 'OCR') {
+                    this.commonService.doLightOff(this.DEVICE_LIGHT_CODE_IC_READER);
+                    this.newReader_dor = resp.ocr_data.dor;
+                    this.newReader_icno = resp.ocr_data.icno;
+                    this.openCardNewFunChen();
+                } else if (resp.type === 'ICCOLLECT') {
+                    this.openCardFun();
+                }
+            }
+        },
+        (err) => {
+            this.service.sendTrackLog(err);
+        },
+        () => {
+            this.service.sendTrackLog('completed....');
+        }
+        );
+    }
+
 }

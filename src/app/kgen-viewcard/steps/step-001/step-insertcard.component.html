@@ -83,6 +83,13 @@
             </div>
         </div>
     </sc2-confirm>
+    <sc2-confirm #modalPrompt>
+        <div class="app-modal-body">
+            <div class="modal-message" style="align-content: center">
+                {{messagePrompt | translate}}
+            </div>
+        </div>
+    </sc2-confirm>
     <label class="labelStay" >{{'SCN-GEN-STEPS.VIEW_INFO_CARD' | translate}}</label>
     <label [hidden]="!isShowCollect" class="label1" >{{'SCN-GEN-STEPS.INSERT-HKID' | translate}}</label>
     <label [hidden]="isShowCollect"  class="label1" >{{'SCN-GEN-STEPS.COLLECT-HKID-CARD' | translate}}</label>

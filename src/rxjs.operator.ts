@@ -19,3 +19,6 @@ import 'rxjs/add/operator/distinct';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/retryWhen';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/delay';
