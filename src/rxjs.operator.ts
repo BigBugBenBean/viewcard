@@ -22,3 +22,7 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/retryWhen';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/timeInterval';
+import 'rxjs/add/operator/timeout';
+import 'rxjs/add/operator/timeoutWith';
+import 'rxjs/add/operator/timestamp';

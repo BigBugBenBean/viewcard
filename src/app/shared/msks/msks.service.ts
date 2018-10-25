@@ -78,6 +78,10 @@ export class MsksService {
         });
     }
 
+    public returnObservableObj(obj) {
+        return Observable.of(obj);
+    }
+
     public sendRequestWithLog(channelid: string, functionid: string, payload: any = {}, stub: string = 'HAS'): Observable<any> {
         const obsMain = this.sendRequest(channelid, functionid, payload, stub);
         const head = {'chanlid': channelid, 'funcid': functionid};

@@ -134,8 +134,7 @@
                     <p *ngIf="cosView === R2">{{'SCN-GEN-STEPS.R2' | translate}}{{losView | translate}}</p>
                     <p *ngIf="cosView === V3T">{{'SCN-GEN-STEPS.V3T' | translate}}{{losView | translate}}</p>
                     <p *ngIf="cosView === V3">{{'SCN-GEN-STEPS.V3' | translate}}{{losView | translate}}</p>
-                    <p *ngIf="cosView === CN_COS">{{losView | translate}}</p>
-                    <p *ngIf="cosView === EN_COS">{{losView | translate}}</p>
+                    <p *ngIf="cosView === ''">{{'SCN-GEN-STEPS.NOT-APPLICABLE' | translate}}</p>
 
                 </td>
             </tr>

@@ -62,6 +62,10 @@ export class CommonService {
         this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc').subscribe(() => {});
     }
 
+    returnDoc() {
+        return this.service.sendRequestWithLog(CHANNEL_ID_RR_ICCOLLECT, 'returndoc');
+    }
+
     checkFpNull(fpObj: any) {
         return fpObj === null || fpObj === 'null' || fpObj === '' || fpObj === false || fpObj === 'false';
     }

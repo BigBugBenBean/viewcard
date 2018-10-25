@@ -195,8 +195,8 @@ export class StepFingerprintComponent implements OnInit {
     }
 
     startBusiness() {
-        this.processing.show();
-        this.isShow = true;
+        // this.processing.show();
+        // this.isShow = true;
         this.isShowCollect = true;
         this.quitDisabledAll();
         this.startFingerPrint();
@@ -285,8 +285,8 @@ export class StepFingerprintComponent implements OnInit {
             return;
         }
         this.service.sendRequestWithLog('RR_FPSCANNERREG', 'takephoto', {}).subscribe((resp) => {
-            this.processing.show();
-            this.isShow = true;
+            // this.processing.show();
+            // this.isShow = true;
             this.quitDisabledAll();
             if (!$.isEmptyObject(resp)) {
                 if (resp.errorcode === '0') {
@@ -557,7 +557,7 @@ export class StepFingerprintComponent implements OnInit {
         this.modalQuit.hide();
         this.isAbort = false;
         if (this.isRestore) {
-            this.processing.show();
+            // this.processing.show();
             this.isShow = true;
         } else {
             this.cancelQuitEnabledAll();

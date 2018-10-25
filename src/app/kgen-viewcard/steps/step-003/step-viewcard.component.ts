@@ -201,13 +201,13 @@ export class StepViewcardComponent  implements OnInit {
             this.hkic_number_view = icon_format + '(' + last_str + ')';
             this.name_ccc_view = this.processCCCName(this.carddata.ccc);
             this.date_of_birth_view = this.dealDate(this.carddata.dob);
-            this.date_of_registration_view = this.dealDate(this.carddata.date_of_registration);
+            this.date_of_registration_view = this.dealDateMonth(this.carddata.date_of_registration);
             this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
         } else {
             this.hkic_number_view = this.carddata.hkic_number;
-            this.name_ccc_view = this.carddata.name_ccc;
+            this.name_ccc_view = this.processCCCName(this.carddata.name_ccc);
             this.date_of_birth_view = this.dealDate(this.carddata.date_of_birth);
-            this.date_of_registration_view = this.dealDate(this.carddata.date_of_ic_registration);
+            this.date_of_registration_view = this.dealDateMonth(this.carddata.date_of_ic_registration);
             this.date_of_first_registration_view = this.dealDateMonth(this.carddata.date_of_first_registration);
         }
         this.showdata = true;
@@ -240,7 +240,7 @@ export class StepViewcardComponent  implements OnInit {
         const h = [];
         $.each(rs, function(i, v) {
             if (h.length > 0) {
-                h.push('-' + v);
+                h.push(' ' + v);
             } else {
                 h.push(v);
             }
